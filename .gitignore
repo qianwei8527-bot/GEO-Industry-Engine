@@ -1,0 +1,50 @@
+﻿# Dependencies
+node_modules/
+.pnpm-store/
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+env/
+
+# Build outputs
+.next/
+dist/
+build/
+*.egg-info/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Logs
+*.log
+logs/
+
+# Uploads (keep directory)
+uploads/*
+!uploads/.gitkeep
+
+# Database
+*.sqlite
+*.sqlite3
+
+# Docker
+docker-data/
+
+# Coverage
+coverage/
+.coverage
+htmlcov/
