@@ -142,3 +142,15 @@ Agent OS is planned for Phase 5 (P5) of the MVP roadmap. All earlier modules mus
 4. Agent capabilities are configurable and extensible
 
 Refer to: docs/Agent_OS\u8bbe\u8ba1.md (Chinese detail)
+
+---
+
+## 关联文档
+
+| 文档 | 关系 |
+|------|------|
+| [02_领域模型设计.md](02_领域模型设计.md) | Agent操作的业务对象定义 |
+| [07_后端设计.md](07_后端设计.md) | Agent服务的后端实现 |
+| [08_API接口规范.md](08_API接口规范.md) | Agent的Function Calling API定义 |
+
+> 修改本文件时需同步检查以上文件。

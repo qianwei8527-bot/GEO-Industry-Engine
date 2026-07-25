@@ -39,13 +39,18 @@ GEO-Industry-Engine/
 │   ├── AGENTS.md
 │   └── REFERENCES.md
 ├── docs/               # 项目文档体系
-│   ├── 00_项目宪章.md
-│   ├── 01_产品架构PRD.md
-│   ├── 02_技术架构.md
-│   ├── 03_数据架构.md
-│   ├── 04_Agent_OS设计.md
-│   ├── 05_UX页面设计.md
-│   └── 06_MVP范围.md
+│   ├── 00_项目宪章.md            # 战略
+│   ├── 01_产品架构PRD.md          # 产品
+│   ├── 02_领域模型设计.md         # 领域（共享契约）
+│   ├── 03_数据架构.md             # 数据
+│   ├── 04_Agent_OS设计.md         # Agent
+│   ├── 05_技术架构.md             # 技术
+│   ├── 06_前端设计.md             # 前端
+│   ├── 07_后端设计.md             # 后端
+│   ├── 08_API接口规范.md          # API
+│   ├── 09_产业导航交互设计.md      # 交互
+│   ├── 10_数据更新与认证机制.md    # 数据机制
+│   └── 11_MVP范围.md              # 规划
 ├── frontend/           # Next.js 前端
 ├── backend/            # FastAPI 后端
 ├── agents/             # AI Agent 运行时
