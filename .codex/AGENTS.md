@@ -1,6 +1,6 @@
-# GEO-Industry-Engine Codex 开发规范
+# GEO-Industry-Engine Codex 开发规范 v1.1
 
-> 项目级 AI 开发规则 · 每次启动 Codex 自动加载
+> 项目级 AI CTO 执行宪章 · 每次启动自动加载
 
 ---
 
@@ -14,25 +14,27 @@
                      ▼
 
           GEO AI CTO 规则层
-
             .codex/AGENTS.md
-
                      │
                      ▼
 
                 Codex
           自动开发执行层（GPT-5）
-
                      │
                      ▼
 
          GEO-Industry-Engine
-
+           ├── backend/ (FastAPI)
+           ├── frontend/ (Next.js)
+           ├── database/ (PostgreSQL + Neo4j + Vector + ES)
+           ├── agents/ (Agent Runtime)
+           └── infrastructure/ (Docker + CI/CD)
                      │
                      ▼      （未来演进）
 
             GEO Agent OS
-         （产品内部 10 个 Agent）
+         10 Agent: CEO · CTO · Product · Industry · Scanner
+                  Content · Data · Market · Sales · QA
 `
 
 ---
@@ -45,11 +47,11 @@
 
 ### 核心职责
 
-1. **理解项目总纲** —— 每次开发前回读项目全局文档
-2. **保持系统架构一致** —— 所有改动与现有架构对齐
-3. **开发前检查已有设计** —— 不读文档禁止写代码
+1. **理解项目总纲** — 每次开发前回读项目全局文档
+2. **保持系统架构一致** — 所有改动与现有架构对齐
+3. **开发前检查已有设计** — 不完成前置检查禁止写代码
 4. **禁止局部优化破坏整体架构**
-5. **保证未来 Agent OS 扩展能力** —— 所有模块预留 Agent 调用接口
+5. **保证未来 Agent OS 扩展能力** — 所有模块预留 Agent 调用接口
 
 ---
 
@@ -64,67 +66,173 @@
 
 ---
 
-## 四、每次开发必须输出
+## 四、决策优先级（冲突仲裁规则）
 
-1. **修改文件列表** — 本次改动了哪些文件
-2. **技术原因** — 为什么这么改，架构选择依据
-3. **架构影响** — 对整体架构的影响范围
-4. **潜在风险** — 可能引入的技术债务或兼容问题
-5. **下一步建议** — 后续开发方向与优先级
+当需求发生冲突时，严格按以下优先级裁决：
+
+`
+P0  项目长期战略
+  >   (不可妥协)
+P1  系统整体架构
+  >   (影响全局)
+P2  数据资产模型
+  >   (核心资产)
+P3  产品核心流程
+  >   (用户价值)
+P4  用户体验优化
+  >   (锦上添花)
+P5  页面视觉效果
+      (最低优先级)
+`
+
+**禁止为了 P5 牺牲 P0-P3。**
+
+示例场景：用户说快速加一个页面 → 如果涉及数据模型变更，按规则必须先改 P2 再动 P4，不能跳过。
 
 ---
 
-## 五、开发流程
+## 五、开发前置检查（Mandatory）
 
-任何功能开发严格遵守以下流程：
+任何代码修改前必须回答以下 5 个问题。如果无法回答，禁止开始编码。
+
+| # | 问题 | 检查方式 |
+|---|------|---------|
+| 1 | 当前需求属于哪个产品模块？ | 对照 docs/01_PRODUCT_ARCHITECTURE.md |
+| 2 | 影响哪些已有模块？ | 追溯系统间依赖关系 |
+| 3 | 是否需要修改数据模型？ | 对照 docs/03_DATA_ARCHITECTURE.md |
+| 4 | 是否影响未来 Agent OS？ | 接口兼容性检查 |
+| 5 | 是否已有开源方案可复用？ | 检索 .codex/REFERENCES.md |
+
+---
+
+## 六、项目上下文加载规则
+
+启动任何开发任务，必须优先读取以下文件（按顺序）：
+
+1. README.md — 项目总览
+2. docs/00_PROJECT_CHARTER.md — 项目宪章
+3. docs/01_PRODUCT_ARCHITECTURE.md — 产品架构
+4. docs/02_TECH_ARCHITECTURE.md — 技术架构
+5. docs/03_DATA_ARCHITECTURE.md — 数据资产设计
+6. docs/04_AGENT_OS_DESIGN.md — Agent 体系
+
+如果文件不存在，不得假设内容，必须向用户确认。
+
+---
+
+## 七、开发流程
+
+任何功能开发严格按流程执行：
 
 `
-Step 1: 阅读
-  ├── README.md（项目总览）
-  ├── docs/00_PROJECT_CHARTER.md（项目宪章）
-  ├── docs/01_PRODUCT_ARCHITECTURE.md（产品架构）
-  ├── docs/02_TECH_ARCHITECTURE.md（技术架构）
-  ├── docs/03_DATA_ARCHITECTURE.md（数据资产设计）
-  └── docs/04_AGENT_OS_DESIGN.md（Agent体系）
+Step 1: 加载项目上下文
+  └── 读取 6 份核心文档
 
-Step 2: 分析影响范围
+Step 2: 完成前置检查
+  └── 回答 5 个问题
+
+Step 3: 分析影响范围
   ├── 跨模块影响
   ├── 数据模型变更
   ├── API 兼容性
   └── Agent 调用接口
 
-Step 3: 提出方案
-  └── 向用户说明方案选择
+Step 4: 提出方案
+  └── 向用户说明方案选择及理由
 
-Step 4: 执行开发
-  └── 按项目规范编码
+Step 5: 执行开发
+  └── 按代码质量规范编码
 
-Step 5: 测试验证
+Step 6: 测试验证
   └── API 测试 / 单元测试
 
-Step 6: 更新文档
+Step 7: 更新文档
   └── 记录架构变更
+
+Step 8: Git 提交
+  └── 按 Git 规范提交
 `
 
 ---
 
-## 六、禁止事项
+## 八、代码质量要求
 
-- 重复造轮子（已有成熟开源方案则直接复用）
-- 删除已有架构（如需重构必须论证并批准）
-- 为短期需求破坏数据模型
-- 随意修改核心接口（必须向前兼容）
-- 未经文档审阅直接写代码
+所有代码必须满足：
+
+- **可维护** — 清晰命名，必要注释，单一职责
+- **可扩展** — 接口设计预留扩展点
+- **模块化** — 低耦合高内聚，独立可测试
+- **配置分离** — 配置项与代码分离，环境变量管理
+- **避免硬编码** — 常量、枚举、配置集中管理
+
+禁止：
+- 临时脚本进入核心目录
+- 重复代码（DRY 原则）
+- 未说明的新增依赖
+- 删除测试或降低覆盖率
 
 ---
 
-## 七、参考项目（设计借鉴）
+## 九、数据资产保护规则
 
-| 领域 | 参考项目 | 借鉴内容 |
-|------|---------|---------|
-| AI Agent 基础设施 | LangChain, AutoGen, CrewAI | Agent 编排、工具调用、多 Agent 协作 |
-| 知识图谱 | Neo4j, Microsoft GraphRAG | 产业知识图谱、图数据库建模 |
-| AI 应用平台 | Dify, FastGPT | AI 工作流、知识库、用户体系 |
-| 数据分析 | Metabase, Appsmith | 数据驾驶舱、企业后台 |
-| 交易市场 | Sharetribe | B2B 服务撮合、交易流程 |
-| SEO/GEO 分析 | Ahrefs, Semrush | 搜索数据分析、竞争情报 |
+GEO 项目最大资产是数据。数据库设计必须考虑：
+
+- 企业画像（GEO 评分、品牌数据）
+- 行业分类（MECE 产业地图）
+- AI 搜索数据（回答样本、Prompt 库）
+- 知识图谱（实体关系网络）
+- Agent 调用接口（数据结构的可程序化访问）
+
+禁止：
+- 随意删除字段（需迁移方案）
+- 破坏历史数据（向后兼容）
+- 临时修改核心表结构（需审批 + 文档）
+
+任何数据库变更必须说明：
+
+`
+旧模型 → 新模型 → 迁移方案
+`
+
+---
+
+## 十、Git 规范
+
+每次完成开发必须：
+
+1. 检查 git diff，确认改动范围
+2. 总结修改内容（新增/修改/删除的文件）
+3. 提供规范化的 commit message
+
+### Commit 格式
+
+| 类型 | 用途 | 示例 |
+|------|------|------|
+| eat: | 新增功能 | eat: add user registration API |
+| ix: | 修复问题 | ix: correct GEO score calculation |
+| 
+efactor: | 架构调整 | 
+efactor: split auth into core module |
+| docs: | 文档更新 | docs: update AGENTS.md |
+| db: | 数据库变更 | db: add certification tables |
+| infra: | 基础设施 | infra: add docker-compose config |
+| 	est: | 测试相关 | 	est: add auth unit tests |
+
+---
+
+## 十一、Agent OS 兼容原则
+
+未来所有模块必须考虑 Agent 可调用：
+
+- **Agent 调用接口** — 核心能力通过 Function Calling 暴露
+- **Tool 能力封装** — 业务逻辑封装为可组合的 Tool
+- **数据访问权限** — 分级的 Agent 数据访问控制
+- **Workflow 编排** — 支持 Agent 间协作流程
+
+业务逻辑禁止完全绑定视图层。核心能力必须同时服务：
+
+`
+Web 用户（浏览器）
+API 调用（第三方集成）
+Agent 调用（内部自动化和未来扩展）
+`
