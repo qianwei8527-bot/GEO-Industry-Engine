@@ -41,6 +41,24 @@
 |------|---------|------|
 | **Sharetribe** | 服务商入驻、需求匹配、交易流程 | https://github.com/sharetribe/sharetribe-flex-sdk-js |
 
+
+## 预测引擎与研究系统
+
+| 项目 | 借鉴方向 | 链接 |
+|------|---------|------|
+| **Prophet (Meta)** | 时序预测引擎，自动趋势检测+置信区间，三线预测的底层算法 | https://github.com/facebook/prophet |
+| **gpt-researcher** | AI自动研究管道：搜索→爬取→LLM分析→结构化报告 | https://github.com/assafelovic/gpt-researcher |
+| **STORM (Stanford)** | 自动生成研究报告的多角度检索整合方法 | https://github.com/stanford-oval/storm |
+| **OpenBB** | 开源投资研究平台架构：数据连接→转换→分析→报告导出 | https://github.com/OpenBB-finance/OpenBB |
+
+---
+
+## 重点研究方向
+
+| 优先级 | 项目 | 学习重点 |
+|--------|------|---------|
+| 1 | Prophet | 三线预测的数学基础（趋势/季节/置信区间） |
+| 2 | gpt-researcher | AI自动研究+报告生成的管道设计 |
 ---
 
 ## 重点 Clone 研究（按优先级）
