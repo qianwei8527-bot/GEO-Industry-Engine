@@ -106,7 +106,16 @@
 | POST | /certification/vote | Vote | 社区投票 |
 | GET | /certification/scores | Certification | 三维评分详情 |
 
-### 4.7 数据查询（/api/v1/data）
+### 4.7 对标与ROI（/api/v1/benchmark）
+
+| 方法 | 路径 | 说明 |
+|------|------|------|
+| POST | /benchmark/compare | 多企业AI可见度对比 |
+| GET | /benchmark/industry | 跨行业指数对比 |
+| GET | /benchmark/roi | ROI计算 |
+| GET | /benchmark/maturity | 企业GEO成熟度评估 |
+
+### 4.8 数据查询（/api/v1/data）
 
 | 方法 | 路径 | 说明 |
 |------|------|------|
@@ -116,7 +125,15 @@
 | GET | /data/reports/{id} | 研究报告详情 |
 | GET | /data/knowledge-graph | 知识图谱数据 |
 
-### 4.8 Agent（/api/v1/agents）
+### 4.9 API数据服务（/api/v1/data-api）
+
+| 方法 | 路径 | 说明 |
+|------|------|------|
+| POST | /data-api/keys | 创建API密钥 |
+| GET | /data-api/keys | 密钥列表 |
+| GET | /data-api/usage | 调用量统计 |
+
+### 4.10 Agent（/api/v1/agents）
 
 | 方法 | 路径 | 说明 |
 |------|------|------|
