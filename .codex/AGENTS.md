@@ -97,9 +97,9 @@ P5  页面视觉效果
 
 | # | 问题 | 检查方式 |
 |---|------|---------|
-| 1 | 当前需求属于哪个产品模块？ | 对照 docs/01_PRODUCT_ARCHITECTURE.md |
+| 1 | 当前需求属于哪个产品模块？ | 对照 docs/01_产品架构PRD.md |
 | 2 | 影响哪些已有模块？ | 追溯系统间依赖关系 |
-| 3 | 是否需要修改数据模型？ | 对照 docs/03_DATA_ARCHITECTURE.md |
+| 3 | 是否需要修改数据模型？ | 对照 docs/03_数据架构.md |
 | 4 | 是否影响未来 Agent OS？ | 接口兼容性检查 |
 | 5 | 是否已有开源方案可复用？ | 检索 .codex/REFERENCES.md |
 
@@ -110,11 +110,11 @@ P5  页面视觉效果
 启动任何开发任务，必须优先读取以下文件（按顺序）：
 
 1. README.md — 项目总览
-2. docs/00_PROJECT_CHARTER.md — 项目宪章
-3. docs/01_PRODUCT_ARCHITECTURE.md — 产品架构
-4. docs/02_TECH_ARCHITECTURE.md — 技术架构
-5. docs/03_DATA_ARCHITECTURE.md — 数据资产设计
-6. docs/04_AGENT_OS_DESIGN.md — Agent 体系
+2. docs/00_项目宪章.md — 项目宪章
+3. docs/01_产品架构PRD.md — 产品架构
+4. docs/02_技术架构.md — 技术架构
+5. docs/03_数据架构.md — 数据资产设计
+6. docs/04_Agent_OS设计.md — Agent 体系
 
 如果文件不存在，不得假设内容，必须向用户确认。
 

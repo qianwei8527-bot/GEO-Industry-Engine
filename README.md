@@ -35,14 +35,17 @@ GEO产业引擎是一个集企业增长基础设施、GEO产业导航与交易�
 `
 GEO-Industry-Engine/
 ├── README.md
+├── .codex/              # AI CTO 开发规则
+│   ├── AGENTS.md
+│   └── REFERENCES.md
 ├── docs/               # 项目文档体系
-│   ├── 01_项目总纲.md
-│   ├── 02_产品架构PRD.md
-│   ├── 03_技术架构.md
+│   ├── 00_项目宪章.md
+│   ├── 01_产品架构PRD.md
+│   ├── 02_技术架构.md
+│   ├── 03_数据架构.md
 │   ├── 04_Agent_OS设计.md
-│   ├── 05_数据库ER设计.md
-│   ├── 06_UX页面设计.md
-│   └── 07_MVP范围.md
+│   ├── 05_UX页面设计.md
+│   └── 06_MVP范围.md
 ├── frontend/           # Next.js 前端
 ├── backend/            # FastAPI 后端
 ├── agents/             # AI Agent 运行时

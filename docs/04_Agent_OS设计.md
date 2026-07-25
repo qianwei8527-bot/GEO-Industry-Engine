@@ -1,5 +1,7 @@
 ﻿# GEO产业引擎 — Agent OS设计
 
+> *本文件为中文完整版。英文概览版内容已合并至此。*
+
 ## 概述
 
 GEO Agent OS 是一个基于多Agent协作的智能操作系统，模拟AI公司组织架构，每个Agent承担特定职责，协同完成GEO产业增长闭环。
@@ -124,3 +126,19 @@ Scanner  Content  Data  │            │
 | **输出** | 测试报告、质量评分、合规结论 |
 | **权限** | 测试环境、审查工具、质量标准库 |
 | **调用工具** | 测试框架、内容审查、合规检查 |
+
+---
+
+## 开发优先级
+Agent OS is planned for Phase 5 (P5) of the MVP roadmap. All earlier modules must be designed with Agent-callable interfaces.
+
+
+---
+
+## 设计指南
+1. Each agent uses Function Calling specification
+2. Agents communicate via standardized message protocol
+3. All agent actions are logged for audit and improvement
+4. Agent capabilities are configurable and extensible
+
+Refer to: docs/Agent_OS\u8bbe\u8ba1.md (Chinese detail)
