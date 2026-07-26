@@ -29,6 +29,7 @@ GEO产业引擎是一个集企业增长基础设施、GEO产业导航与交易�
 | 向量数据库 | Milvus / Chroma |
 | 搜索引擎 | ElasticSearch |
 | Agent框架 | LangGraph / AutoGen / CrewAI |
+| 决策智能 | GEOSpaceScore / AITrustScore / AIContentReadiness / GEOAttribution |
 
 ## 项目结构
 
