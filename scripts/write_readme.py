@@ -1,4 +1,7 @@
-# GEO-Industry-Engine
+# -*- coding: utf-8 -*-
+import os
+
+content = """# GEO-Industry-Engine
 
 **AI时代企业智能可见度基础设施与GEO产业生态平台**
 
@@ -185,3 +188,9 @@ AI可见度增长系统    GEO产业导航系统    GEO交易市场    认证体
 ---
 
 *让每一家企业在AI搜索时代被看见、被理解、被推荐。*
+"""
+
+filepath = os.path.join("D:\\GEO-IE", "README.md")
+with open(filepath, "w", encoding="utf-8") as f:
+    f.write(content)
+print("README written: " + str(os.path.getsize(filepath)) + " bytes")
