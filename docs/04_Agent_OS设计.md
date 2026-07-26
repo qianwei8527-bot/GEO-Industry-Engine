@@ -11,6 +11,20 @@
 | Industry Agent | 产业认知库、职业生态、IndustryIntelligence | 产业趋势分析和机会发现 |
 | Market Agent | 竞争矩阵、商业机会模型 | 需求匹配和商机推荐 |
 
+### 九模型调用矩阵
+
+| 决策模型 | 调用Agent | 输入 | 输出 |
+|----------|----------|------|------|
+| EntityClarity | Scanner Agent | 企业ID | 实体完整度评分 |
+| AITrustScore | Content Agent | 企业ID+模型ID | 信任评分 |
+| AIContentReadiness | Content Agent | 内容URL | 就绪度分数+优化建议 |
+| GEOSpaceScore | Scanner Agent | 行业ID+查询 | 席位竞争分析 |
+| CompetitionScore | Market Agent | 企业ID+行业ID | 竞争差距报告 |
+| IndustryRelevance | Industry Agent | 企业ID+行业ID | 相关度评分 |
+| ModelPreference | Scanner Agent | 企业ID+模型ID | 推荐倾向评分 |
+| Timeliness | Data Agent | 企业ID | 信息新鲜度评分 |
+| Sentiment | Industry Agent | 企业ID+模型ID | 情感倾向评分 |
+
 
 > *本文件为中文完整版。英文概览版内容已合并至此。*
 

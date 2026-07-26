@@ -137,6 +137,18 @@
 
 ### 4.11 AI模型智能库（/api/v1/ai-models）
 
+#### 订阅与账单接口
+
+| 方法 | 路径 | 说明 |
+|------|------|------|
+| GET | /plans/ | 产品定价方案列表 |
+| POST | /subscriptions/ | 创建订阅 |
+| GET | /subscriptions/me | 当前用户订阅详情 |
+| PUT | /subscriptions/me | 变更订阅方案 |
+| DELETE | /subscriptions/me | 取消订阅 |
+| GET | /invoices/ | 账单历史 |
+| GET | /usage/ | 使用量统计 |
+
 #### GEO职业生态接口
 
 | 方法 | 路径 | 说明 |

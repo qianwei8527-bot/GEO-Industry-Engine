@@ -111,7 +111,7 @@ AI模型智能库 | 用户决策模型 | 产业认知库 | 实体智能图谱 | 
 ```
 GEO-Industry-Engine/
 ├── .codex/         # AI CTO开发规则
-├── docs/           # 15份架构文档
+├── docs/           # 18份架构文档
 ├── backend/        # FastAPI后端
 ├── frontend/       # Next.js前端
 ├── agents/         # Agent OS
