@@ -233,3 +233,7 @@ Refer to: docs/Agent_OS\u8bbe\u8ba1.md (Chinese detail)
 | [08_API接口规范.md](08_API接口规范.md) | Agent的Function Calling API定义 |
 
 > 修改本文件时需同步检查以上文件。
+
+## GEO Agent市在
+
+不是交易市场，而是外部Agent生态。未来每个行业都有专业Agent（如医疗市场分析Agent、工厂智能化Agent），基于你的产业知识图谱运行。外部Agent通过GEO Protocol调用平台数据，平台提供实体查询、能力匹配、机会发现等服务。
