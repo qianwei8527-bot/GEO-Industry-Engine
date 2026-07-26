@@ -137,6 +137,17 @@
 
 ### 4.11 AI模型智能库（/api/v1/ai-models）
 
+#### GEO职业生态接口
+
+| 方法 | 路径 | 说明 |
+|------|------|------|
+| GET | /career/jobs | 岗位列表（按category/level筛选）|
+| GET | /career/jobs/{id} | 岗位详情（含技能要求、薪资、发展路径）|
+| GET | /career/skills | 技能列表（按category筛选）|
+| GET | /career/paths | 职业路径图（完整发展网络）|
+| GET | /career/industry-demand | 企业能力需求（按成熟度匹配人才）|
+| GET | /career/market-trends | 市场趋势数据（TAM/SAM/SOM）|
+
 #### 商机接口
 
 | 方法 | 路径 | 说明 |
