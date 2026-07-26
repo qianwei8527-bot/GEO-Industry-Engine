@@ -6,6 +6,8 @@
 
 ## 一、产业内核（Industry Kernel）
 
+> 产业内核的6个引擎之上封装了**Context Engine（上下文引擎）**，负责将内核输出组装为AI Agent可消费的结构化上下文。详见 [33_GEO产业上下文层.md](33_GEO产业上下文层.md) 第二章。
+
 | 引擎 | 职能 | 输入 | 输出 |
 |---------|----------|---------|---------|
 | Entity Engine | 实体识别、注册、跟踪 | 企业/个人/产品信息 | 统一GEO ID |
@@ -34,6 +36,7 @@
 | 13_产业发展趋势与职业生态 | Evolution Engine |
 | 15_竞争情报与增长实验 | Value + Capability Engine |
 
+| GEO MCP Protocol | AI Agent获取产业上下文的标准MCP接口 | Model Context Protocol |
 | Capability Protocol | 描述能力的表达方式 | REST API |
 | Evidence Protocol | 证明真实性的方式 | 链证+API |
 | Contribution Protocol | 记录生态贡献的方式 | 事件采集 |

@@ -78,6 +78,26 @@
 
 ### 4.4 产业地图（/api/v1/maps）
 
+| 方法 | 路径 | 说明 |
+|------|------|------|
+| GET | /maps/industry-map | 获取产业生态地图 |
+| GET | /maps/industry-map/{id} | 获取特定产业的地图详情 |
+
+### 4.5 Context API（/api/v1/context） — 面向AI Agent
+
+专为AI Agent / MCP Client消费设计的上下文接口，返回结构化JSON并附证据链。
+
+| 方法 | 路径 | 说明 |
+|------|------|------|
+| GET | /context/company/{geo_id} | 获取企业上下文（含信任评分、能力证据、演化路径）|
+| GET | /context/industry/{id} | 获取行业上下文（含机会、人才需求）|
+| POST | /context/decision | 决策上下文（输入目标+条件，返回推荐路径+风险）|
+| POST | /context/match | 能力匹配上下文（输入需求，返回候选+评分+市场参考）|
+| GET | /context/memory/{entity_id} | 产业记忆查询（演化路径、事件流、推荐变化）|
+
+详见 [33_GEO产业上下文层.md](33_GEO产业上下文层.md) 第三章。
+
+
 | 方法 | 路径 | 领域对象 | 说明 |
 |------|------|---------|------|
 | GET | /maps/{type} | Map | 获取地图数据（type: ecosystem/business/operation/regional/development）|

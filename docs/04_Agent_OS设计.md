@@ -26,6 +26,33 @@
 | Sentiment | Industry Agent | 企业ID+模型ID | 情感倾向评分 |
 
 
+---
+
+## Industry Memory（产业级记忆系统）
+
+GEO Agent OS 的Agent在已有决策模型调用能力之上，新增**共享产业记忆（Industry Memory）**作为系统资源。
+
+| 记忆类型 | 内容 | 调用Agent | 用途 |
+|----------|------|----------|------|
+| 企业演化路径 | 企业的转型、扩张、衰退、并购记录 | Industry Agent | 理解企业当前状态 |
+| 产业事件流 | 融资、并购、政策发布、产品发布 | Scanner Agent | 实时感知产业变化 |
+| 关系变化记录 | 合作/竞争关系的新建与中断 | Market Agent | 判断产业动态 |
+| AI推荐变化 | AI对企业的推荐频率、位置、语境变化 | Scanner Agent | 跟踪可见度趋势 |
+| 人才流动 | 关键人才在不同企业/行业间的迁移 | Industry Agent | 判断行业热度 |
+
+Agent通过统一的 context.memory API 调用：
+
+```
+# Agent伪代码示例
+industry_memory = geo_context.memory.get(
+    entity="GEO-COMPANY-000001",
+    time_range="2024-2026",
+    memory_types=["evolution", "events", "recommendation"]
+)
+```
+
+详见 [33_GEO产业上下文层.md](33_GEO产业上下文层.md) 第五章。
+
 > *本文件为中文完整版。英文概览版内容已合并至此。*
 
 ## 概述
