@@ -41,7 +41,19 @@
 | Evidence Protocol | 证明真实性的方式 | 链证+API |
 | Contribution Protocol | 记录生态贡献的方式 | 事件采集 |
 | Evolution Protocol | 产业变化如何同步 | WebSocket |
-| Capability Protocol | 描述能力的表达方式 | REST API |
-| Evidence Protocol | 证明真实性的方式 | 链证+API |
-| Contribution Protocol | 记录生态贡献的方式 | 事件采集 |
-| Evolution Protocol | 产业变化如何同步 | WebSocket |
+
+### 协议与内核引擎映射
+
+| 协议 | 调用内核引擎 | 说明 |
+|------|--------------|------|
+| GEO Entity Protocol | Entity Engine | 实体CRUD直接调用实体引擎 |
+| GEO Data Protocol | Entity + Relationship Engine | 数据访问涉及实体和关系 |
+| GEO Certification Protocol | Value Engine | 认证由价值引擎评估 |
+| GEO Agent Protocol | Recommendation + Value Engine | Agent调用推荐和价值引擎 |
+| GEO MCP Protocol | Context Engine（编排所有6引擎） | MCP作为Context Engine的协议入口 |
+| Capability Protocol | Capability Engine | 能力描述和验证 |
+| Evidence Protocol | 全部引擎（证据是通用层） | 所有结论需附证据 |
+| Contribution Protocol | Value + Evolution Engine | 贡献记录影响价值和演化引擎 |
+| Evolution Protocol | Evolution Engine | 产业变化同步触发演化引擎 |
+
+### 协议分层
