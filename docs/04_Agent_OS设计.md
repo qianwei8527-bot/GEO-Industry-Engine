@@ -169,6 +169,7 @@ Refer to: docs/Agent_OS\u8bbe\u8ba1.md (Chinese detail)
 |------|------|
 | [02_领域模型设计.md](02_领域模型设计.md) | Agent操作的业务对象定义 |
 | [07_后端设计.md](07_后端设计.md) | Agent服务的后端实现 |
+| [03_数据架构.md](03_数据架构.md) | AI模型智能库数据表定义、AI回答数据结构、模型行为数据结构 |
 | [08_API接口规范.md](08_API接口规范.md) | Agent的Function Calling API定义 |
 
 > 修改本文件时需同步检查以上文件。
