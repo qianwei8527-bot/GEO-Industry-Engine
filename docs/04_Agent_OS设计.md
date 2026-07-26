@@ -1,5 +1,17 @@
 ﻿# GEO产业引擎 — Agent OS设计
 
+## Agent Tool Layer（决策模型调用层）
+
+不增加Agent数量。现有Agent通过Tool Layer调用决策模型：
+
+| Agent | 调用模型 | 用途 |
+|-------|---------|------|
+| Scanner Agent | AI模型智能库、用户意图模型AIOpportunityScore、CompetitionMatrix | 生成模型感知的扫描策略 |
+| Content Agent | AITrustScore、AIContentReadiness | 生成AI可理解、易引用的内容 |
+| Industry Agent | 产业认知库、职业生态、IndustryIntelligence | 产业趋势分析和机会发现 |
+| Market Agent | 竞争矩阵、商业机会模型 | 需求匹配和商机推荐 |
+
+
 > *本文件为中文完整版。英文概览版内容已合并至此。*
 
 ## 概述
