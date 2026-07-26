@@ -236,3 +236,13 @@ AI在回答中引用
 | target_node_id | UUID | FK -> KnowledgeGraphNode |
 | relationship_type | Enum | contains/supply_chain/competes/cooperates/located_in/invests_in/customer_of |
 | weight | Decimal | 关系强度 |
+
+
+## 关联文档
+
+| 文档 | 关系 |
+|------|------|
+| 02_领域模型设计.md | 实体领域对象定义 |
+| 03_数据架构.md | 实体数据表定义 |
+| 12_GEO用户行为与AI决策路径模型.md | 实体与用户行为的关联 |
+| 20_数据生产机制与初始化策略.md | 实体数据生产 |
