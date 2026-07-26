@@ -527,3 +527,9 @@ GEOAttribution: id, company_id, campaign_id, attribution_model, ai_impressions, 
 ## 意图图谱（Intent Graph）
 
 用户搜索背后的真实需求关系网络。每天企业搜索“如何提升AI曝光”——这不是普通搜索数据，它代表产业需求流。Intent Graph 将这些需求结构化、关联化，形成产业需求地图。
+
+---
+
+## GEO决策引擎
+
+用户不是来查资料，而是让系统辅助决策。例如：“我应该进入医疗AI还是教育AI？”系统分析市场增长、竞争程度、人才供应、资本流向、政策、自身能力，输出推荐和原因。

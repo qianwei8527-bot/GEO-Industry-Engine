@@ -81,3 +81,8 @@ Opportunity → targets → Person
 | 13_产业发展趋势与职业生态.md | Person, Region | 生态层 |
 | 14_实体智能与信息供应链.md | Enterprise, Product | 认知层 |
 | 03_数据架构.md | 全部 | 存储层 |
+
+
+### 关系强度计算
+
+关系强度 = 频率 x 时间 x 影响范围 x 可信度 x 结果反馈

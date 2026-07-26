@@ -33,3 +33,12 @@
 | 12_用户行为与AI决策路径 | Recommendation Engine |
 | 13_产业发展趋势与职业生态 | Evolution Engine |
 | 15_竞争情报与增长实验 | Value + Capability Engine |
+
+| Capability Protocol | 描述能力的表达方式 | REST API |
+| Evidence Protocol | 证明真实性的方式 | 链证+API |
+| Contribution Protocol | 记录生态贡献的方式 | 事件采集 |
+| Evolution Protocol | 产业变化如何同步 | WebSocket |
+| Capability Protocol | 描述能力的表达方式 | REST API |
+| Evidence Protocol | 证明真实性的方式 | 链证+API |
+| Contribution Protocol | 记录生态贡献的方式 | 事件采集 |
+| Evolution Protocol | 产业变化如何同步 | WebSocket |
