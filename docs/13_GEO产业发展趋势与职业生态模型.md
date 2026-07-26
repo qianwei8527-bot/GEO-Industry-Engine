@@ -2,6 +2,8 @@
 
 > 第三个认知层：这个产业怎么发展？谁参与？谁赚钱？产生哪些岗位？
 
+> **内部定位：GEO产业认知库** — 不只是存数据的数据库，而是包含趋势推理、职业图谱、商业机会分析的认知资产库。
+
 ---
 
 ## 一、为什么要研究GEO产业发展？
@@ -222,6 +224,47 @@ GEO分析师(L1) -> 顾问(L2) -> 高级顾问(L3) -> 战略负责人(L4)
 - path_type (Enum: promotion/transition/specialization)
 - typical_duration (String)
 - required_experience (String)
+
+### GEOIndustryTrend（产业趋势）
+
+| 属性 | 类型 | 说明 |
+|------|------|------|
+| id | UUID | 主键 |
+| trend_name | String | 趋势名称 |
+| trend_category | Enum | technology/market/business_model/policy |
+| industry_id | UUID | FK -> Industry |
+| time_horizon | String | 时间范围（2025/2027/2030）|
+| impact_level | Int | 影响程度(1-5) |
+| description | Text | 趋势描述 |
+| evidence | JSON | 支撑证据 |
+| confidence | Decimal | 置信度 |
+| data_period | Date | |
+
+### TalentDemand（人才需求）
+
+| 属性 | 类型 | 说明 |
+|------|------|------|
+| id | UUID | 主键 |
+| role_id | UUID | FK -> GEOJob |
+| industry_id | UUID | FK -> Industry |
+| demand_count | Int | 需求量 |
+| demand_growth | Decimal | 需求增长率 |
+| avg_salary | Decimal | 平均薪资 |
+| skill_gap | JSON | 技能缺口分析 |
+| data_period | Date | |
+
+### BusinessOpportunity（商业机会）
+
+| 属性 | 类型 | 说明 |
+|------|------|------|
+| id | UUID | 主键 |
+| industry_id | UUID | FK -> Industry |
+| opportunity_type | Enum | service_gap/talent_shortage/market_entry/technology_adoption |
+| description | Text | 机会描述 |
+| potential_value | Decimal | 预估价值 |
+| entry_barrier | Enum | low/medium/high |
+| time_window | String | 时间窗口 |
+| confidence | Decimal | 置信度 |
 
 ---
 
