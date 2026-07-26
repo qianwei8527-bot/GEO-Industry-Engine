@@ -67,6 +67,11 @@ Scanner  Content  Data  │            │
 | **权限** | 产业知识图谱读写、行业数据库 |
 | **调用工具** | Neo4j查询、数据爬取、报告生成 |
 
+**意图分析扩展**：
+- 分析本行业用户搜索意图分布（5类意图）
+- 识别行业内的高商业价值问题
+- 输出行业AI需求地图给Scanner Agent参考
+
 ### 5. GEO Scanner Agent
 
 | 属性 | 定义 |
@@ -87,6 +92,11 @@ Scanner  Content  Data  │            │
 - 根据 ai_model_industry_scores 决定各模型的扫描权重
 - 针对不同模型的 source_preference 调整 Prompt 策略
 - 扫描结果存入 ai_query_results，持续丰富模型行为数据库
+
+**意图感知扫描**：
+- 根据 Industry Agent 输出的行业AI需求地图选择扫描优先级
+- 高商业价值意图对应的Prompt优先扫描
+- 高频率低占位问题触发商机预警
 
 **用户行为研究能力**：
 - 扫描并分类用户查询意图（factual/comparative/exploratory/transactional）
@@ -153,24 +163,6 @@ Scanner  Content  Data  │            │
 
 ### 10. QA Agent
 
-### 11. Intent Analyst Agent（意图分析Agent）
-
-| 属性 | 定义 |
-|------|------|
-| **职责** | 分析用户搜索意图、识别高商业价值问题、发现行业机会 |
-| **输入** | Prompt样本、行业数据、用户搜索会话数据 |
-| **输出** | 意图分类报告、高价值问题列表、行业机会分析 |
-| **权限** | UserIntent 数据读写、PromptKnowledgeBase 查询 |
-| **调用工具** | LLM意图分类、数据分析、报告生成 |
-
-**核心任务**：
-- 对新采集的Prompt做意图分类（5类意图）
-- 识别高商业价值但低竞品占位的Prompt（商机发现）
-- 分析行业-意图-模型关联（哪个行业在哪个模型上最适合什么意图）
-- 输出优化建议给Content Agent和Scanner Agent
-
-**在Agent协作中的位置**：
-Industry Agent -> Intent Analyst -> Scanner Agent -> Content Agent
 
 | 属性 | 定义 |
 |------|------|

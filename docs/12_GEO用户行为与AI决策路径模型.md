@@ -43,7 +43,7 @@ AI为什么这样回答？ ->   AI Decision Path（AI决策路径）
 AI如何影响购买？   ->   Conversion Value（转化价值）
 ```
 
-这三层决定GEO的商业价值。没有意图模型，我们就不知道哪些Prompt值得占位、哪些回答值得优化、哪些企业值得推荐。
+这三层决定GEO的商业价值。 所以我们称之为 **GEO决策智能（GEO Decision Intelligence）**——预测哪些AI问题会产生商业价值，并指导企业占位。没有意图模型，我们就不知道哪些Prompt值得占位、哪些回答值得优化、哪些企业值得推荐。
 
 ---
 
@@ -338,6 +338,23 @@ AI回答了"国内工业机器人供应商有哪些"
 
 ### 4.2 IntentModelScore（意图-模型得分）
 
+### 4.3 AIOpportunityScore（AI商机评分）
+
+| 属性 | 类型 | 说明 |
+|------|------|------|
+| id | UUID | 主键 |
+| intent_id | UUID | FK -> UserIntent |
+| industry_id | UUID | FK -> Industry |
+| model_id | UUID | FK -> AiModel |
+| query_frequency | Int | 该问题在AI搜索中的月出现频率 |
+| current_occupants | Int | 当前已占位的企业数量 |
+| competition_level | Enum | low/medium/high |
+| potential_commercial_value | Decimal | 预估商业价值（元/月）|
+| confidence | Decimal | 置信度 |
+| data_period | Date | 数据所属时期 |
+
+**用途**：核心商业产品。识别"高频率搜索、低竞品占位"的商机。例如：某行业每月10000次搜索"推荐XX供应商"，但只有2家企业被AI提及 → 这是高价值商机。
+
 | 属性 | 类型 | 说明 |
 |------|------|------|
 | id | UUID | 主键 |
@@ -351,6 +368,20 @@ AI回答了"国内工业机器人供应商有哪些"
 ---
 
 ## 五、商业应用
+
+
+
+### 5.0 GEO决策智能在五大系统中的位置
+
+GEO决策智能（GEO Decision Intelligence）不是一个独立系统，而是贯穿所有系统的核心逻辑：
+
+| 系统 | 决策智能的应用 |
+|------|-------------|
+| AI可见度增长系统 | 不只看"是否被提到"，更看"在高价值意图中是否被提到" |
+| 产业导航系统 | 增加"行业AI需求地图"层，显示该行业的高频问题 |
+| 交易市场 | 增加"AI商机池"，推送未被占位的商业问题 |
+| 认证体系 | 认证数据成为AI推荐因子 |
+| 数据资产中心 | 增加用户意图数据库和商机数据库 |
 
 ### 5.1 对AI可见度增长系统的影响
 
