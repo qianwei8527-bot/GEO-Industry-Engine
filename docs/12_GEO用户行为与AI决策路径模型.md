@@ -520,3 +520,10 @@ GEOAttribution: id, company_id, campaign_id, attribution_model, ai_impressions, 
 | 04_Agent_OS设计.md | Intent Analyst Agent 实现 |
 | 08_API接口规范.md | /intents/ + /decision-paths/ API |
 | 01_产品架构PRD.md | 本模型对5大系统的增强影响 |
+
+
+---
+
+## 意图图谱（Intent Graph）
+
+用户搜索背后的真实需求关系网络。每天企业搜索“如何提升AI曝光”——这不是普通搜索数据，它代表产业需求流。Intent Graph 将这些需求结构化、关联化，形成产业需求地图。

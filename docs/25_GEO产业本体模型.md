@@ -35,7 +35,18 @@
 定义：生成AI推荐和搜索结果的智能系统。
 关系：recommends → Enterprise | cites → Product
 
-### 2.7 GEO Opportunity（机会）
+
+
+### 2.8 GEO Event（事件）
+定义：产业中发生的重要动态。
+类型：融资 | 招聘 | 产品发布 | 政策 | 合作 | 技术突破 | 市场变化
+关系：impacts → Enterprise | impacts → Region
+
+### 2.9 GEO Intent（意图）
+定义：用户搜索背后的真实需求。
+类型：Discovery | Comparison | Procurement | Solution | Verification
+关系：drives → Search | matches → Opportunity
+a（机会）
 定义：需求和能力之间的可匹配价值空间。
 关系：matches → Enterprise | targets → Person | exists_in → Region
 
