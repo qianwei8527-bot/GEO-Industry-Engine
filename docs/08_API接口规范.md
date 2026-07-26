@@ -137,17 +137,41 @@
 
 ### 4.11 AI模型智能库（/api/v1/ai-models）
 
+#### 查询接口
+
 | 方法 | 路径 | 说明 |
 |------|------|------|
-| GET | /ai-models/ | 模型列表（支持筛选：type/country/status）|
-| GET | /ai-models/{id} | 模型详情（含画像、指标、行为模式）|
+| GET | /ai-models/ | 模型列表（支持筛选：type/country/status/access_type）|
+| GET | /ai-models/{id} | 模型详情（含画像、指标、行为模式、行业热度）|
+| GET | /ai-models/{id}/metrics | 模型指标数据 |
 | GET | /ai-models/{id}/industry-scores | 模型-行业热度矩阵 |
 | GET | /ai-models/{id}/behavior | 模型行为模式详情 |
 | GET | /ai-models/{id}/sources | 模型来源偏好分布 |
-| POST | /ai-models/query | 向指定模型发送查询并返回结果 |
+| GET | /ai-models/{id}/query-results | 该模型的查询结果列表 |
 | GET | /ai-models/comparison | 多模型对比（行业/来源/行为）|
 | GET | /ai-models/ranking | 模型排名（按行业/地域/类型）|
-| GET | /ai-models/query-results | 查询结果样本列表 |
+| GET | /ai-models/query-results | 全部查询结果样本列表 |
+
+#### 管理接口（手动操作）
+
+| 方法 | 路径 | 说明 |
+|------|------|------|
+| POST | /ai-models/ | 手动新增模型 |
+| PUT | /ai-models/{id} | 编辑模型信息 |
+| DELETE | /ai-models/{id} | 删除模型 |
+| PUT | /ai-models/{id}/metrics | 手动录入/修正指标数据 |
+| PUT | /ai-models/{id}/industry-scores | 调整特定行业的推荐热度 |
+| PUT | /ai-models/{id}/behavior | 修正行为模式 |
+| PUT | /ai-models/{id}/sources | 设置来源偏好权重 |
+| POST | /ai-models/query | 手动触发向指定模型的查询 |
+
+#### 管道管理
+
+| 方法 | 路径 | 说明 |
+|------|------|------|
+| GET | /ai-models/pipeline/status | 数据管道运行状态 |
+| POST | /ai-models/pipeline/trigger | 手动触发管道执行 |
+| GET | /ai-models/pipeline/logs | 管道执行日志 |
 
 
 | 方法 | 路径 | 说明 |
