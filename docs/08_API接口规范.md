@@ -137,6 +137,34 @@
 
 ### 4.11 AI模型智能库（/api/v1/ai-models）
 
+#### 用户画像接口
+
+| 方法 | 路径 | 说明 |
+|------|------|------|
+| GET | /ai-models/{id}/personas | 指定模型的用户画像列表 |
+| PUT | /ai-models/{id}/personas | 更新用户画像数据 |
+| GET | /ai-models/personas/comparison | 多模型用户画像对比 |
+
+#### Prompt知识库接口
+
+| 方法 | 路径 | 说明 |
+|------|------|------|
+| GET | /prompt-knowledge-base/ | 查询样本列表（支持按模型/行业/时间筛选）|
+| GET | /prompt-knowledge-base/{id} | 查询样本详情（含完整回答+引用+提及企业）|
+| POST | /prompt-knowledge-base/ | 手动新增查询样本 |
+| GET | /prompt-knowledge-base/trends | 趋势分析（谁在上升/谁在下降）|
+| POST | /prompt-knowledge-base/trigger-query | 手动触发向指定模型的查询并存入知识库 |
+
+#### 品牌排名接口
+
+| 方法 | 路径 | 说明 |
+|------|------|------|
+| GET | /brand-ranking/ | 品牌排名总榜（支持按行业/地域筛选）|
+| GET | /brand-ranking/{company_id} | 指定企业的品牌排名详情（含各模型评分）|
+| GET | /brand-ranking/industry/{industry_id} | 行业内的企业排名 |
+| GET | /brand-ranking/trends | 排名变化趋势（上升最快/下降最快）|
+| POST | /brand-ranking/refresh | 手动触发排名刷新计算
+
 #### 查询接口
 
 | 方法 | 路径 | 说明 |
