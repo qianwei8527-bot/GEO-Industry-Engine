@@ -137,6 +137,16 @@
 
 ### 4.11 AI模型智能库（/api/v1/ai-models）
 
+#### 用户搜索行为分析接口
+
+| 方法 | 路径 | 说明 |
+|------|------|------|
+| GET | /search-behavior/query-intents | 查询意图分布统计（按模型/行业/时间）|
+| GET | /search-behavior/sessions | 搜索会话分析（会话深度、模型切换模式）|
+| GET | /search-behavior/satisfaction | 用户满意度信号统计 |
+| GET | /search-behavior/task-model-matrix | 任务类型X模型选择矩阵 |
+| GET | /search-behavior/format-preference | 不同行业/任务的内容格式偏好统计 |
+
 #### 用户画像接口
 
 | 方法 | 路径 | 说明 |

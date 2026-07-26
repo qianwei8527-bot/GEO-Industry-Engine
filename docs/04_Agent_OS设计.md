@@ -77,11 +77,22 @@ Scanner  Content  Data  │            │
 | **权限** | AI搜索API调用、评分模型触发 |
 | **调用工具** | AI搜索API、评分引擎、告警系统 |
 
+**格式感知生成**：
+- 根据查询意图选择最优回答格式（factual→段落, comparative→表格, exploratory→列表, transactional→结构化）
+- 不同行业默认格式不同（电商→表格, 医疗→段落, 法律→列表）
+- 用户满意度信号反馈校准格式选择
+
 **模型感知升级**：
 - 根据行业+企业特征动态选择扫描策略（如医疗企业重点扫 Claude/ChatGPT/Perplexity）
 - 根据 ai_model_industry_scores 决定各模型的扫描权重
 - 针对不同模型的 source_preference 调整 Prompt 策略
 - 扫描结果存入 ai_query_results，持续丰富模型行为数据库
+
+**用户行为研究能力**：
+- 扫描并分类用户查询意图（factual/comparative/exploratory/transactional）
+- 跟踪用户在多模型间的切换模式（session级行为）
+- 分析用户满意度信号（点击引用/继续追问/离开）
+- 洞察任务类型与模型选择的关联规律
 
 **扫描策略示例**：
 - 医疗企业：Claude 30%，ChatGPT 30%，Perplexity 25%，Gemini 15%
@@ -96,6 +107,11 @@ Scanner  Content  Data  │            │
 | **输出** | 优化文章、多模态内容、内容方案 |
 | **权限** | 内容模板库、知识库、媒体资源 |
 | **调用工具** | LLM生成、知识库查询、媒体制作 |
+
+**格式感知生成**：
+- 根据查询意图选择最优回答格式（factual→段落, comparative→表格, exploratory→列表, transactional→结构化）
+- 不同行业默认格式不同（电商→表格, 医疗→段落, 法律→列表）
+- 用户满意度信号反馈校准格式选择
 
 **模型感知升级**：
 - 根据目标的行业+模型偏好生成差异化内容策略
