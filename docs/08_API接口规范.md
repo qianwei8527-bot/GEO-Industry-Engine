@@ -135,6 +135,136 @@
 
 ### 4.10 Agent（/api/v1/agents）
 
+### 4.11 AI模型智能库（/api/v1/ai-models）
+
+#### 订阅与账单接口
+
+| 方法 | 路径 | 说明 |
+|------|------|------|
+| GET | /plans/ | 产品定价方案列表 |
+| POST | /subscriptions/ | 创建订阅 |
+| GET | /subscriptions/me | 当前用户订阅详情 |
+| PUT | /subscriptions/me | 变更订阅方案 |
+| DELETE | /subscriptions/me | 取消订阅 |
+| GET | /invoices/ | 账单历史 |
+| GET | /usage/ | 使用量统计 |
+
+#### GEO职业生态接口
+
+| 方法 | 路径 | 说明 |
+|------|------|------|
+| GET | /career/jobs | 岗位列表（按category/level筛选）|
+| GET | /career/jobs/{id} | 岗位详情（含技能要求、薪资、发展路径）|
+| GET | /career/skills | 技能列表（按category筛选）|
+| GET | /career/paths | 职业路径图（完整发展网络）|
+| GET | /career/industry-demand | 企业能力需求（按成熟度匹配人才）|
+| GET | /career/market-trends | 市场趋势数据（TAM/SAM/SOM）|
+
+#### 商机接口
+
+| 方法 | 路径 | 说明 |
+|------|------|------|
+| GET | /opportunities/ | 商机列表（支持按行业/模型/竞争级别筛选）|
+| GET | /opportunities/{id} | 商机详情 |
+| GET | /opportunities/high-value | 高价值商机排行（高频率+低竞争）|
+| GET | /opportunities/industry/{industry_id} | 指定行业商机分析 |
+| POST | /opportunities/refresh | 手动刷新商机计算 |
+
+#### 用户意图接口
+
+| 方法 | 路径 | 说明 |
+|------|------|------|
+| GET | /intents/ | 意图列表（支持按category/industry筛选）|
+| GET | /intents/{id} | 意图详情（含商业价值评分、典型问题）|
+| POST | /intents/ | 手动新增意图 |
+| PUT | /intents/{id} | 编辑意图 |
+| GET | /intents/industry/{industry_id} | 某行业的高价值意图排行 |
+| GET | /intents/commercial-value-ranking | 商业价值排序 |
+
+#### 决策路径接口
+
+| 方法 | 路径 | 说明 |
+|------|------|------|
+| GET | /decision-paths/model-factors/{model_id} | 指定模型的推荐因子权重 |
+| GET | /decision-paths/intent-analysis/{intent_id} | 指定意图的跨模型推荐对比 |
+| GET | /decision-paths/brand-path/{company_id} | 指定企业的AI推荐路径分析 |
+| POST | /decision-paths/analyze-prompt | 分析单条Prompt的意图和商业价值 |
+
+#### 用户搜索行为分析接口
+
+| 方法 | 路径 | 说明 |
+|------|------|------|
+| GET | /search-behavior/query-intents | 查询意图分布统计（按模型/行业/时间）|
+| GET | /search-behavior/sessions | 搜索会话分析（会话深度、模型切换模式）|
+| GET | /search-behavior/satisfaction | 用户满意度信号统计 |
+| GET | /search-behavior/task-model-matrix | 任务类型X模型选择矩阵 |
+| GET | /search-behavior/format-preference | 不同行业/任务的内容格式偏好统计 |
+
+#### 用户画像接口
+
+| 方法 | 路径 | 说明 |
+|------|------|------|
+| GET | /ai-models/{id}/personas | 指定模型的用户画像列表 |
+| PUT | /ai-models/{id}/personas | 更新用户画像数据 |
+| GET | /ai-models/personas/comparison | 多模型用户画像对比 |
+
+#### Prompt知识库接口
+
+| 方法 | 路径 | 说明 |
+|------|------|------|
+| GET | /prompt-knowledge-base/ | 查询样本列表（支持按模型/行业/时间筛选）|
+| GET | /prompt-knowledge-base/{id} | 查询样本详情（含完整回答+引用+提及企业）|
+| POST | /prompt-knowledge-base/ | 手动新增查询样本 |
+| GET | /prompt-knowledge-base/trends | 趋势分析（谁在上升/谁在下降）|
+| POST | /prompt-knowledge-base/trigger-query | 手动触发向指定模型的查询并存入知识库 |
+
+#### 品牌排名接口
+
+| 方法 | 路径 | 说明 |
+|------|------|------|
+| GET | /brand-ranking/ | 品牌排名总榜（支持按行业/地域筛选）|
+| GET | /brand-ranking/{company_id} | 指定企业的品牌排名详情（含各模型评分）|
+| GET | /brand-ranking/industry/{industry_id} | 行业内的企业排名 |
+| GET | /brand-ranking/trends | 排名变化趋势（上升最快/下降最快）|
+| POST | /brand-ranking/refresh | 手动触发排名刷新计算
+
+#### 查询接口
+
+| 方法 | 路径 | 说明 |
+|------|------|------|
+| GET | /ai-models/ | 模型列表（支持筛选：type/country/status/access_type）|
+| GET | /ai-models/{id} | 模型详情（含画像、指标、行为模式、行业热度）|
+| GET | /ai-models/{id}/metrics | 模型指标数据 |
+| GET | /ai-models/{id}/industry-scores | 模型-行业热度矩阵 |
+| GET | /ai-models/{id}/behavior | 模型行为模式详情 |
+| GET | /ai-models/{id}/sources | 模型来源偏好分布 |
+| GET | /ai-models/{id}/query-results | 该模型的查询结果列表 |
+| GET | /ai-models/comparison | 多模型对比（行业/来源/行为）|
+| GET | /ai-models/ranking | 模型排名（按行业/地域/类型）|
+| GET | /ai-models/query-results | 全部查询结果样本列表 |
+
+#### 管理接口（手动操作）
+
+| 方法 | 路径 | 说明 |
+|------|------|------|
+| POST | /ai-models/ | 手动新增模型 |
+| PUT | /ai-models/{id} | 编辑模型信息 |
+| DELETE | /ai-models/{id} | 删除模型 |
+| PUT | /ai-models/{id}/metrics | 手动录入/修正指标数据 |
+| PUT | /ai-models/{id}/industry-scores | 调整特定行业的推荐热度 |
+| PUT | /ai-models/{id}/behavior | 修正行为模式 |
+| PUT | /ai-models/{id}/sources | 设置来源偏好权重 |
+| POST | /ai-models/query | 手动触发向指定模型的查询 |
+
+#### 管道管理
+
+| 方法 | 路径 | 说明 |
+|------|------|------|
+| GET | /ai-models/pipeline/status | 数据管道运行状态 |
+| POST | /ai-models/pipeline/trigger | 手动触发管道执行 |
+| GET | /ai-models/pipeline/logs | 管道执行日志 |
+
+
 | 方法 | 路径 | 说明 |
 |------|------|------|
 | GET | /agents/ | Agent列表及状态 |

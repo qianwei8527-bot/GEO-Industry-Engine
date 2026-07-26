@@ -1,5 +1,31 @@
 ﻿# GEO产业引擎 — Agent OS设计
 
+## Agent Tool Layer（决策模型调用层）
+
+不增加Agent数量。现有Agent通过Tool Layer调用决策模型：
+
+| Agent | 调用模型 | 用途 |
+|-------|---------|------|
+| Scanner Agent | AI模型智能库、用户意图模型AIOpportunityScore、CompetitionMatrix | 生成模型感知的扫描策略 |
+| Content Agent | AITrustScore、AIContentReadiness | 生成AI可理解、易引用的内容 |
+| Industry Agent | 产业认知库、职业生态、IndustryIntelligence | 产业趋势分析和机会发现 |
+| Market Agent | 竞争矩阵、商业机会模型 | 需求匹配和商机推荐 |
+
+### 九模型调用矩阵
+
+| 决策模型 | 调用Agent | 输入 | 输出 |
+|----------|----------|------|------|
+| EntityClarity | Scanner Agent | 企业ID | 实体完整度评分 |
+| AITrustScore | Content Agent | 企业ID+模型ID | 信任评分 |
+| AIContentReadiness | Content Agent | 内容URL | 就绪度分数+优化建议 |
+| GEOSpaceScore | Scanner Agent | 行业ID+查询 | 席位竞争分析 |
+| CompetitionScore | Market Agent | 企业ID+行业ID | 竞争差距报告 |
+| IndustryRelevance | Industry Agent | 企业ID+行业ID | 相关度评分 |
+| ModelPreference | Scanner Agent | 企业ID+模型ID | 推荐倾向评分 |
+| Timeliness | Data Agent | 企业ID | 信息新鲜度评分 |
+| Sentiment | Industry Agent | 企业ID+模型ID | 情感倾向评分 |
+
+
 > *本文件为中文完整版。英文概览版内容已合并至此。*
 
 ## 概述
@@ -67,6 +93,18 @@ Scanner  Content  Data  │            │
 | **权限** | 产业知识图谱读写、行业数据库 |
 | **调用工具** | Neo4j查询、数据爬取、报告生成 |
 
+**产业趋势分析扩展**：
+- 调用 GEO产业认知库 的趋势数据
+- 分析GEO产业生命周期阶段和商业模式演进
+- 识别产业链各环节的商业机会
+- 预测岗位需求和技能缺口
+- 输出产业趋势报告给 CEO Agent 决策参考
+
+**意图分析扩展**：
+- 分析本行业用户搜索意图分布（5类意图）
+- 识别行业内的高商业价值问题
+- 输出行业AI需求地图给Scanner Agent参考
+
 ### 5. GEO Scanner Agent
 
 | 属性 | 定义 |
@@ -77,6 +115,32 @@ Scanner  Content  Data  │            │
 | **权限** | AI搜索API调用、评分模型触发 |
 | **调用工具** | AI搜索API、评分引擎、告警系统 |
 
+**格式感知生成**：
+- 根据查询意图选择最优回答格式（factual→段落, comparative→表格, exploratory→列表, transactional→结构化）
+- 不同行业默认格式不同（电商→表格, 医疗→段落, 法律→列表）
+- 用户满意度信号反馈校准格式选择
+
+**模型感知升级**：
+- 根据行业+企业特征动态选择扫描策略（如医疗企业重点扫 Claude/ChatGPT/Perplexity）
+- 根据 ai_model_industry_scores 决定各模型的扫描权重
+- 针对不同模型的 source_preference 调整 Prompt 策略
+- 扫描结果存入 ai_query_results，持续丰富模型行为数据库
+
+**意图感知扫描**：
+- 根据 Industry Agent 输出的行业AI需求地图选择扫描优先级
+- 高商业价值意图对应的Prompt优先扫描
+- 高频率低占位问题触发商机预警
+
+**用户行为研究能力**：
+- 扫描并分类用户查询意图（factual/comparative/exploratory/transactional）
+- 跟踪用户在多模型间的切换模式（session级行为）
+- 分析用户满意度信号（点击引用/继续追问/离开）
+- 洞察任务类型与模型选择的关联规律
+
+**扫描策略示例**：
+- 医疗企业：Claude 30%，ChatGPT 30%，Perplexity 25%，Gemini 15%
+- 科技企业：ChatGPT 35%，Gemini 25%，Claude 20%，Perplexity 20%
+
 ### 6. Content Agent
 
 | 属性 | 定义 |
@@ -86,6 +150,19 @@ Scanner  Content  Data  │            │
 | **输出** | 优化文章、多模态内容、内容方案 |
 | **权限** | 内容模板库、知识库、媒体资源 |
 | **调用工具** | LLM生成、知识库查询、媒体制作 |
+
+**格式感知生成**：
+- 根据查询意图选择最优回答格式（factual→段落, comparative→表格, exploratory→列表, transactional→结构化）
+- 不同行业默认格式不同（电商→表格, 医疗→段落, 法律→列表）
+- 用户满意度信号反馈校准格式选择
+
+**模型感知升级**：
+- 根据目标的行业+模型偏好生成差异化内容策略
+- 针对 ChatGPT 偏好：专业长内容、知识深度
+- 针对 Gemini 偏好：网页实体结构、结构化数据
+- 针对 Perplexity 偏好：引用来源质量、可验证性
+- 针对 DeepSeek 偏好：中文权威内容、国内案例
+- 内容效果反馈写入 ModelBehaviorPattern，持续校准
 
 ### 7. Data Agent
 
@@ -119,6 +196,7 @@ Scanner  Content  Data  │            │
 
 ### 10. QA Agent
 
+
 | 属性 | 定义 |
 |------|------|
 | **职责** | 质量检测、效果验证、合规审查 |
@@ -151,6 +229,7 @@ Refer to: docs/Agent_OS\u8bbe\u8ba1.md (Chinese detail)
 |------|------|
 | [02_领域模型设计.md](02_领域模型设计.md) | Agent操作的业务对象定义 |
 | [07_后端设计.md](07_后端设计.md) | Agent服务的后端实现 |
+| [03_数据架构.md](03_数据架构.md) | AI模型智能库数据表定义、AI回答数据结构、模型行为数据结构 |
 | [08_API接口规范.md](08_API接口规范.md) | Agent的Function Calling API定义 |
 
 > 修改本文件时需同步检查以上文件。
