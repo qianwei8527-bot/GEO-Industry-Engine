@@ -2,14 +2,16 @@
 
 ## Agent Tool Layer（决策模型调用层）
 
-不增加Agent数量。现有Agent通过Tool Layer调用决策模型：
+Agent 分阶段建设，当前优先级按以下顺序：
 
-| Agent | 调用模型 | 用途 |
-|-------|---------|------|
-| Scanner Agent | AI模型智能库、用户意图模型AIOpportunityScore、CompetitionMatrix | 生成模型感知的扫描策略 |
-| Content Agent | AITrustScore、AIContentReadiness | 生成AI可理解、易引用的内容 |
-| Industry Agent | 产业认知库、职业生态、IndustryIntelligence | 产业趋势分析和机会发现 |
-| Market Agent | 竞争矩阵、商业机会模型 | 需求匹配和商机推荐 |
+| Agent | 调用模型 | 用途 | 优先级 |
+|-------|---------|------|-------|
+| Context Agent | Context Engine（7个上下文维度） | 所有Agent的基础设施，统一上下文供给 | P0 |
+| Industry Analyst Agent | 产业认知库、IndustryIntelligence、Evolution Engine | 输入企业，输出产业结构、关系、趋势、机会 | P0 |
+| Scanner Agent | AI模型智能库、用户意图模型AIOpportunityScore、CompetitionMatrix | 生成模型感知的扫描策略 | P1 |
+| Content Agent | AITrustScore、AIContentReadiness | 生成AI可理解、易引用的内容 | P2 |
+| Industry Agent | 产业认知库、职业生态、IndustryIntelligence | 产业趋势分析和机会发现 | P2 |
+| Market Agent | 竞争矩阵、商业机会模型 | 需求匹配和商机推荐 | P3 |
 
 ### 九模型调用矩阵
 
