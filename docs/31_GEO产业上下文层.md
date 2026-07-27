@@ -1,3 +1,10 @@
+---
+status: stable
+authority: primary
+version: v2.0
+last_review: 2026-07-27
+related_docs: [02, 16, 04]
+---
 ﻿# GEO产业上下文层（Industry Context Layer）
 
 > AI理解产业世界的上下文基础设施 — GEO-Industry-Engine的终极架构层。

@@ -1,3 +1,10 @@
+---
+status: stable
+authority: primary
+version: v2.0
+last_review: 2026-07-27
+related_docs: [31, 16]
+---
 ﻿# GEO产业引擎 — Agent OS设计
 
 ## Agent Tool Layer（决策模型调用层）

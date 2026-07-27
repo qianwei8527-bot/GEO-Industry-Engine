@@ -1,3 +1,10 @@
+---
+status: stable
+authority: primary
+version: v1.0
+last_review: 2026-07-27
+related_docs: [05]
+---
 ﻿# GEO产业引擎 — API接口规范
 
 > **前后端桥梁** — 后端按此规范提供接口，前端按此规范调用数据。

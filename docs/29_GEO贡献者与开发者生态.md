@@ -1,3 +1,10 @@
+---
+status: draft
+authority: secondary
+version: v0.5
+last_review: 2026-07-25
+related_docs: [26]
+---
 # GEO贡献者与开发者生态
 
 > 让整个世界参与建设GEO，而非靠一个团队维护。

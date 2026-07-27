@@ -1,3 +1,10 @@
+---
+status: review
+authority: secondary
+version: v1.0
+last_review: 2026-07-26
+related_docs: [26, 32]
+---
 # GEO标准体系与行业指数
 
 > 谁定义行业语言，谁定义行业规则，谁拥有行业话语权。

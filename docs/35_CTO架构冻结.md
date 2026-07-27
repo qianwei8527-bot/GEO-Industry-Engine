@@ -1,3 +1,10 @@
+---
+status: stable
+authority: primary
+version: v1.0
+last_review: 2026-07-27
+related_docs: [00]
+---
 ﻿# GEO-Industry-Engine — CTO 最终架构冻结文件
 
 > 这是所有开发必须遵守的唯一架构标准。非经 CTO 审批，不得修改冻结项。

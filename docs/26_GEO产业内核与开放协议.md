@@ -1,3 +1,10 @@
+---
+status: stable
+authority: primary
+version: v1.0
+last_review: 2026-07-27
+related_docs: [31, 30]
+---
 # GEO产业内核与开放协议
 
 > 正式定义GEO产业引擎的“操作系统内核”——其他系统、Agent、平台通过协议调用它。

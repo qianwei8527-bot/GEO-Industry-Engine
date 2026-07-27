@@ -1,3 +1,10 @@
+---
+status: stable
+authority: primary
+version: v1.0
+last_review: 2026-07-27
+related_docs: [35]
+---
 # GEO-Industry-Engine Architecture Source of Truth Audit
 > Post-consolidation audit | Date: 2026-07-27 | Auditor: CTO
 

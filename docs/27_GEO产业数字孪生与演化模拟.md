@@ -1,3 +1,10 @@
+---
+status: draft
+authority: secondary
+version: v0.5
+last_review: 2026-07-25
+related_docs: [13, 31]
+---
 # GEO产业数字孪生与演化模拟
 
 > 从静态产业地图到动态模拟系统——回答“未来3年某行业的GEO机会在哪里”。

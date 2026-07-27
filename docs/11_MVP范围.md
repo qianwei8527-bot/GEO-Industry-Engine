@@ -1,3 +1,10 @@
+---
+status: stable
+authority: secondary
+version: v1.0
+last_review: 2026-07-26
+related_docs: [24]
+---
 ﻿# GEO产业引擎 — MVP开发范围
 
 ## 开发原则

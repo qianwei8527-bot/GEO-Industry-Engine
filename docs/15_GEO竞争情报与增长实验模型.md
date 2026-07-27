@@ -1,3 +1,10 @@
+---
+status: draft
+authority: secondary
+version: v0.5
+last_review: 2026-07-25
+related_docs: [16]
+---
 # GEO竞争情报与增长实验模型
 
 > 你和竞争对手比怎么样？你做的优化真的有效吗？

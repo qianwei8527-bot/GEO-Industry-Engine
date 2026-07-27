@@ -1,3 +1,10 @@
+---
+status: stable
+authority: secondary
+version: v1.0
+last_review: 2026-07-27
+related_docs: [16, 32]
+---
 # GEO测量方法论
 
 > AI推荐系统是封闭的随机过程。GEO测量的任务不是解释它，而是以可控误差估计它。

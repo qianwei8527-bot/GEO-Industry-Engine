@@ -1,3 +1,10 @@
+---
+status: draft
+authority: secondary
+version: v0.5
+last_review: 2026-07-25
+related_docs: [09, 25]
+---
 # GEO产业运行地图
 
 > 从静态展示到价值流动态显示——产业不是“有哪些企业”，而是“如何运行”。

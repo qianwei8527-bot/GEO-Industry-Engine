@@ -1,3 +1,10 @@
+---
+status: stable
+authority: primary
+version: v2.0
+last_review: 2026-07-27
+related_docs: [12, 22, 31]
+---
 # GEO评分算法与模拟验证
 
 > 定义从9个决策模型到最终GEO评分的完整计算链路，并用模拟数据进行验证。

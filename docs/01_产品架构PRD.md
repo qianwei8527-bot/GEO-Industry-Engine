@@ -1,3 +1,10 @@
+---
+status: review
+authority: secondary
+version: v1.0
+last_review: 2026-07-26
+related_docs: [05]
+---
 # GEO-Industry-Engine — Product Architecture
 
 ## Overview

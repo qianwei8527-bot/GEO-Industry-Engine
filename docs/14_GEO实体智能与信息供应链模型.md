@@ -1,3 +1,10 @@
+---
+status: draft
+authority: secondary
+version: v0.5
+last_review: 2026-07-25
+related_docs: [02]
+---
 # GEO实体智能与信息供应链模型
 
 > AI眼中的企业长什么样？AI从哪里获取关于企业的信息？

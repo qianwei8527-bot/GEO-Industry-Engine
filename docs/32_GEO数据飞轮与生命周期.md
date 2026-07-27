@@ -1,3 +1,10 @@
+---
+status: stable
+authority: secondary
+version: v1.0
+last_review: 2026-07-26
+related_docs: [22]
+---
 # GEO数据飞轮与生命周期
 
 > 系统如何自我增强？——GEO-Industry-Engine形成长期网络效应的核心机制。

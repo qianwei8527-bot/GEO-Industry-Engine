@@ -1,3 +1,10 @@
+---
+status: stable
+authority: secondary
+version: v1.0
+last_review: 2026-07-26
+related_docs: [02]
+---
 # GEO产业本体模型
 
 > GEO世界的“元素周期表”——定义这个产业中到底存在什么、它们之间是什么关系。

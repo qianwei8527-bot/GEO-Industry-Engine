@@ -1,3 +1,10 @@
+---
+status: draft
+authority: secondary
+version: v0.5
+last_review: 2026-07-25
+related_docs: [27]
+---
 # GEO产业发展趋势与职业生态模型
 
 > 第三个认知层：这个产业怎么发展？谁参与？谁赚钱？产生哪些岗位？

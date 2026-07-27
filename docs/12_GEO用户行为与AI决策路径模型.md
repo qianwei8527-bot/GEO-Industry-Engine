@@ -1,3 +1,10 @@
+---
+status: review
+authority: secondary
+version: v1.0
+last_review: 2026-07-26
+related_docs: [16]
+---
 # GEO用户行为与AI决策路径模型
 
 > 为什么用户问AI？AI为什么回答某个企业？企业为什么需要GEO？
