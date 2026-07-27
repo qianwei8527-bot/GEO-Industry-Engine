@@ -1,6 +1,6 @@
 ﻿from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.api.v1 import auth, users
+from app.api.v1 import auth, users, entities, companies, industries, relationships, evidence
 from app.core.config import settings
 
 app = FastAPI(
@@ -19,6 +19,11 @@ app.add_middleware(
 
 app.include_router(auth.router, prefix="/api/v1/auth", tags=["auth"])
 app.include_router(users.router, prefix="/api/v1/users", tags=["users"])
+app.include_router(entities.router)
+app.include_router(companies.router)
+app.include_router(industries.router)
+app.include_router(relationships.router)
+app.include_router(evidence.router)
 
 
 @app.get("/health")
