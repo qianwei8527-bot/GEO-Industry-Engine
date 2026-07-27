@@ -1,5 +1,5 @@
 from typing import Optional
-from agents.core.agent_registry import AgentRegistry
+from agents.core.base import AgentRegistry
 
 
 class IntentRouter:

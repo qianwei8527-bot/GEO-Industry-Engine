@@ -3,7 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from pydantic import BaseModel
 from typing import Optional, Any, Dict
 from app.database import get_db
-from agents.router.intent_router import IntentRouter
+from agents.workflow.intent_router import IntentRouter
 from agents.agents.industry_agent import IndustryAgent
 from agents.agents.company_agent import CompanyAgent
 from agents.agents.geo_growth_agent import GEOGrowthAgent

@@ -1,5 +1,5 @@
 from typing import Any, Dict
-from agents.core.base_agent import BaseAgent
+from agents.core.base import BaseAgent
 
 
 class IndustryAgent(BaseAgent):

@@ -1,5 +1,5 @@
 import pytest
-from agents.router.intent_router import IntentRouter
+from agents.workflow.intent_router import IntentRouter
 
 
 class TestIntentRouter:
