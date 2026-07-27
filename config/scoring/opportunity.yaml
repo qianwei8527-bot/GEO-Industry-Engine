@@ -1,0 +1,9 @@
+﻿weights:
+  market_growth: 0.30
+  competition_gap: 0.25
+  capability_overlap: 0.25
+  trend_alignment: 0.20
+thresholds:
+  high: 80
+  medium: 55
+  low: 30

@@ -1,0 +1,9 @@
+﻿weights:
+  evidence_quality: 0.35
+  evidence_quantity: 0.25
+  verification_status: 0.25
+  longevity: 0.15
+thresholds:
+  high: 80
+  medium: 60
+  low: 30

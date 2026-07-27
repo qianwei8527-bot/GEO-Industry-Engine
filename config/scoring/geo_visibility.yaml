@@ -1,0 +1,10 @@
+﻿weights:
+  entity_quality: 0.25
+  evidence_score: 0.25
+  capability_match: 0.20
+  relationship_density: 0.15
+  recency: 0.15
+thresholds:
+  high: 80
+  medium: 60
+  low: 30
