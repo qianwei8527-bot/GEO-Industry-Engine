@@ -53,7 +53,7 @@ industry_memory = geo_context.memory.get(
 )
 ```
 
-详见 [33_GEO产业上下文层.md](33_GEO产业上下文层.md) 第五章。
+详见 [31_GEO产业上下文层.md](31_GEO产业上下文层.md) 第五章。
 
 > *本文件为中文完整版。英文概览版内容已合并至此。*
 

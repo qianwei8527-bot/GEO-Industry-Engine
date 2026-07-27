@@ -349,7 +349,7 @@ Context Layer 是 GEO 行业协议家族的"AI入口层"，向上对接 AI Agent
 | Industry Memory | 04_Agent_OS设计.md（Agent系统资源） |
 | Context API | 08_API接口规范.md（API分类） |
 | 减少AI幻觉 | 22_GEO测量方法论.md（可观测边界） |
-| 上下文评分溯源 | 32_GEO标准体系与行业指数.md（评分标准） |
+| 上下文评分溯源 | 30_GEO标准体系与行业指数.md（评分标准） |
 
 ---
 

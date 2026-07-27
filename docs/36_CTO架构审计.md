@@ -6,7 +6,7 @@
 | Domain | Source of Truth | Duplicates Found | Status |
 |--------|----------------|------------------|--------|
 | Domain Models / Entity | 02_领域模型设计.md | 25_Ontology (partial overlap) | Minor: 25 is higher-level abstraction, complementary |
-| Context Engine | 33_GEO产业上下文层.md | None (impl ref integrated) | Clean |
+| Context Engine | 31_GEO产业上下文层.md | None (impl ref integrated) | Clean |
 | Decision Engine | 16_GEO评分算法.md | 12_决策路径 (overlap on 9 models) | Acceptable: 12 = model definition, 16 = implementation |
 | Agent OS | 04_Agent_OS设计.md | None (impl ref integrated) | Clean |
 | Data Architecture | 03_数据架构.md | 20_数据生产, 22_测量 (partial) | Acceptable: different concerns |
@@ -16,7 +16,7 @@
 ### Implementation References Integration
 4 implementation docs merged into parent documents. Verified:
 - 02_领域模型设计.md: ✅ Integrated
-- 33_GEO产业上下文层.md: ✅ Integrated
+- 31_GEO产业上下文层.md: ✅ Integrated
 - 16_GEO评分算法与模拟验证.md: ✅ Integrated
 - 04_Agent_OS设计.md: ✅ Integrated
 
@@ -25,7 +25,7 @@
 | Doc | Expected Code | Exists | Notes |
 |-----|---------------|--------|-------|
 | 02_领域模型设计.md | backend/app/models/ | ✅ | All models present |
-| 33_GEO产业上下文层.md | backend/app/context/ | ✅ | Context Engine + retrievers + ranking + schemas |
+| 31_GEO产业上下文层.md | backend/app/context/ | ✅ | Context Engine + retrievers + ranking + schemas |
 | 16_GEO评分算法与模拟验证.md | backend/app/decision/ | ✅ | Decision Engine + models + scoring + explanation |
 | 04_Agent_OS设计.md | agents/ | ✅ | BaseAgent + Registry + 4 agents + tools |
 | 08_API接口规范.md | backend/app/api/v1/ | ✅ | 14 routers registered |
@@ -61,7 +61,7 @@ Found 4 stale references to deleted implementation docs:
 - 02_领域模型设计.md -> 01_DOMAIN_MODEL
 - 04_Agent_OS设计.md -> 04_AGENT_OS
 - 16_GEO评分算法与模拟验证.md -> 03_DECISION_ENGINE
-- 33_GEO产业上下文层.md -> 02_CONTEXT_ENGINE
+- 31_GEO产业上下文层.md -> 02_CONTEXT_ENGINE
 
 ## Part 4: Architecture Maturity
 
