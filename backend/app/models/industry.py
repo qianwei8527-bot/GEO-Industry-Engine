@@ -22,6 +22,6 @@ class Industry(Base):
     tenant_id: Mapped[uuid.UUID | None] = mapped_column(UUID(as_uuid=True), nullable=True)
     region: Mapped[str | None] = mapped_column(String(32), nullable=True)
     lang_tag: Mapped[str | None] = mapped_column(String(10), nullable=True)
-    metadata: Mapped[dict | None] = mapped_column(JSON, nullable=True)
+    ext_metadata: Mapped[dict | None] = mapped_column(JSON, nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
     updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
