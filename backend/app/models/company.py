@@ -34,5 +34,11 @@ class Company(Base):
     subscription_tier: Mapped[SubscriptionTier] = mapped_column(Enum(SubscriptionTier), default=SubscriptionTier.FREE)
     owner_id: Mapped[uuid.UUID | None] = mapped_column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=True)
     is_verified: Mapped[bool] = mapped_column(default=False)
+    
+    # 扩展预留字段（Sprint 0.5 新增）
+    tenant_id: Mapped[uuid.UUID | None] = mapped_column(UUID(as_uuid=True), nullable=True)
+    region: Mapped[str | None] = mapped_column(String(32), nullable=True)
+    lang_tag: Mapped[str | None] = mapped_column(String(10), nullable=True)
+    metadata: Mapped[dict | None] = mapped_column(JSON, nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
     updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)

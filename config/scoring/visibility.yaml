@@ -1,0 +1,14 @@
+﻿# visibility.yaml - AI可见度评分权重配置
+# 从 V1 起使用 YAML 配置化，不做硬编码
+# 加载方式：ConfigLoader.load('scoring', 'visibility')
+
+weights:
+  completeness: 0.3
+  authority: 0.3
+  evidence: 0.2
+  activity: 0.2
+
+thresholds:
+  high: 80
+  medium: 50
+  low: 20
