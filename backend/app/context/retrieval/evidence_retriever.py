@@ -9,15 +9,15 @@ class EvidenceRetriever:
     def __init__(self, db: AsyncSession):
         self.db = db
 
-    async def get_evidence(self, target_id: str, min_confidence: int = 0) -> List[Evidence]:
+    async def get_evidence(self, entity_id: str, min_confidence: int = 0) -> List[Evidence]:
         stmt = select(Evidence).where(
-            Evidence.target_id == target_id,
+            Evidence.entity_id == entity_id,
             Evidence.confidence_level >= min_confidence,
         ).order_by(Evidence.confidence_level.desc())
         result = await self.db.execute(stmt)
         return list(result.scalars().all())
 
-    async def get_evidence_count(self, target_id: str) -> int:
-        stmt = select(Evidence).where(Evidence.target_id == target_id)
+    async def get_evidence_count(self, entity_id: str) -> int:
+        stmt = select(Evidence).where(Evidence.entity_id == entity_id)
         result = await self.db.execute(stmt)
         return len(result.scalars().all())

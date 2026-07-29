@@ -1,9 +1,106 @@
-﻿weights:
-  market_growth: 0.30
-  competition_gap: 0.25
-  capability_overlap: 0.25
-  trend_alignment: 0.20
+﻿# GEO产业机会发现评分配置 (Opportunity Scoring)
+# 版本: v1.0 | 最后更新: 2026-07-28
+# 加载方式: ConfigLoader.load('scoring', 'opportunity')
+# 用途: 评估行业/市场中不同方向的机会价值，支撑检测中心第二层和产业情报
+# 关联: config/competitive/intelligence.yaml
+
+schema_version: "1.0"
+
+# ============================================================
+# 主权重
+# ============================================================
+weights:
+  market_growth: 0.30          # 市场增长率
+  competition_gap: 0.25        # 竞争空白度 (需求-供给差)
+  capability_overlap: 0.25     # 能力匹配度 (与自身能力的契合程度)
+  trend_alignment: 0.20        # 趋势对齐度 (与宏观趋势方向一致性)
+
+# ============================================================
+# 二级维度
+# ============================================================
+market_growth:
+  sub_weights:
+    demand_growth_rate: 0.35     # 需求增长率 (搜索量/咨询量增长)
+    revenue_growth: 0.25         # 市场规模增长
+    new_entrants: 0.15           # 新进入者数量
+    investment_inflow: 0.25      # 资本流入
+  growth_window_months: 12
+  data_sources:
+    - "AI搜索查询量趋势"
+    - "行业报告市场规模"
+    - "企业注册数据"
+    - "融资事件数据库"
+
+competition_gap:
+  sub_weights:
+    supply_demand_ratio: 0.40    # 供需比 (服务商/需求)
+    service_concentration: 0.20  # 服务商集中度
+    unmet_needs_count: 0.25      # 未满足需求数量
+    entry_barrier: 0.15          # 进入壁垒
+  gap_calculation: "demand_count / max(provider_count, 1)"
+  ideal_ratio_range: [3.0, 10.0]  # 理想供需比: 需求是供给的3-10倍
+
+capability_overlap:
+  sub_weights:
+    direct_skill_match: 0.40     # 直接技能匹配
+    adjacent_skill_match: 0.30   # 相邻技能匹配
+    resource_adequacy: 0.30      # 资源充足度
+  match_method: "weighted_jaccard"
+  adjacency_radius: 2           # 相邻技能跳数
+
+trend_alignment:
+  sub_weights:
+    macro_trend_consistency: 0.35   # 宏观趋势一致
+    technology_readiness: 0.30      # 技术就绪度
+    policy_support: 0.20            # 政策支持度
+    social_acceptance: 0.15         # 社会接受度
+  macro_trends:
+    - "AI搜索替代传统搜索"
+    - "企业AI化转型"
+    - "内容AI化生产"
+    - "数据资产化"
+    - "产业互联"
+  trend_data_freshness_days: 60
+
+# ============================================================
+# 阈值 (机会等级)
+# ============================================================
 thresholds:
-  high: 80
-  medium: 55
-  low: 30
+  high: 80         # 黄金机会
+  medium: 55       # 值得关注
+  low: 30          # 边缘机会
+
+opportunity_grades:
+  S: { min: 85, label: "S级: 战略级机会", action: "立即组建专项团队" }
+  A: { min: 70, label: "A级: 优质机会", action: "纳入季度规划" }
+  B: { min: 50, label: "B级: 中等机会", action: "持续跟踪评估" }
+  C: { min: 30, label: "C级: 观察机会", action: "标记观察" }
+  D: { min: 0,  label: "D级: 暂不关注", action: "无" }
+
+# ============================================================
+# 行业调整 (Industry Adjustments)
+# ============================================================
+industry_adjustments:
+  ai_software:
+    market_growth_multiplier: 1.3
+  education:
+    policy_support_weight_add: 0.05
+  healthcare:
+    entry_barrier_weight_multiplier: 1.4
+  finance:
+    policy_support_weight_add: 0.08
+    entry_barrier_weight_multiplier: 1.3
+
+# ============================================================
+# 计算配置
+# ============================================================
+computation:
+  batch_size: 50
+  cache_ttl_hours: 24
+  min_data_points: 20
+  recalculate_trigger: "market_event_significant"
+
+version_history:
+  - version: "1.0"
+    date: "2026-07-28"
+    changes: "初始版本: 机会发现四维模型+五级评级"

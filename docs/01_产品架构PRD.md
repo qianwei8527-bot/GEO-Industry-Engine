@@ -1,17 +1,18 @@
----
-status: review
+﻿---
+status: stable
 authority: secondary
-version: v1.0
-last_review: 2026-07-26
-related_docs: [05]
+version: v2.0
+last_review: 2026-07-28
+related_docs: [CTO长期开发协议, 02, 06, 07]
 ---
 # GEO-Industry-Engine — Product Architecture
 
+> **关联架构**: 详见 [06-11_系统关联架构设计](06-11_系统关联架构设计.md) — 六大系统数据流、Decision Engine路由、事件触发链
 ## Overview
 
-Five interconnected systems form the GEO industry engine platform.
+六大产品系统 form the GEO industry engine platform.
 
-## 1. AI Visibility Growth System
+## 1. 检测中心 · GEO战略评估
 
 Real-time AI search visibility analysis and optimization platform.
 
@@ -288,7 +289,7 @@ Refer to: docs/\u4ea7\u54c1\u67b6\u6784PRD.md (Chinese detail)
 
 | 阶段 | 核心任务 | 产出 | 可参与角色 |
 |------|---------|------|-----------|
-| 诊断 | AI搜索现状评估、GEO评分、竞品分析 | 诊断报告 | 企业、个人、服务商 |
+| 诊断 | AI搜索现状评估、GEO评分、产业情报 | 诊断报告 | 企业、个人、服务商 |
 | 策略 | 目标设定、关键词策略、内容规划 | 增长策略 | 服务商、专家 |
 | 知识建设 | 知识图谱构建、FAQ梳理、结构化数据 | 知识资产 | 企业、服务商、数据商 |
 | 内容生产 | AI优化内容创作、多模态制作 | 内容资产 | 内容创作者、AI工具 |
@@ -848,7 +849,7 @@ L3 ─→ L4：社区推选 + 全员公示（30天）
 | 文档 | 关系 |
 |------|------|
 | [02_领域模型设计.md](02_领域模型设计.md) | 定义本文件所有功能模块对应的业务对象 |
-| [06_前端设计.md](06_前端设计.md) | 本文件的产品模块对应前端页面 |
+| [06_前端信息架构设计.md](06_前端信息架构设计.md) | 本文件的产品模块对应前端页面 |
 | [07_后端设计.md](07_后端设计.md) | 本文件的产品模块对应后端服务 |
 
 > 修改本文件时需同步检查以上文件。

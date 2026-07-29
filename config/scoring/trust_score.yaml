@@ -1,9 +1,107 @@
-﻿weights:
-  evidence_quality: 0.35
-  evidence_quantity: 0.25
-  verification_status: 0.25
-  longevity: 0.15
+# GEO可信度评分配置 (Trust Score Configuration)
+# 版本: v1.0 | 最后更新: 2026-07-28
+# 加载方式: ConfigLoader.load('scoring', 'trust')
+# 用途: Decision Engine 计算实体在GEO产业生态中的可信等级
+# 关联: config/certification/levels.yaml, config/certification/review.yaml
+
+schema_version: "1.0"
+
+# ============================================================
+# 主权重
+# ============================================================
+weights:
+  evidence_quality: 0.35       # 证据质量 (证据来源权威度、可验证性)
+  evidence_quantity: 0.25      # 证据数量 (证据条目数量)
+  verification_status: 0.25    # 验证状态 (系统验证通过比例)
+  longevity: 0.15              # 持久度 (在生态中存在的时间)
+
+# ============================================================
+# 二级维度
+# ============================================================
+evidence_quality:
+  sub_weights:
+    source_authority: 0.35       # 来源权威度
+    verifiable: 0.30             # 可验证性
+    third_party: 0.15            # 第三方背书
+    freshness: 0.20              # 时效性
+  source_levels:
+    official:     { weight: 1.0,  label: "官方渠道" }
+    verified:     { weight: 0.8,  label: "已验证第三方" }
+    community:    { weight: 0.5,  label: "社区贡献" }
+    self_reported: { weight: 0.3,  label: "自报" }
+  quality_check:
+    require_cross_validation: true
+    min_sources_for_claim: 2
+
+evidence_quantity:
+  sub_weights:
+    total_count: 0.35             # 总证据数
+    diverse_types: 0.25           # 类型多样性
+    category_coverage: 0.25       # 类别覆盖度
+    recent_additions: 0.15        # 近期新增数
+  type_diversity:
+    - "技术文档"
+    - "案例报告"
+    - "资质证书"
+    - "客户评价"
+    - "行业认可"
+    - "合作伙伴关系"
+  lookback_days: 365
+
+verification_status:
+  sub_weights:
+    automated_checks_pass: 0.40  # 自动验证通过率
+    manual_review_pass: 0.35     # 人工审核通过
+    audit_trail_complete: 0.25   # 审计追踪完整
+  verification_steps:
+    - { step: "identity_verification", weight: 0.3, required: true }
+    - { step: "evidence_cross_check", weight: 0.25, required: true }
+    - { step: "capability_validation", weight: 0.25, required: false }
+    - { step: "community_verification", weight: 0.20, required: false }
+
+longevity:
+  sub_weights:
+    account_age_days: 0.30       # 账户年龄
+    activity_continuity: 0.25    # 活动连续性
+    relationship_stability: 0.25 # 关系稳定性
+    growth_trajectory: 0.20      # 成长轨迹
+  stability_window_days: 180
+
+# ============================================================
+# 阈值 (可信等级)
+# ============================================================
 thresholds:
-  high: 80
-  medium: 60
-  low: 30
+  high: 80         # 高度可信
+  medium: 60       # 基本可信
+  low: 30          # 需验证
+
+trust_levels:
+  L4_authoritative: { min: 90, label: "行业权威",  color: "red" }
+  L3_professional:  { min: 75, label: "专业认证",  color: "purple" }
+  L2_verified:      { min: 55, label: "已验证",    color: "gold" }
+  L1_basic:         { min: 35, label: "基础身份",  color: "blue" }
+  L0_unverified:    { min: 0,  label: "未认证",    color: "gray" }
+
+# ============================================================
+# 信任衰减 (Trust Decay)
+# ============================================================
+decay:
+  enabled: true
+  decay_rate_per_day: 0.001       # 每日衰减0.1% (约30%/年)
+  event_boost: 5                  # 每件新事件增加5分(上限100)
+  inactivity_threshold_days: 90   # 90天无活动开始衰减
+  min_trust: 5                    # 最低不低于5分
+
+# ============================================================
+# 计算配置
+# ============================================================
+computation:
+  batch_size: 100
+  cache_ttl_hours: 6
+  recalculate_on_event: true
+  trust_snapshot_retention_days: 365
+
+version_history:
+  - version: "1.0"
+    date: "2026-07-28"
+    changes: "初始版本: 可信度四维模型+五级分级+衰减机制"

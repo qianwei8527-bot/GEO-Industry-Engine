@@ -15,3 +15,12 @@ class DecisionTool:
         """Get actionable recommendations for improving GEO visibility."""
         result = await self.engine.analyze_company(company_id)
         return result.get("recommendations", [])
+    async def analyze_company(self, company_id: str) -> dict:
+        return await self.engine.analyze_company(company_id)
+
+    async def analyze_industry(self, industry_id: str) -> dict:
+        return await self.engine.analyze_industry(industry_id)
+
+    async def assess_company(self, company_id: str) -> dict:
+        return await self.engine.assess_company(company_id)
+

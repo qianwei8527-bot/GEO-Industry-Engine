@@ -1,0 +1,131 @@
+# GEO 认证体系 - 等级与权限配置
+# 可调控：等级数量、解锁能力、审核规则均可修改
+
+certification:
+  levels:
+    L0:
+      name: 未认证
+      badge: ''
+      badge_color: ''
+      requirements: []
+      unlocked_abilities:
+        - browse_map
+        - basic_search
+      ai_review: false
+      human_review: false
+      valid_years: null
+      
+    L1:
+      name: 基础身份认证
+      badge: '\ud83e\udd49'
+      badge_color: '#9CA3AF'
+      requirements:
+        - 身份信息完整（企业：营业执照/个人：实名认证）
+        - 邮箱验证通过
+        - 无违规记录
+      unlocked_abilities:
+        - browse_map
+        - basic_search
+        - view_score
+        - generate_report
+      ai_review: true
+      human_review: false
+      valid_years: null           # 永久有效
+      
+    L2:
+      name: GEO生态认证
+      badge: '\ud83e\udd48'
+      badge_color: '#3B82F6'
+      requirements:
+        - L1已通过
+        - AI可见度评分 ≥ 40
+        - 信息完整度 ≥ 70%
+        - 至少1条第三方证据
+      unlocked_abilities:
+        - browse_map
+        - basic_search
+        - view_score
+        - generate_report
+        - comparison
+        - appear_in_recommend
+        - apply_cert_L2
+      ai_review: true
+      human_review: true
+      valid_years: 2
+      
+    L3:
+      name: 专业能力认证
+      badge: '\ud83e\udd47'
+      badge_color: '#F59E0B'
+      requirements:
+        - L2已通过
+        - AI可见度评分 ≥ 60
+        - 信息完整度 ≥ 85%
+        - 至少3条第三方证据
+        - 至少5个客户评价（服务商）/ 行业案例≥3（企业）
+      unlocked_abilities:
+        - browse_map
+        - basic_search
+        - view_score
+        - generate_report
+        - comparison
+        - appear_in_recommend
+        - priority_listing
+        - data_export
+        - api_access
+        - apply_cert_L3
+      ai_review: true
+      human_review: true
+      valid_years: 1
+      
+    L4:
+      name: 行业权威认证
+      badge: '\ud83d\udc8e'
+      badge_color: '#8B5CF6'
+      requirements:
+        - L3已通过
+        - AI可见度评分 ≥ 80
+        - 信息完整度 ≥ 95%
+        - 至少10条第三方证据
+        - 行业影响力验证（机构背书/媒体报道/行业贡献）
+      unlocked_abilities:
+        - browse_map
+        - basic_search
+        - view_score
+        - generate_report
+        - comparison
+        - appear_in_recommend
+        - priority_listing
+        - data_export
+        - api_access
+        - mcp_access
+        - white_label
+        - apply_cert_L4
+      ai_review: true
+      human_review: true
+      valid_years: 1
+
+  # 认证对象类型
+  entity_types:
+    - enterprise     # 企业
+    - individual     # 个人
+    - provider       # 服务商
+    - institution    # 机构
+    - other          # 其他（可扩展）
+
+  # AI审核规则
+  ai_review_rules:
+    min_completeness: 60        # 信息完整度最低要求（百分制）
+    required_fields_by_type:
+      enterprise: [name, description, industry_id, website]
+      individual: [name, bio, skills]
+      provider: [name, description, industry_id, capabilities]
+      institution: [name, description, organization_type]
+    auto_reject_triggers:
+      - 包含违规关键词
+      - 重复申请（7天内）
+      - 信息完整度低于阈值
+    auto_flag_for_human:
+      - 信息包含矛盾
+      - 证据无法验证
+      - 高风险行业

@@ -1,0 +1,40 @@
+# 支付系统配置（阶段1预留，阶段2接入）
+
+payment:
+  default_currency: CNY
+  supported_currencies:
+    - CNY
+    - USD
+    
+  # 支付提供商（阶段2接入）
+  providers:
+    stripe:
+      enabled: false
+      mode: test
+      supported_methods: [card]
+      
+    alipay:
+      enabled: false
+      mode: test
+      supported_methods: [alipay]
+      
+    wechat_pay:
+      enabled: false
+      mode: test
+      supported_methods: [wechat]
+      
+  # 平台抽佣（交易市场）
+  platform_fee:
+    rate: 0.05              # 5% 平台服务费
+    min_fee_cny: 1.00
+    max_fee_cny: 5000.00
+    
+  # 发票
+  invoice:
+    enabled: false
+    types: [vat, regular]
+    
+  # 退款
+  refund:
+    window_days: 7
+    auto_approve_threshold: 100

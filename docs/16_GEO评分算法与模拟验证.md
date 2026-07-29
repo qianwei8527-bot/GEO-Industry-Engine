@@ -1,9 +1,9 @@
----
+﻿---
 status: stable
 authority: primary
 version: v2.0
 last_review: 2026-07-27
-related_docs: [12, 22, 31]
+related_docs: [16-1_数据智能深度设计.md, 12, 22, 31]
 ---
 # GEO评分算法与模拟验证
 
@@ -210,7 +210,7 @@ thresholds:
 
 ## Implementation Reference
 
-> Content from 03_DECISION_ENGINE_IMPLEMENTATION.md, integrated for developer reference.
+> Content from 16_GEO评分算法与模拟验证.md, integrated for developer reference.
 
 ﻿# Decision Engine Implementation
 
@@ -224,7 +224,7 @@ Context API (Sprint 2)
     v
 Decision Engine
     |
-    +-- 9 Decision Models (3 layers)
+    +-- 6 评分模型 + Assessment Engine (3 layers)
     |       |-> Layer 1: Visibility, Industry Index, Trust Score
     |       |-> Layer 2: Capability Match, Opportunity, Competitive Position
     |       |-> Layer 3: Roadmap, Content Strategy, Market Connection
@@ -239,7 +239,7 @@ Decision Engine
 Decision API / MCP Tools
 `
 
-## 9 Decision Models
+## 6 评分模型 + Assessment Engine
 
 ### Layer 1: Cognitive (Understanding)
 
@@ -304,4 +304,6 @@ Score levels: excellent (80+), good (60-79), average (40-59), developing (<40)
 2. **No black-box scores** - Every score has reasons[] and actions[] for explainability
 3. **No LLM dependency** - All calculations are rule-based, no AI API calls
 4. **Context Engine dependency** - Decision Engine never reads database directly
+
+
 

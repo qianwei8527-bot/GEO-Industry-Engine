@@ -1,10 +1,111 @@
-﻿weights:
-  entity_quality: 0.25
-  evidence_score: 0.25
-  capability_match: 0.20
-  relationship_density: 0.15
-  recency: 0.15
+﻿# GEO AI可见度评分权重配置 (GEO Visibility Scoring)
+# 版本: v1.0 | 最后更新: 2026-07-28
+# 加载方式: ConfigLoader.load('scoring', 'geo_visibility')
+# 用途: Decision Engine 计算实体在AI搜索引擎/LLM中的可见度
+# 关联: config/scoring/visibility.yaml (传统可见度), assessment.yaml (总体评估)
+
+schema_version: "1.0"
+
+# ============================================================
+# 主权重 (Primary Weights)
+# ============================================================
+weights:
+  entity_quality: 0.25         # 实体信息质量 (名称一致性、描述完整性、结构化程度)
+  evidence_score: 0.25         # 证据数据得分 (引用数量、来源权威度、内容深度)
+  capability_match: 0.20       # 能力关键词匹配度 (与行业高频搜索词对齐程度)
+  relationship_density: 0.15   # 关系网络密度 (被引次数、关联实体数量、网络中心度)
+  recency: 0.15                # 内容新鲜度 (最近更新距今时间、更新频率)
+
+# ============================================================
+# 二级维度 (Sub-dimensions)
+# ============================================================
+entity_quality:
+  sub_weights:
+    name_consistency: 0.35      # 名称在不同平台的一致性
+    description_completeness: 0.30  # 描述完整度
+    structured_data_score: 0.20     # Schema标记等结构化数据
+    category_accuracy: 0.15     # 行业分类准确度
+  min_description_length: 100
+  max_description_length: 2000
+
+evidence_score:
+  sub_weights:
+    citation_count: 0.30        # 被引用次数
+    source_authority: 0.35      # 来源权威度
+    content_depth: 0.20         # 内容深度
+    freshness: 0.15             # 证据时效性
+  authoritative_sources:
+    - "官方媒体"
+    - "行业报告"
+    - "学术论文"
+    - "政府数据"
+    - "第三方认证"
+  evidence_staleness_days: 365  # 超过此天数的证据权重递减
+
+capability_match:
+  sub_weights:
+    keyword_alignment: 0.40     # 关键词对齐度
+    industry_coverage: 0.30     # 行业覆盖广度
+    depth_score: 0.30           # 能力深度得分
+  match_method: "cosine_similarity"
+
+relationship_density:
+  sub_weights:
+    inbound_links: 0.35         # 入链数量
+    outbound_links: 0.15        # 出链数量
+    network_centrality: 0.30    # 网络中介中心度
+    partner_quality: 0.20       # 关联方的平均GEO得分
+  min_relationships: 3
+  centrality_method: "betweenness"
+
+recency:
+  sub_weights:
+    content_age_days: 0.50      # 内容年龄
+    update_frequency: 0.35      # 更新频率
+    event_activity: 0.15        # 事件活跃度
+  freshness_decay_days: 90      # 超过90天开始衰减
+  max_age_days: 730             # 超过2年权重为0
+
+# ============================================================
+# 阈值 (Thresholds)
+# ============================================================
 thresholds:
-  high: 80
-  medium: 60
-  low: 30
+  high: 80        # 高AI可见度 (>80分: 频繁被AI引用)
+  medium: 60      # 中等AI可见度 (60-80: 有时被引用)
+  low: 30         # 低AI可见度 (30-60: 偶尔出现)
+  invisible: 0    # 不可见 (<30分: AI搜索中几乎不可见)
+
+# ============================================================
+# AI平台加权 (AI Platform Weighting)
+# ============================================================
+ai_platforms:
+  chatgpt: { weight: 0.30, priority: 1 }
+  gemini: { weight: 0.25, priority: 2 }
+  claude: { weight: 0.20, priority: 3 }
+  perplexity: { weight: 0.15, priority: 4 }
+  other: { weight: 0.10, priority: 5 }
+
+# ============================================================
+# 行业关键词来源
+# ============================================================
+keyword_sources:
+  - source: "industry_trend_analysis"
+    weight: 0.40
+  - source: "user_search_logs"
+    weight: 0.35
+  - source: "competitor_keywords"
+    weight: 0.25
+
+# ============================================================
+# 计算配置
+# ============================================================
+computation:
+  batch_size: 50
+  cache_ttl_hours: 24
+  min_evidence_count: 3
+  max_entities_per_batch: 500
+
+version_history:
+  - version: "1.0"
+    date: "2026-07-28"
+    changes: "初始版本: GEO可见度五维模型"

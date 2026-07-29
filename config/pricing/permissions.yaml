@@ -1,0 +1,83 @@
+# 权限能力定义（可调控）
+# 每个权限对应一个API中间件校验点
+
+permissions:
+  browse_map:
+    name: 浏览产业地图
+    description: 查看产业导航五大核心地图
+    
+  basic_search:
+    name: 基础搜索
+    description: 搜索企业/行业/能力
+    
+  view_public_score:
+    name: 查看公开评分
+    description: 查看公开的GEO评分摘要
+    
+  view_score:
+    name: 完整评分查看
+    description: 查看完整GEO评分明细与因子
+    
+  generate_report:
+    name: 生成分析报告
+    description: 生成GEO分析报告（受月度配额限制）
+    
+  comparison:
+    name: 多实体对比
+    description: 企业/行业多维度对比（受配额限制）
+    
+  appear_in_recommend:
+    name: 出现在推荐列表
+    description: 在搜索结果和推荐中展示
+    
+  priority_listing:
+    name: 优先展示
+    description: 搜索结果中优先排序
+    
+  data_export:
+    name: 数据导出
+    description: 导出分析数据（受配额限制）
+    
+  basic_data_export:
+    name: 基础数据导出
+    description: 有限制地导出数据
+    
+  api_access:
+    name: API接入
+    description: 通过API调用系统能力（受配额限制）
+    
+  white_label:
+    name: 白标报告
+    description: 生成去除平台品牌标识的报告
+    
+  marketplace_post:
+    name: 交易市场发布
+    description: 在交易市场发布需求或服务
+    
+  mcp_access:
+    name: MCP协议接入
+    description: 通过MCP协议供外部Agent调用
+    
+  apply_cert_L1:
+    name: L1认证申请
+    
+  apply_cert_L2:
+    name: L2认证申请
+    
+  apply_cert_L3:
+    name: L3认证申请
+    
+  apply_cert_L4:
+    name: L4认证申请
+    
+  custom_model:
+    name: 定制行业模型
+    
+  private_deploy:
+    name: 私有化部署
+    
+  sla_guarantee:
+    name: SLA保障
+    
+  all:
+    name: 全部权限

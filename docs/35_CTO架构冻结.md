@@ -2,6 +2,16 @@
 status: stable
 authority: primary
 version: v1.0
+last_review: 2026-07-28
+related_docs: []
+---
+
+
+> ⚠️ **本文档已被 [CTO长期开发协议.md](CTO长期开发协议.md) v2.9 替代。** 所有架构原则、五大系统定义、禁止事项以 CTO长期开发协议 为准。本文仅做历史参考。
+---
+status: stable
+authority: primary
+version: v1.0
 last_review: 2026-07-27
 related_docs: [00]
 ---
@@ -338,13 +348,13 @@ Agent 不直接访问数据库，不直接调用 LLM。所有数据获取走 Con
 
 **目标**：消除开发前的技术债，建立工程基线。
 
-**输入**：架构冻结文件、REFERENCES.md 映射、数据模型对齐
+**输入**：架构冻结文件、索引.md 映射、数据模型对齐
 
 | 任务 | 输出 | 目录 |
 |------|------|------|
 | Company 字段对齐 | 统一 company.py, 更新 03/07 文档 | backend/app/models/ |
 | 扩展性预留 | 在建表时增加 tenant_id, region, lang_tag | backend/app/models/ |
-| Doc->Code 映射 | .codex/REFERENCES.md | .codex/ |
+| Doc->Code 映射 | .codex/索引.md | .codex/ |
 | scripts 清理 | 活跃脚本移入 scripts/active/ | scripts/ |
 | 配置目录 | config/scoring/visibility.yaml | config/ |
 | Docker 确认 | docker compose up -> /health ok | — |
@@ -473,7 +483,7 @@ Agent 不直接访问数据库，不直接调用 LLM。所有数据获取走 Con
 |---|------|------|
 | 1 | Company 字段对齐（02/03/07 统一） | 计划中 |
 | 2 | 扩展性预留字段入模型 | 计划中 |
-| 3 | .codex/REFERENCES.md 映射表 | 计划中 |
+| 3 | .codex/索引.md 映射表 | 计划中 |
 
 ### 可以立即进入开发的事项（B 类）
 

@@ -54,12 +54,12 @@ class CompanyContextBuilder:
         # Events
         from app.models.event import Event
         from sqlalchemy import select
-        stmt = select(Event).where(Event.entity_id == company_id).order_by(Event.occurred_at.desc()).limit(20)
+        stmt = select(Event).where(Event.entity_id == company_id).order_by(Event.event_date.desc()).limit(20)
         result = await self.db.execute(stmt)
         events = [
             EventInfo(id=e.id, event_type=e.event_type, title=e.title,
-                      occurred_at=e.occurred_at, description=e.description,
-                      impact_level=e.impact_level)
+                      event_date=e.event_date, description=e.description,
+                      impact=e.impact)
             for e in result.scalars().all()
         ]
 

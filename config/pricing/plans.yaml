@@ -1,0 +1,186 @@
+# GEO-Industry-Engine 定价与套餐配置
+# 可调控：套餐价格、权益、权限均可修改，热加载生效
+
+plans:
+  free:
+    name: 免费探索者
+    price_monthly: 0
+    price_yearly: 0
+    description: 探索GEO产业世界
+    target: 个人探索者
+    quota:
+      reports_per_month: 1
+      comparisons: 0
+      api_calls_per_month: 0
+      sub_accounts: 0
+      data_export_rows: 0
+    permissions:
+      - browse_map
+      - basic_search
+      - view_public_score
+      - apply_cert_L1
+    features:
+      - 基础产业地图浏览
+      - 公开GEO评分查看
+      - L1基础身份认证
+      - 基础搜索
+    limitations:
+      - 不可深度分析
+      - 不可多企业对比
+      - 不可API接入
+      
+  growth:
+    name: 成长版
+    price_monthly: 99
+    price_yearly: 990
+    description: 个人从业者与小企业
+    target: 个人从业者/小微企业
+    trial_days: 14
+    quota:
+      reports_per_month: 5
+      comparisons: 3
+      api_calls_per_month: 100
+      sub_accounts: 0
+      data_export_rows: 500
+    permissions:
+      - browse_map
+      - basic_search
+      - view_score
+      - generate_report
+      - comparison
+      - apply_cert_L1
+      - apply_cert_L2
+      - basic_data_export
+    features:
+      - 完整GEO检测报告
+      - 个人/企业画像
+      - 月度5份报告
+      - L2认证申请
+      - 3家企业对比
+      - 基础数据导出
+    limitations:
+      - 不可白标报告
+      - 不可多子账号
+      
+  pro:
+    name: 专业版
+    price_monthly: 299
+    price_yearly: 2990
+    description: 中小企业全面增长
+    target: 中小企业
+    trial_days: 14
+    quota:
+      reports_per_month: 30
+      comparisons: 20
+      api_calls_per_month: 2000
+      sub_accounts: 3
+      data_export_rows: 5000
+    permissions:
+      - browse_map
+      - basic_search
+      - view_score
+      - generate_report
+      - comparison
+      - appear_in_recommend
+      - data_export
+      - api_access
+      - apply_cert_L1
+      - apply_cert_L2
+      - apply_cert_L3
+    features:
+      - 无限GEO检测
+      - 完整企业画像
+      - 月度30份报告
+      - L3专业能力认证
+      - 20家企业对比
+      - AI优化建议
+      - 趋势预测
+      - API接入(2000次/月)
+      - 3个子账号
+    limitations:
+      - 不可白标报告
+      - 不可MCP接入
+      
+  business:
+    name: 商业版
+    price_monthly: 999
+    price_yearly: 9990
+    description: 服务商与机构
+    target: GEO服务商/投资机构
+    trial_days: 14
+    quota:
+      reports_per_month: 200
+      comparisons: 100
+      api_calls_per_month: 10000
+      sub_accounts: 10
+      data_export_rows: 50000
+    permissions:
+      - browse_map
+      - basic_search
+      - view_score
+      - generate_report
+      - comparison
+      - appear_in_recommend
+      - priority_listing
+      - data_export
+      - api_access
+      - white_label
+      - marketplace_post
+      - mcp_access
+      - apply_cert_L1
+      - apply_cert_L2
+      - apply_cert_L3
+      - apply_cert_L4
+    features:
+      - 全部专业版功能
+      - 月度200份报告
+      - L4行业权威认证
+      - 白标报告
+      - 优先展示
+      - 100家企业对比
+      - API接入(10000次/月)
+      - MCP协议接入
+      - 10个子账号
+      - 客户管理面板
+      - 批量报告生成
+    limitations:
+      - 不可私有化部署
+      
+  enterprise:
+    name: 企业版
+    price_monthly: null
+    price_yearly: null
+    description: 政府/园区/大型机构定制
+    target: 政府/园区/大型企业
+    contact_sales: true
+    quota:
+      reports_per_month: null
+      comparisons: null
+      api_calls_per_month: null
+      sub_accounts: null
+      data_export_rows: null
+    permissions:
+      - all
+      - custom_model
+      - private_deploy
+      - sla_guarantee
+    features:
+      - 全部商业版功能
+      - 私有化部署选项
+      - 定制行业模型
+      - 专属数据资产
+      - SLA保障
+      - 专属客户经理
+      - API不限量
+    limitations: []
+    
+  # 支付配置(阶段1暂不接入)
+  payment:
+    providers:
+      - stripe
+      - lemon_squeezy
+      - alipay
+      - wechat_pay
+    default_currency: CNY
+    trial_days_default: 14
+    auto_renew_default: true

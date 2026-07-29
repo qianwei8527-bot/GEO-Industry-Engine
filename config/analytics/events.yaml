@@ -1,0 +1,81 @@
+# GEO-Industry-Engine 生态行为感知系统配置
+# 定位：感知谁在进入产业、谁在成长、哪些能力在出现、哪些机会在形成
+# 新增事件类型只需加条目，不需要改表结构
+
+events:
+  # ---- 页面交互 ----
+  page_view:
+    description: 页面浏览
+    auto_track: true          # 路由切换自动采集
+    properties: [path, referrer, title]
+    
+  search_performed:
+    description: 搜索行为
+    properties: [query, filters, result_count, category]
+    
+  filter_applied:
+    description: 筛选器使用
+    properties: [page, filter_name, filter_value]
+    
+  # ---- 产业特有事件 ----
+  entity_viewed:
+    description: 查看实体画像（企业/个人/机构）
+    properties: [entity_type, entity_id, entity_name, source]
+    
+  score_viewed:
+    description: 查看GEO评分详情
+    properties: [entity_id, score_type, score_value]
+    
+  comparison_made:
+    description: 使用对比功能
+    properties: [entity_ids, compare_dimensions]
+    
+  report_generated:
+    description: 生成分析报告
+    properties: [entity_id, report_type, sections]
+    
+  certification_checked:
+    description: 查询认证状态
+    properties: [entity_id, cert_level]
+    
+  # ---- 转化事件 ----
+  certification_applied:
+    description: 发起认证申请
+    properties: [entity_id, entity_type, target_level]
+    
+  service_inquired:
+    description: 联系服务商
+    properties: [provider_id, service_type, inquiry_channel]
+    
+  demand_posted:
+    description: 发布交易需求
+    properties: [demand_id, category, budget_range]
+    
+  registration_completed:
+    description: 完成注册
+    properties: [user_role, source, referral]
+    
+  # ---- 反馈事件 ----
+  rating_given:
+    description: 给出评价
+    properties: [target_id, rating, category]
+    
+  data_contributed:
+    description: 贡献数据
+    properties: [entity_type, contribution_type, data_size]
+
+  suggestion_submitted:
+    description: 提交建议
+    properties: [category, priority]
+
+# 采集配置
+collection:
+  batch_size: 10              # 批量上报条数
+  flush_interval_ms: 30000    # 定时上报间隔(ms)
+  retention_days: 90          # 原始数据保留天数
+  
+# 隐私过滤
+privacy:
+  exclude_fields: [password, id_card, phone, exact_location]
+  anonymize_ip: true
+  user_can_export: true       # GDPR合规

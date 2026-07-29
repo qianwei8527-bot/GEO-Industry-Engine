@@ -1,4 +1,4 @@
----
+﻿---
 status: stable
 authority: primary
 version: v1.0
@@ -349,9 +349,25 @@ related_docs: [05]
 | 引用的文档 | 说明 |
 |-----------|------|
 | 02_领域模型设计.md | 定义本文件所有 API 对应的业务对象 |
-| 06_前端设计.md | 本文件为前端提供数据调用方式 |
+| 06_前端信息架构设计.md | 本文件为前端提供数据调用方式 |
 | 07_后端设计.md | 本文件对应后端服务模块的接口暴露 |
-| 05_Agent_OS设计.md | 本文件定义 Agent 可调用的工具 |
+| 04_Agent_OS设计.md | 本文件定义 Agent 可调用的工具 |
 | 05_技术架构.md | 技术栈实现方案 |
 
-> **本文件若修改，必须同步检查：02_领域模型设计.md（对象一致性）、06_前端设计.md（调用方）、07_后端设计.md（实现方）**
+> **本文件若修改，必须同步检查：02_领域模型设计.md（对象一致性）、06_前端信息架构设计.md（调用方）、07_后端设计.md（实现方）**
+
+---
+
+### 评估系统 API
+
+| 端点 | 方法 | 功能 |
+| GET /api/v1/decision/company/{id}/assessment | GET | 获取企业全面评估结果 (6个模型) |
+
+### 后台管理 API
+
+| 端点 | 方法 | 功能 |
+| GET /api/v1/admin/configs | GET | 列出所有配置文件 |
+| GET /api/v1/admin/configs/{name} | GET | 获取指定配置 |
+| PUT /api/v1/admin/configs/{name} | PUT | 更新指定配置 (权重可调) |
+| GET /api/v1/admin/stats | GET | 系统状态概况 |
+

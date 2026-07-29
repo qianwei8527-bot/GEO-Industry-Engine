@@ -2,8 +2,8 @@
 status: stable
 authority: primary
 version: v2.0
-last_review: 2026-07-27
-related_docs: [31, 16]
+last_review: 2026-07-28
+related_docs: [CTO长期开发协议, 04-1, 40]
 ---
 ﻿# GEO产业引擎 — Agent OS设计
 
@@ -117,7 +117,7 @@ Scanner  Content  Data  │            │
 | **输入** | 市场反馈、用户数据、行业趋势 |
 | **输出** | PRD、功能规格、产品路线图 |
 | **权限** | 功能开关、版本规划、需求池管理 |
-| **调用工具** | 数据分析、竞品分析、用户访谈 |
+| **调用工具** | 数据分析、产业情报、用户访谈 |
 
 ### 4. Industry Agent
 
@@ -145,7 +145,7 @@ Scanner  Content  Data  │            │
 
 | 属性 | 定义 |
 |------|------|
-| **职责** | AI搜索扫描、企业GEO监测、竞品分析 |
+| **职责** | AI搜索扫描、企业GEO监测、产业情报 |
 | **输入** | 企业信息、关键词、监测周期 |
 | **输出** | GEO评分、监测报告、变更告警 |
 | **权限** | AI搜索API调用、评分模型触发 |
@@ -278,7 +278,7 @@ Refer to: docs/Agent_OS\u8bbe\u8ba1.md (Chinese detail)
 
 ## Implementation Reference
 
-> Content from 04_AGENT_OS_IMPLEMENTATION.md, integrated for developer reference.
+> Content from 04-1_Agent工作流详细设计.md, integrated for developer reference.
 
 # Agent OS Implementation
 

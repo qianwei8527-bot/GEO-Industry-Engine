@@ -1,100 +1,85 @@
----
+﻿---
 status: stable
 authority: secondary
 version: v1.0
-last_review: 2026-07-26
-related_docs: [02]
----
-# GEO产业本体模型
-
-> GEO世界的“元素周期表”——定义这个产业中到底存在什么、它们之间是什么关系。
-
+last_review: 2026-07-28
+related_docs: [02_领域模型设计.md]
 ---
 
-## 一、为什么需要本体模型
+# GEO-Industry-Engine 产业本体模型
 
-现有系统的设计是从“功能”出发的（用户系统、企业系统、交易系统）。
-本体模型是从“存在”出发的——先定义这个世界里有什么，再定义功能。
-
-## 二、核心实体
-
-### 2.1 GEO Enterprise（企业）
-定义：在AI搜索生态中具有独立身份的组织实体。
-关系：produces → Product | has → Capability | located_in → Region | employs → Person
-
-### 2.2 GEO Product（产品/服务）
-定义：可被AI识别和推荐的商业价值载体。
-关系：belongs_to → Enterprise | cited_by → AIModel
-
-### 2.3 GEO Capability（能力）
-定义：企业或个人在特定领域的可验证专长。
-关系：owned_by → Enterprise | owned_by → Person
-
-### 2.4 GEO Person（个人）
-定义：在GEO产业生态中的个体参与者。
-关系：has → Capability | located_in → Region | seeks → Opportunity
-
-### 2.5 GEO Region（区域）
-定义：具有GEO产业特征的地理空间单元。
-关系：contains → Enterprise | contains → Person
-
-### 2.6 GEO AIModel（AI模型）
-定义：生成AI推荐和搜索结果的智能系统。
-关系：recommends → Enterprise | cites → Product
-
-
-
-### 2.8 GEO Event（事件）
-定义：产业中发生的重要动态。
-类型：融资 | 招聘 | 产品发布 | 政策 | 合作 | 技术突破 | 市场变化
-关系：impacts → Enterprise | impacts → Region
-
-### 2.9 GEO Intent（意图）
-定义：用户搜索背后的真实需求。
-类型：Discovery | Comparison | Procurement | Solution | Verification
-关系：drives → Search | matches → Opportunity
-a（机会）
-定义：需求和能力之间的可匹配价值空间。
-关系：matches → Enterprise | targets → Person | exists_in → Region
+> 状态：架构设计 | 版本：v2.0 | 日期：2026-07-28
+> 关联：02_领域模型设计.md、31_GEO产业上下文层.md
 
 ---
 
-## 三、实体关系图
+## 一、产业本体定义
 
-Enterprise → produces → Product
-Enterprise → has → Capability
-Enterprise → located_in → Region
-Enterprise → visible_in → AIModel
-Enterprise → employs → Person
+GEO产业本体 (Ontology) 是对GEO产业世界的结构化描述框架，定义产业中有什么、它们之间是什么关系、以及如何理解这个产业。
 
-Person → has → Capability
-Person → located_in → Region
-Person → seeks → Opportunity
-
-AIModel → recommends → Enterprise
-AIModel → cites → Product
-
-Opportunity → matches → Enterprise
-Opportunity → targets → Person
+它是产业知识图谱的Schema层。
 
 ---
 
-## 四、与现有架构的关系
+## 二、核心本体类别
 
-| 现有模块 | 对应本体 | 说明 |
-|---------|---------|------|
-| 02_领域模型设计.md | Enterprise, Product, Capability | 数据层实现 |
-| 12_用户行为与AI决策路径.md | Person, AIModel | 决策层 |
-| 13_产业发展趋势与职业生态.md | Person, Region | 生态层 |
-| 14_实体智能与信息供应链.md | Enterprise, Product | 认知层 |
-| 03_数据架构.md | 全部 | 存储层 |
+### 2.1 实体类 (Entity Types)
 
+| 类 | 定义 | 关键属性 | 实例 |
+|----|------|---------|------|
+| Company | 企业 | industry, size, geo_score | 腾讯云 |
+| Person | 个人 | profession, certification_level | 张三(GEO专家) |
+| Organization | 机构 | org_type, jurisdiction | 某高新区管委会 |
+| Service | 服务 | category, price_range | AI内容优化服务 |
+| Product | 产品/工具 | category, tech_stack | AI写作工具 |
+| Technology | 技术/能力 | maturity, category | 大模型微调技术 |
 
-### 关系强度计算
+### 2.2 关系类 (Relationship Types)
 
-关系强度 = 频率 x 时间 x 影响范围 x 可信度 x 结果反馈
+| 关系 | 定义 | 方向 | 示例 |
+|------|------|:--:|------|
+| provides | 提供服务 | A->B | 服务商->企业 |
+| uses | 使用技术/产品 | A->B | 企业->AI工具 |
+| partners | 合作伙伴 | A<->B | 企业A<->企业B |
+| competes | 竞争关系 | A<->B | 企业A<->企业B |
+| invests | 投资关系 | A->B | VC->企业 |
+| certified_by | 被认证 | A->B | 企业->认证机构 |
+| employs | 雇佣 | A->B | 企业->个人 |
+| belongs_to | 属于 | A->B | 企业->行业 |
 
+### 2.3 事件类 (Event Types)
 
-## 语义层（Semantic Layer）
+| 事件类 | 示例 |
+|--------|------|
+| ProductLaunch | 企业发布新产品 |
+| FundingRound | 企业获得融资 |
+| CertificationUpgrade | 认证等级提升 |
+| PartnershipFormed | 建立合作关系 |
+| MarketEntry | 进入新市场 |
+| TalentMovement | 关键人才流动 |
 
-AI缺不是数据，缺理解。你的系统需要告诉AI：某企业不是普通软件公司，它属于AI营销自动化领域，核心能力是企业知识库建设，服务对象是B2B制造企业，竞争位置是中高端，增长趋势是快速。语义层将这些信息结构化后供AI调用。
+### 2.4 证据类 (Evidence Types)
+
+| 证据类 | 来源 | 可信度权重 |
+|--------|------|:--------:|
+| OfficialDocument | 政府/官方 | 1.0 |
+| ThirdPartyReport | 第三方报告 | 0.8 |
+| MediaCoverage | 媒体报道 | 0.6 |
+| UserReview | 用户评价 | 0.5 |
+| SelfReported | 自报 | 0.3 |
+
+---
+
+## 三、本体与系统的关系
+
+- Entity + Relationship -> 产业知识图谱 -> 产业导航
+- Event -> 时间轴 -> 趋势分析 + 风险预警
+- Evidence -> Trust Score -> 认证体系
+- 本体 Schema -> ORM Models -> PostgreSQL
+
+---
+
+## 四、本体演进
+
+本体不是一成不变的。随着GEO产业发展，会新增实体类/关系类型/事件类。通过配置化扩展，不修改代码。
+

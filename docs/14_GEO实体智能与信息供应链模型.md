@@ -1,8 +1,8 @@
 ---
-status: draft
+status: stable
 authority: secondary
-version: v0.5
-last_review: 2026-07-25
+version: v1.0
+last_review: 2026-07-28
 related_docs: [02]
 ---
 # GEO实体智能与信息供应链模型

@@ -1,8 +1,8 @@
 ---
-status: review
+status: stable
 authority: secondary
 version: v1.0
-last_review: 2026-07-26
+last_review: 2026-07-28
 related_docs: [16]
 ---
 # GEO用户行为与AI决策路径模型

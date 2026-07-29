@@ -1,9 +1,9 @@
----
+﻿---
 status: stable
 authority: primary
 version: v2.0
 last_review: 2026-07-27
-related_docs: [02, 16, 04]
+related_docs: [02_领域模型设计.md, 02, 16, 04]
 ---
 ﻿# GEO产业上下文层（Industry Context Layer）
 
@@ -362,7 +362,7 @@ Context Layer 是 GEO 行业协议家族的"AI入口层"，向上对接 AI Agent
 
 ## Implementation Reference
 
-> Content from 02_CONTEXT_ENGINE_IMPLEMENTATION.md, integrated for developer reference.
+> Content from 31_GEO产业上下文层.md, integrated for developer reference.
 
 ﻿# Context Engine Implementation
 
@@ -476,4 +476,6 @@ No Agent should directly access the database. The Context API provides a complet
 3. Cache layer: Redis cache for frequently accessed contexts
 4. Streaming: Long-running context assembly with progress reporting
 5. Event-driven: Real-time context updates when entities change
+
+
 

@@ -1,19 +1,22 @@
 import uuid
 from datetime import datetime
-from sqlalchemy import String, Integer, DateTime, ForeignKey, Text
+from sqlalchemy import String, Integer, Float, DateTime, ForeignKey, Text, Boolean
 from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy.dialects.postgresql import UUID
 from app.database import Base
 
 class Evidence(Base):
-    __tablename__ = "evidences"
+    __tablename__ = "evidence"
 
+    entity_type: Mapped[str] = mapped_column(String(32), default="company")
     id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    target_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("entities.id"), nullable=False, index=True)
+    entity_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("entities.id"), nullable=False, index=True)
     claim: Mapped[str] = mapped_column(Text, nullable=False)
     source_url: Mapped[str] = mapped_column(String(1000), nullable=False)
-    confidence_level: Mapped[int] = mapped_column(Integer, default=0)
+    confidence_level: Mapped[float] = mapped_column(Float, default=0.0)
     source_type: Mapped[str | None] = mapped_column(String(100), nullable=True)
+    verified: Mapped[bool] = mapped_column(Boolean, default=False)
+    verified_by: Mapped[uuid.UUID | None] = mapped_column(UUID(as_uuid=True), nullable=True)
     verified_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
     tenant_id: Mapped[uuid.UUID | None] = mapped_column(UUID(as_uuid=True), nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=datetime.utcnow)

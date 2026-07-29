@@ -1,0 +1,72 @@
+# GEO交易市场品类配置（可调控）
+
+categories:
+  - id: service
+    name: 服务
+    icon: wrench
+    description: GEO优化、内容策略、Prompt工程、知识图谱搭建等服务
+    subcategories:
+      - GEO可见度优化
+      - AI内容策略
+      - Prompt工程
+      - 知识图谱搭建
+      - RAG系统搭建
+      - 品牌AI监测
+      - 竞品分析
+      - 认证辅导
+      
+  - id: tool
+    name: 工具
+    icon: tool
+    description: AI检测工具、评分工具、监测工具、分析平台
+    subcategories:
+      - AI检测工具
+      - GEO评分工具
+      - 品牌监测工具
+      - 内容分析工具
+      - 数据采集工具
+      
+  - id: data
+    name: 数据
+    icon: database
+    description: 行业数据集、竞品报告、产业分析报告
+    subcategories:
+      - 行业数据集
+      - 竞品分析报告
+      - 产业趋势报告
+      - 企业数据库
+      - AI语料库
+      
+  - id: knowledge
+    name: 知识
+    icon: book
+    description: 课程、认证培训、行业白皮书、研究资料
+    subcategories:
+      - GEO入门课程
+      - 认证培训
+      - 行业白皮书
+      - 最佳实践案例
+      - 工具教程
+      
+  - id: talent
+    name: 人才
+    icon: user
+    description: GEO优化师、内容专家、数据分析师等个人服务
+    subcategories:
+      - GEO优化师
+      - AI内容专家
+      - 数据分析师
+      - Prompt工程师
+      - 知识图谱专家
+
+# 匹配规则（可调控）
+matching:
+  weight_factors:
+    certification_level: 0.30
+    rating_score: 0.25
+    industry_match: 0.20
+    capability_match: 0.15
+    geo_score: 0.10
+    
+  min_match_score: 50           # 低于此分不推荐
+  max_recommendations: 5        # 最多推荐数

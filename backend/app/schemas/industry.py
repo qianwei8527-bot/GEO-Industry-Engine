@@ -5,7 +5,7 @@ import uuid
 
 class IndustryCreate(BaseModel):
     name: str
-    code: str
+    code: Optional[str] = None
     parent_id: Optional[uuid.UUID] = None
     level: int = 1
     description: Optional[str] = None
@@ -13,10 +13,10 @@ class IndustryCreate(BaseModel):
 class IndustryResponse(BaseModel):
     id: uuid.UUID
     name: str
-    code: str
+    code: Optional[str] = None
     parent_id: Optional[uuid.UUID] = None
     level: int
     description: Optional[str] = None
-    sort_order: int
-    is_active: bool
+    sort_order: Optional[int] = 0
     model_config = {"from_attributes": True}
+

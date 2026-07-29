@@ -1,9 +1,108 @@
-﻿weights:
-  company_density: 0.30
-  capability_depth: 0.25
-  event_frequency: 0.20
-  growth_rate: 0.25
+﻿# GEO产业指数评分配置 (Industry Index Scoring)
+# 版本: v1.0 | 最后更新: 2026-07-28
+# 加载方式: ConfigLoader.load('scoring', 'industry_index')
+# 用途: 评估一个行业在GEO产业生态中的整体发展水平与成熟度
+# 关联: backend/app/decision/models/industry_benchmark.py
+
+schema_version: "1.0"
+
+# ============================================================
+# 主权重
+# ============================================================
+weights:
+  company_density: 0.30       # 企业密度 (行业内活跃企业数量与质量)
+  capability_depth: 0.25      # 能力深度 (行业技术栈完整度)
+  event_frequency: 0.20       # 事件频率 (行业动态活跃度)
+  growth_rate: 0.25           # 增长率 (行业增长速度)
+
+# ============================================================
+# 二级维度
+# ============================================================
+company_density:
+  sub_weights:
+    total_companies: 0.30       # 企业总数
+    active_companies: 0.25      # 活跃企业 (30天内有事件)
+    avg_geo_score: 0.25         # 平均GEO得分
+    certification_rate: 0.20    # 认证企业占比
+  tiers:
+    mature:    { min_companies: 500,  label: "成熟产业" }
+    growing:   { min_companies: 100,  label: "成长产业" }
+    emerging:  { min_companies: 20,   label: "新兴产业" }
+    nascent:   { min_companies: 0,    label: "萌芽产业" }
+
+capability_depth:
+  sub_weights:
+    tech_stack_completeness: 0.30   # 技术栈完整度
+    talent_concentration: 0.25      # 人才密度
+    innovation_index: 0.25          # 创新指数
+    cross_industry_linkage: 0.20    # 跨行业关联度
+  stack_layers:
+    - "基础设施"      # 算力/云/数据
+    - "模型与算法"     # 大模型/算法
+    - "工具与平台"     # 开发工具/平台
+    - "应用与服务"     # 行业应用
+    - "咨询与培训"     # 服务层
+
+event_frequency:
+  sub_weights:
+    product_launches: 0.25      # 产品发布
+    funding_events: 0.20        # 融资事件
+    partnership_events: 0.15    # 合作事件
+    policy_events: 0.15         # 政策事件
+    talent_movement: 0.10       # 人才流动
+    media_coverage: 0.15        # 媒体报道
+  time_window_days: 90
+  significance_weight_multiplier: 1.5  # 重大事件权重加成
+
+growth_rate:
+  sub_weights:
+    company_growth_rate: 0.35      # 企业增长率 (环比)
+    investment_growth: 0.25        # 投资增长
+    job_market_growth: 0.20        # 人才需求增长
+    content_growth: 0.20           # 内容产出增长
+  calculation_method: "compound_monthly"
+  min_data_months: 3
+  lookback_months: 6
+
+# ============================================================
+# 阈值
+# ============================================================
 thresholds:
-  high: 75
-  medium: 50
-  low: 25
+  high: 75         # 高发展水平
+  medium: 50       # 中等发展水平
+  low: 25          # 低发展水平
+
+# ============================================================
+# 产业成熟度分类 (基于综合指数)
+# ============================================================
+maturity_classification:
+  level_4:
+    label: "成熟产业"
+    min_score: 80
+    characteristics: ["企业密度高", "认证率高", "投资稳定", "生态完整"]
+  level_3:
+    label: "成长产业"
+    min_score: 60
+    characteristics: ["快速增长", "资本关注", "人才流入", "竞争加剧"]
+  level_2:
+    label: "新兴赛道"
+    min_score: 35
+    characteristics: ["创新活跃", "早期资本", "先行者优势", "不确定性高"]
+  level_1:
+    label: "萌芽期"
+    min_score: 0
+    characteristics: ["概念验证", "少量参与者", "基本规则未定"]
+
+# ============================================================
+# 计算配置
+# ============================================================
+computation:
+  batch_size: 50
+  cache_ttl_hours: 48
+  recalculate_trigger: "industry_event_count > 10"
+  min_entities_for_ranking: 5
+
+version_history:
+  - version: "1.0"
+    date: "2026-07-28"
+    changes: "初始版本: 产业指数四维模型"

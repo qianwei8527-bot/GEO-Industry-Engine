@@ -7,7 +7,7 @@ from app.context.schemas.context_schema import IndustryContext
 
 class IndustryOpportunityScore(DecisionModel):
     async def calculate(self, context: IndustryContext) -> dict:
-        weights = WeightsLoader.load("industry_index")
+        weights = WeightsLoader.get_weights("industry_index")
         factors = {}
         factors["company_density"] = min(1.0, len(context.companies) * 0.1)
         factors["capability_depth"] = min(1.0, len(context.capabilities) * 0.08)

@@ -1,0 +1,90 @@
+# 产业情报系统配置 (Industry Intelligence)（可调控）
+
+analysis_dimensions:
+  - id: product_completeness
+    name: 产品完整度
+    weight: 0.20
+    description: 功能是否形成闭环，覆盖检测→分析→建议→执行
+    
+  - id: ai_depth
+    name: AI深度
+    weight: 0.25
+    description: 是否真正AI驱动（评估：有无Agent/Context层/知识图谱/可解释性）
+    
+  - id: data_assets
+    name: 数据资产
+    weight: 0.20
+    description: 产业数据积累量与质量
+    
+  - id: ecosystem_openness
+    name: 生态开放性
+    weight: 0.15
+    description: API/MCP/配置化/第三方接入能力
+    
+  - id: user_experience
+    name: 用户体验
+    weight: 0.10
+    description: 上手难度、信息呈现、界面设计
+    
+  - id: business_model
+    name: 商业模式
+    weight: 0.10
+    description: 定价合理性、可持续性
+
+# 情报分类
+competitor_tiers:
+  - tier: direct
+    name: 直接竞品
+    description: 同一赛道（AI搜索可见度/企业AI分析）
+    competitors: []
+    
+  - tier: alternative
+    name: 替代方案
+    description: 不同方式解决同一问题（传统SEO/品牌监测）
+    competitors: []
+    
+  - tier: potential
+    name: 潜在进入者
+    description: 大厂可能切入（OpenAI/Google/CRM厂商）
+    competitors: []
+    
+  - tier: partner
+    name: 生态伙伴
+    description: 可合作（知识图谱/RAG框架/数据标注）
+    competitors: []
+
+# GEO-IE差异化定位
+differentiation:
+  points:
+    - aspect: 技术架构
+      market_common: 关键词排名优化/黑盒评分
+      geo_ie: 产业知识图谱 + AI上下文理解 + 可解释评分
+    
+    - aspect: 产品形态
+      market_common: 工具型单点功能
+      geo_ie: 5大系统生态闭环（检测→认证→导航→数据→交易）
+      
+    - aspect: 开放性
+      market_common: 封闭平台
+      geo_ie: MCP/API开放接入 + YAML全配置化
+      
+    - aspect: 商业模式
+      market_common: 企业付费
+      geo_ie: 个人免费建网络效应 → 企业/服务商付费
+      
+    - aspect: 数据战略
+      market_common: 外部数据采集
+      geo_ie: 产业知识自积累飞轮（数据→认知→信任→连接→交易→数据）
+
+
+# 三大情报维度
+intelligence_dimensions:
+  competitive:
+    name: 竞争情报
+    desc: 竞品追踪、市场位置
+  opportunity:
+    name: 机会情报
+    desc: 趋势发现、空白识别
+  risk:
+    name: 风险情报
+    desc: 威胁预警、变化监测

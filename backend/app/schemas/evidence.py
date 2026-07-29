@@ -4,19 +4,20 @@ from datetime import datetime
 import uuid
 
 class EvidenceCreate(BaseModel):
-    target_id: uuid.UUID
+    entity_id: uuid.UUID
     claim: str
     source_url: str
-    confidence_level: int = 0
+    confidence_level: float = 0
     source_type: Optional[str] = None
 
 class EvidenceResponse(BaseModel):
     id: uuid.UUID
-    target_id: uuid.UUID
+    entity_id: uuid.UUID
     claim: str
     source_url: str
-    confidence_level: int
+    confidence_level: float
     source_type: Optional[str] = None
     verified_at: Optional[datetime] = None
     created_at: datetime
     model_config = {"from_attributes": True}
+

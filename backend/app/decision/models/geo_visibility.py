@@ -7,7 +7,7 @@ from app.context.schemas.context_schema import CompanyContext
 
 class GEOVisibilityScore(DecisionModel):
     async def calculate(self, context: CompanyContext) -> dict:
-        weights = WeightsLoader.load("geo_visibility")
+        weights = WeightsLoader.get_weights("geo_visibility")
         factors = {}
 
         # Entity quality: completeness of company profile

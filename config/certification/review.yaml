@@ -1,0 +1,28 @@
+# 认证审核流程配置
+
+review:
+  stages:
+    - stage: ai_review
+      name: AI初审
+      description: 自动检查格式、完整度、违规项
+      sla_hours: 1
+      actions:
+        - auto_approve_to_next   # 通过→进入人工复审
+        - auto_reject_with_reason # 不通过→返回原因+建议
+        
+    - stage: human_review
+      name: 人工复审
+      description: 审核员复核AI标记项
+      sla_hours: 48
+      actions:
+        - approve                 # 通过
+        - reject                  # 驳回
+        - request_more            # 要求补充材料
+        
+  notifications:
+    on_submit: 认证申请已提交，预计{hours}小时内完成初审
+    on_ai_pass: AI初审通过，已进入人工复审
+    on_ai_reject: AI初审未通过，原因：{reason}
+    on_approve: 恭喜！您已获得{level_name}认证
+    on_reject: 认证未通过，原因：{reason}。可修改后重新申请
+    on_expire_soon: 您的认证将在{days}天后到期

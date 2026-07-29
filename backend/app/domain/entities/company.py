@@ -1,4 +1,4 @@
-﻿from dataclasses import dataclass, field
+from dataclasses import dataclass, field
 from typing import Optional
 from app.domain.entities.entity import Entity, EntityType
 

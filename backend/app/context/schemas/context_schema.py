@@ -21,7 +21,7 @@ class CompanyProfile(BaseModel):
     website: Optional[str] = None
     company_size: Optional[str] = None
     is_verified: bool = False
-    subscription_tier: str = "free"
+    subscription_tier: Optional[str] = "free"
     created_at: Optional[datetime] = None
 
     model_config = {"from_attributes": True}
@@ -30,7 +30,7 @@ class CompanyProfile(BaseModel):
 class IndustryProfile(BaseModel):
     id: uuid.UUID
     name: str
-    code: str
+    code: Optional[str] = None
     level: int
     description: Optional[str] = None
     parent_id: Optional[uuid.UUID] = None
@@ -71,16 +71,16 @@ class EventInfo(BaseModel):
     id: uuid.UUID
     event_type: str
     title: str
-    occurred_at: datetime
+    event_date: datetime
     description: Optional[str] = None
-    impact_level: int = 1
+    impact: str = "medium"
 
 
 class EvidenceInfo(BaseModel):
     id: uuid.UUID
     claim: str
     source_url: str
-    confidence_level: int
+    confidence_level: float
     source_type: Optional[str] = None
     verified_at: Optional[datetime] = None
 
@@ -109,7 +109,7 @@ class CompanyBrief(BaseModel):
 class IndustryBrief(BaseModel):
     id: uuid.UUID
     name: str
-    code: str
+    code: Optional[str] = None
 
 
 class CompanyContext(BaseModel):
@@ -150,3 +150,5 @@ class ContextQueryResponse(BaseModel):
     query: str
     results: List[CompanyBrief] = []
     total: int = 0
+
+

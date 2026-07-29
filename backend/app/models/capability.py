@@ -2,7 +2,7 @@ import uuid
 from datetime import datetime
 from sqlalchemy import String, Integer, DateTime, ForeignKey, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.dialects.postgresql import UUID, JSONB
 from app.database import Base
 
 class Capability(Base):
@@ -14,6 +14,7 @@ class Capability(Base):
     level: Mapped[int] = mapped_column(Integer, default=1)
     description: Mapped[str | None] = mapped_column(Text, nullable=True)
     category: Mapped[str | None] = mapped_column(String(100), nullable=True)
+    evidence_ids: Mapped[list | None] = mapped_column(JSONB, nullable=True)
     tenant_id: Mapped[uuid.UUID | None] = mapped_column(UUID(as_uuid=True), nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=datetime.utcnow)
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=datetime.utcnow, onupdate=datetime.utcnow)
