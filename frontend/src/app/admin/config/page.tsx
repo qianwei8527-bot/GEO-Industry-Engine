@@ -1,9 +1,9 @@
 ﻿'use client';
 import { Suspense } from 'react';
 import { useEffect, useState } from 'react';
+import { api } from '@/lib/api';
 import { useSearchParams } from 'next/navigation';
 import { Save, RefreshCw, FileText } from 'lucide-react';
-import { api } from '@/lib/api';
 
 function ConfigPageInner() {
   const searchParams = useSearchParams();
@@ -16,7 +16,7 @@ function ConfigPageInner() {
   const [saved, setSaved] = useState(false);
 
   useEffect(() => {
-    fetch('/api/v1/admin/configs').then(r=>r.json()).then(d=>setCategories(d)).catch(()=>{});
+    api.admin.listConfigs().then(d=>setCategories(d as any)).catch(()=>{});
     const cat = searchParams.get('cat');
     const file = searchParams.get('file');
     if (cat && file) { setSelectedCat(cat); setSelectedFile(file); }
@@ -24,7 +24,7 @@ function ConfigPageInner() {
 
   useEffect(() => {
     if (selectedCat && selectedFile) {
-      fetch(`/api/v1/admin/configs/${selectedCat}/${selectedFile}`)
+      fetch('http://127.0.0.1:8080/api/v1/admin/configs/' + selectedCat + '/' + selectedFile)
         .then(r=>r.json())
         .then(d => { setYamlContent(d); setYamlStr(jsToYaml(d)); })
         .catch(()=>{});
@@ -64,7 +64,7 @@ function ConfigPageInner() {
     setSaving(true); setSaved(false);
     try {
       const parsed = parseSimpleYaml(yamlStr);
-      await fetch(`/api/v1/admin/configs/${selectedCat}/${selectedFile}`, {
+      await fetch('http://127.0.0.1:8080/api/v1/admin/configs/' + selectedCat + '/' + selectedFile, {
         method: 'PUT', headers: {'Content-Type':'application/json'},
         body: JSON.stringify({ data: parsed }),
       });

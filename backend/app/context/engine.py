@@ -9,6 +9,7 @@ from app.context.schemas.context_schema import (
 )
 from app.context.retrieval.entity_retriever import EntityRetriever
 from app.context.ranking.relevance import RelevanceScorer
+from app.universe.registry import get_registry
 
 
 class ContextEngine:

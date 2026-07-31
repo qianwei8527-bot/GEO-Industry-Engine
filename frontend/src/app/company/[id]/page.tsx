@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import { Shield, TrendingUp, AlertTriangle, Map, BarChart3, Target, ArrowRight, Search, ExternalLink, Building2, Users, Award, Calendar, Activity } from "lucide-react";
+import EvolutionTimeline from "@/components/EvolutionTimeline";
 
 export default function CompanyPage() {
   const { id } = useParams();
@@ -418,6 +419,11 @@ export default function CompanyPage() {
             </div>
           </div>
         )}
+      {/* GEO Universe Evolution Timeline */}
+      <div className="max-w-7xl mx-auto px-4 pb-12">
+        <EvolutionTimeline entityId={id as string} />
+      </div>
+
       </main>
     </div>
   );

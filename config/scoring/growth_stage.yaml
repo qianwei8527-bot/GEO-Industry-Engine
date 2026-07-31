@@ -1,0 +1,68 @@
+﻿# GEO Universe — Growth Stage configuration
+# Layer 4 Evolution: Growth Stage Model
+
+version: '1.0'
+description: 'GEO Universe growth stage definitions and transitions'
+
+stages:
+  - id: unknown
+    level: 0
+    name: 'Unknown'
+    description: 'Not yet visible in AI search results'
+    requirements: []
+    unlocks: ['basic_geo_score']
+    
+  - id: visible
+    level: 1
+    name: 'Visible'
+    description: 'Appearing in AI search results, building presence'
+    requirements:
+      - 'geo_score >= 30'
+      - 'at_least_one_capability'
+    unlocks: ['trust_building', 'certification_apply']
+    
+  - id: trusted
+    level: 2
+    name: 'Trusted'
+    description: 'Recognized by AI as a credible source'
+    requirements:
+      - 'geo_score >= 55'
+      - 'at_least_3_evidence'
+      - 'at_least_1_certification'
+    unlocks: ['provider_matching', 'marketplace_access']
+    
+  - id: recommended
+    level: 3
+    name: 'Recommended'
+    description: 'Actively recommended by AI for queries'
+    requirements:
+      - 'geo_score >= 75'
+      - 'at_least_10_evidence'
+      - 'at_least_3_certification'
+      - 'reputation_level >= A'
+    unlocks: ['industry_leadership', 'ecosystem_node']
+    
+  - id: leader
+    level: 4
+    name: 'Leader'
+    description: 'Industry leader, top recommendation target'
+    requirements:
+      - 'geo_score >= 90'
+      - 'at_least_20_evidence'
+      - 'reputation_level >= AA'
+      - 'at_least_5_relationships'
+    unlocks: ['geo_passport_elite', 'industry_benchmark']
+
+transition_rules:
+  - from: unknown
+    to: visible
+    requires: ['company_profile_complete', 'geo_detection_run']
+  - from: visible
+    to: trusted
+    requires: ['evidence_added', 'capability_registered']
+  - from: trusted
+    to: recommended
+    requires: ['certification_achieved', 'case_studies_published']
+  - from: recommended
+    to: leader
+    requires: ['industry_partnerships', 'ecosystem_contribution']

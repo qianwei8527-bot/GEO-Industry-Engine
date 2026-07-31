@@ -1,6 +1,6 @@
 import uuid, enum
 from datetime import datetime
-from sqlalchemy import String,DateTime,Numeric,Enum as SAEnum
+from sqlalchemy import String,DateTime,Numeric,ForeignKey,Enum as SAEnum
 from sqlalchemy.orm import Mapped,mapped_column
 from sqlalchemy.dialects.postgresql import UUID,JSONB
 from app.database import Base
@@ -16,6 +16,8 @@ class MarketDemand(Base):
     title: Mapped[str] = mapped_column(String(255),nullable=False)
     description: Mapped[str|None] = mapped_column(String(5000),nullable=True)
     category: Mapped[DemandCategory] = mapped_column(SAEnum(DemandCategory),nullable=False)
+    industry_id: Mapped[uuid.UUID|None] = mapped_column(UUID(as_uuid=True),ForeignKey("industries.id"),nullable=True,index=True)
+    urgency_level: Mapped[str] = mapped_column(String(16),default="normal")
     budget_min: Mapped[float|None] = mapped_column(Numeric(12,2),nullable=True)
     budget_max: Mapped[float|None] = mapped_column(Numeric(12,2),nullable=True)
     timeline_days: Mapped[int|None] = mapped_column(Numeric,nullable=True)

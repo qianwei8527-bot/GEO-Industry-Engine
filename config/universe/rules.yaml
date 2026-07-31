@@ -1,0 +1,155 @@
+﻿# GEO Universe — Universe Rule Engine Configuration
+# Layer 0: Foundation rules driving all layers of the system.
+# All scoring, recommendations, evolution, and Agent explanations MUST reference these rules.
+# Agents interpret rules; they do NOT create rules.
+
+version: "1.0"
+description: "GEO Universe Rule Engine — the underlying laws governing the GEO cognitive space"
+
+# ──────────────────────────────────────────────────
+# Core Rules
+# ──────────────────────────────────────────────────
+rules:
+  - id: "R01"
+    name: "Capability-Evidence Flywheel"
+    category: "growth"
+    description: "能力提升 → 产生证据 → 形成信誉 → 获得推荐 → 商业机会 → 数据沉淀 → 再次提升"
+    triggers: ["capability_change", "evidence_added", "deal_completed"]
+    affects_layers: ["node", "evolution", "intelligence"]
+
+  - id: "R02"
+    name: "AI Recommendation Logic"
+    category: "decision"
+    description: "AI推荐 = 能力匹配度 + 证据完整性 + 信誉分数 + 产业关系 + 近期动态"
+    weight_formula:
+      capability: 0.25
+      evidence: 0.20
+      reputation: 0.20
+      relationships: 0.15
+      recency: 0.10
+      geo_event_impact: 0.10
+    applies_to: ["provider_discovery", "company_ranking", "match_result"]
+
+  - id: "R03"
+    name: "Industry Map Auto-Evolution"
+    category: "evolution"
+    description: "新能力出现 → 价值链变化 → 企业关系重组 → 地图刷新"
+    triggers: ["geo_event_created", "provider_capability_added", "relationship_changed"]
+    affects_layers: ["graph", "dynamic", "evolution"]
+
+  - id: "R04"
+    name: "Enterprise Growth Path"
+    category: "growth"
+    description: "企业成长 = 学习 → 实践 → 案例积累 → 行业信誉 → 生态节点地位"
+    stages:
+      - name: "Entry"
+        level: 1
+        requirements: ["basic_registration"]
+      - name: "Active"
+        level: 2
+        requirements: ["evidence_count >= 3", "geo_score >= 30"]
+      - name: "Established"
+        level: 3
+        requirements: ["evidence_count >= 8", "geo_score >= 50", "certification_count >= 1"]
+      - name: "Influencer"
+        level: 4
+        requirements: ["evidence_count >= 15", "geo_score >= 70", "certification_count >= 2", "relationship_count >= 5"]
+      - name: "Ecosystem Node"
+        level: 5
+        requirements: ["evidence_count >= 25", "geo_score >= 85", "reputation_level >= 'AA'"]
+
+  - id: "R05"
+    name: "Five Maps = One Universe + Five Views"
+    category: "visualization"
+    description: "五张地图不是独立页面，是同一个 Universe 的五个观察角度。相同节点、相同关系、五种视角。"
+    views:
+      - ecosystem: "where am I?"
+      - business: "how to create value?"
+      - growth: "how to improve?"
+      - resource: "what resources available?"
+      - future: "where to go next?"
+    cross_highlight: true
+    node_unified_state: true
+
+  - id: "R06"
+    name: "Every Node is a Universe Center"
+    category: "interaction"
+    description: "每个节点都是宇宙中心，可以任何视角无限展开。点击任意节点展示 GEO Passport。"
+
+  - id: "R07"
+    name: "Marketplace as Foundation"
+    category: "business"
+    description: "交易平台是产业地图的自然商业出口，不是附加功能。企业诊断 → 能力缺口 → 候选服务商 → 自主选择。"
+
+  - id: "R08"
+    name: "Cross-Map Highlight"
+    category: "interaction"
+    description: "子地图联动：在任一 View 选中节点 → 切换到其他 View 时该节点自动高亮。"
+
+  - id: "R09"
+    name: "Reputation Data-Driven"
+    category: "trust"
+    description: "GEO 信誉由数据驱动，不可人为干预。评分基于证据、认证、AI 表现等客观维度。"
+
+  - id: "R10"
+    name: "Observation-Driven Evolution"
+    category: "dynamic"
+    description: "Observation Agent 持续扫描 → 生成 GeoEvent → 更新 Graph → Decision Engine 重算 → 地图自动刷新。"
+
+# ──────────────────────────────────────────────────
+# Rule Categories
+# ──────────────────────────────────────────────────
+categories:
+  growth:
+    - R01
+    - R04
+  decision:
+    - R02
+    - R09
+  evolution:
+    - R03
+    - R10
+  visualization:
+    - R05
+  interaction:
+    - R06
+    - R08
+  business:
+    - R07
+  trust:
+    - R09
+
+# ──────────────────────────────────────────────────
+# Agent Citation Protocol
+# ──────────────────────────────────────────────────
+agent_citation_protocol:
+  description: "All Agent explanations MUST cite Universe Rules"
+  format: "Rule {id}: {name} → {explanation}"
+  example: "Rule R02: AI推荐逻辑 → 该服务商能力匹配度85%, 证据完整, 信誉AA级, 因此推荐"
+  forbidden:
+    - "Agent 自由发挥给分"
+    - "Agent 创造新规则"
+    - "Agent 绕过证据直接推荐"
+
+# ──────────────────────────────────────────────────
+# Map Dynamic Update Triggers
+# ──────────────────────────────────────────────────
+map_update_triggers:
+  on_geo_event:
+    - action: "refresh_graph_weights"
+    - action: "recheck_evolution_stage"
+    - action: "rerun_decision_engine"
+    - action: "broadcast_map_refresh"
+  on_new_evidence:
+    - action: "recalculate_trust"
+    - action: "recalculate_reputation"
+    - action: "rerun_decision_engine"
+  on_certification_change:
+    - action: "update_passport"
+    - action: "recalculate_reputation"
+  on_relationship_change:
+    - action: "refresh_graph_edges"
+    - action: "recheck_growth_stage"
+  on_match_result:
+    - action: "log_to_agent_call_log"
+    - action: "update_opportunity_intelligence"

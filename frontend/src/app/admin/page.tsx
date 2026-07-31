@@ -1,8 +1,8 @@
-﻿'use client';
+'use client';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { LayoutDashboard, Sliders, Building2, Factory, ShieldCheck, Activity, TrendingUp, Database, FileText, Users } from 'lucide-react';
 import { api } from '@/lib/api';
+import { LayoutDashboard, Sliders, Building2, Factory, ShieldCheck, Activity, TrendingUp, Database, FileText, Users } from 'lucide-react';
 
 interface SystemStats { counts: Record<string,number>; total: number; timestamp: string }
 interface ConfigStats { total_configs: number; categories: number; version: string }
@@ -16,9 +16,9 @@ export default function AdminDashboard() {
 
   useEffect(() => {
     Promise.all([
-      fetch('/api/v1/admin/db-stats').then(r => r.json()),
-      fetch('/api/v1/admin/stats').then(r => r.json()),
-      fetch('/api/v1/admin/configs').then(r => r.json()),
+      api.admin.dbStats(),
+      api.admin.stats(),
+      api.admin.listConfigs(),
     ]).then(([db, cfg, cfgs]) => {
       setDbStats(db);
       setConfigStats(cfg);
@@ -27,33 +27,33 @@ export default function AdminDashboard() {
     }).catch(() => setLoading(false));
   }, []);
 
-  if (loading) return <div className="text-slate-400">加载中...</div>;
+  if (loading) return <div className="text-slate-400">������...</div>;
 
   return (
     <div>
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-slate-900">GEO 控制台</h1>
-        <p className="text-sm text-slate-500 mt-1">系统配置、数据管理、运营监控中心</p>
+        <h1 className="text-2xl font-bold text-slate-900">GEO ����̨</h1>
+        <p className="text-sm text-slate-500 mt-1">ϵͳ���á����ݹ�������Ӫ�������</p>
       </div>
 
       {/* Stats Cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-        <StatCard icon={Database} label="数据总量" value={String(dbStats?.total ?? 0)} color="text-blue-500" bg="bg-blue-50" />
-        <StatCard icon={FileText} label="配置文件" value={String(configStats?.total_configs ?? 0)} color="text-green-500" bg="bg-green-50" />
-        <StatCard icon={Building2} label="企业实体" value={String(dbStats?.counts.companies ?? 0)} color="text-purple-500" bg="bg-purple-50" />
-        <StatCard icon={ShieldCheck} label="待审核" value="0" color="text-amber-500" bg="bg-amber-50" />
+        <StatCard icon={Database} label="��������" value={String(dbStats?.total ?? 0)} color="text-blue-500" bg="bg-blue-50" />
+        <StatCard icon={FileText} label="�����ļ�" value={String(configStats?.total_configs ?? 0)} color="text-green-500" bg="bg-green-50" />
+        <StatCard icon={Building2} label="��ҵʵ��" value={String(dbStats?.counts.companies ?? 0)} color="text-purple-500" bg="bg-purple-50" />
+        <StatCard icon={ShieldCheck} label="�����" value="0" color="text-amber-500" bg="bg-amber-50" />
       </div>
 
       {/* Quick Actions */}
       <div className="grid md:grid-cols-3 gap-4 mb-8">
-        <QuickCard href="/admin/config" icon={Sliders} title="配置管理" desc={`${configStats?.categories ?? 0} 个分类，${configStats?.total_configs ?? 0} 个 YAML 文件`} color="blue" />
-        <QuickCard href="/admin/companies" icon={Building2} title="企业管理" desc={`${dbStats?.counts.companies ?? 0} 家公司，${dbStats?.counts.entities ?? 0} 个实体`} color="purple" />
-        <QuickCard href="/admin/industries" icon={Factory} title="行业管理" desc={`${dbStats?.counts.industries ?? 0} 个行业分类`} color="green" />
+        <QuickCard href="/admin/config" icon={Sliders} title="���ù���" desc={`${configStats?.categories ?? 0} �����࣬${configStats?.total_configs ?? 0} �� YAML �ļ�`} color="blue" />
+        <QuickCard href="/admin/companies" icon={Building2} title="��ҵ����" desc={`${dbStats?.counts.companies ?? 0} �ҹ�˾��${dbStats?.counts.entities ?? 0} ��ʵ��`} color="purple" />
+        <QuickCard href="/admin/industries" icon={Factory} title="��ҵ����" desc={`${dbStats?.counts.industries ?? 0} ����ҵ����`} color="green" />
       </div>
 
       {/* DB Table Overview */}
       <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm mb-8">
-        <h2 className="text-lg font-semibold text-slate-900 mb-4">数据库表概览</h2>
+        <h2 className="text-lg font-semibold text-slate-900 mb-4">���ݿ������</h2>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
           {dbStats && Object.entries(dbStats.counts).map(([table, count]) => (
             <div key={table} className="border border-slate-100 rounded-xl p-3 bg-slate-50">
@@ -67,8 +67,8 @@ export default function AdminDashboard() {
       {/* Config Categories */}
       <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-semibold text-slate-900">配置分类</h2>
-          <Link href="/admin/config" className="text-sm text-blue-600 hover:underline">管理全部</Link>
+          <h2 className="text-lg font-semibold text-slate-900">���÷���</h2>
+          <Link href="/admin/config" className="text-sm text-blue-600 hover:underline">����ȫ��</Link>
         </div>
         <div className="grid md:grid-cols-3 gap-4">
           {Object.entries(configs).map(([cat, files]) => (

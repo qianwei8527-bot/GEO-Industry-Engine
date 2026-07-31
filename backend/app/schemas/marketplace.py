@@ -69,3 +69,16 @@ class ReviewResponse(BaseModel):
     status: str
     created_at: datetime
     model_config = {'from_attributes': True}
+
+class MatchResultItem(BaseModel):
+    provider_id: str
+    score: float
+    level: str
+    reasons: list[str]
+    scores_detail: dict
+
+class MatchResponse(BaseModel):
+    demand_id: str
+    matches: list[MatchResultItem]
+    generated_at: Optional[str] = None
+

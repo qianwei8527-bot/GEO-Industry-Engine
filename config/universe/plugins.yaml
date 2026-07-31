@@ -1,0 +1,107 @@
+# GEO Universe Plugin Registry
+# All pluggable components are registered here.
+# Plugins can be enabled/disabled, configured, and hot-reloaded.
+
+version: "1.0.0-alpha"
+description: "GEO Universe Plugin Registry"
+
+# ---- View Plugins ----
+view_plugins:
+  default_ecosystem:
+    enabled: true
+    class: "app.universe.plugins.views.EcosystemViewPlugin"
+    config:
+      show_isolated_nodes: false
+      max_depth: 3
+      highlight_selected: true
+
+  default_business:
+    enabled: true
+    class: "app.universe.plugins.views.BusinessViewPlugin"
+    config:
+      show_value_flows: true
+      flow_thickness_multiplier: 1.5
+
+  default_growth:
+    enabled: true
+    class: "app.universe.plugins.views.GrowthViewPlugin"
+    config:
+      stage_columns: ["entry", "active", "established"]
+      show_growth_paths: true
+
+  default_distribution:
+    enabled: true
+    class: "app.universe.plugins.views.DistributionViewPlugin"
+    config:
+      cluster_by: "region"
+      grid_spacing: 120
+
+  default_future:
+    enabled: true
+    class: "app.universe.plugins.views.FutureViewPlugin"
+    config:
+      show_trend_lines: true
+      prediction_horizon_days: 90
+
+# ---- Observation Plugins ----
+observation_plugins:
+  internal_metrics:
+    enabled: true
+    class: "app.universe.plugins.observations.InternalMetricsObserver"
+    config:
+      scan_interval_seconds: 3600
+      metrics: ["node_count", "relationship_count", "evidence_count"]
+
+  web_scanner:
+    enabled: false
+    class: "app.universe.plugins.observations.WebScannerObserver"
+    config:
+      sources: []
+      max_pages_per_source: 10
+
+# ---- Agent Plugins ----
+agent_plugins:
+  geo_analyst:
+    enabled: true
+    class: "app.agents.agents.analyst_agent.AnalystAgent"
+    config:
+      max_tokens: 2000
+      temperature: 0.3
+
+  company_diagnostician:
+    enabled: true
+    class: "app.agents.agents.company_agent.CompanyAgent"
+    config:
+      max_tokens: 2000
+      temperature: 0.4
+
+  provider_matcher:
+    enabled: true
+    class: "app.agents.agents.provider_matcher.ProviderMatcher"
+    config:
+      max_results: 10
+      min_confidence: 0.6
+
+  observation_agent:
+    enabled: true
+    class: "app.agents.agents.observation_agent.ObservationAgent"
+    config:
+      scan_batch_size: 50
+      signal_threshold: 0.3
+
+# ---- Renderer Plugins ----
+renderer_plugins:
+  cytoscape_2d:
+    enabled: true
+    class: "app.universe.plugins.renderers.Cytoscape2DRenderer"
+    config:
+      default_layout: "cose"
+      animate: true
+
+  threejs_3d:
+    enabled: true
+    class: "app.universe.plugins.renderers.ThreeJS3DRenderer"
+    config:
+      default_layout: "spherical"
+      camera_distance: 50
+      enable_postprocessing: true

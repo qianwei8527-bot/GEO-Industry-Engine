@@ -1,0 +1,438 @@
+# GEO Universe Registry 2.0
+# ALL node types, relationships, views, capabilities, lifecycle stages
+# MUST be registered here. No hardcoded type checks anywhere.
+# Every module queries this registry via Runtime.
+
+version: "2.0.0-alpha"
+description: "GEO Universe Registry ? ????????????"
+
+# ============================================================
+# Node Types ? 14 types covering the full industry ontology
+# ============================================================
+node_types:
+  industry:
+    label: "??"
+    label_en: "Industry"
+    icon: "Factory"
+    color: "#a855f7"
+    glow: "#c084fc"
+    size: 22
+    size_3d: 0.7
+    layer: 0
+    description: "????????????????"
+    capabilities: [can_have_companies, can_have_subsectors, can_be_certified]
+
+  company:
+    label: "??"
+    label_en: "Company"
+    icon: "Building2"
+    color: "#3b82f6"
+    glow: "#60a5fa"
+    size: 16
+    size_3d: 0.5
+    layer: 1
+    description: "???????????"
+    capabilities: [can_own_capabilities, can_form_relationships, can_earn_reputation, can_be_certified, can_trade]
+    lifecycle_stages: [entry, active, established]
+
+  provider:
+    label: "???"
+    label_en: "Provider"
+    icon: "Users"
+    color: "#22c55e"
+    glow: "#4ade80"
+    size: 13
+    size_3d: 0.45
+    layer: 2
+    description: "????????????"
+    capabilities: [can_offer_services, can_form_relationships, can_earn_reputation, can_be_certified]
+
+  capability:
+    label: "??"
+    label_en: "Capability"
+    icon: "Target"
+    color: "#f59e0b"
+    glow: "#fbbf24"
+    size: 10
+    size_3d: 0.35
+    layer: 3
+    description: "?????????????????"
+    capabilities: [can_be_acquired, can_be_verified, can_form_dependencies]
+
+  person:
+    label: "??"
+    label_en: "Person"
+    icon: "User"
+    color: "#ec4899"
+    glow: "#f472b6"
+    size: 8
+    size_3d: 0.3
+    layer: 4
+    description: "?????????"
+    capabilities: [can_own_capabilities, can_form_relationships, can_earn_reputation]
+
+  product:
+    label: "??"
+    label_en: "Product"
+    icon: "Package"
+    color: "#06b6d4"
+    glow: "#22d3ee"
+    size: 11
+    size_3d: 0.4
+    layer: 4
+    description: "??????/??/??"
+    capabilities: [can_be_listed, can_be_reviewed, can_form_dependencies]
+
+  role:
+    label: "??"
+    label_en: "Role"
+    icon: "UserCheck"
+    color: "#8b5cf6"
+    glow: "#a78bfa"
+    size: 9
+    size_3d: 0.3
+    layer: 4
+    description: "?????????????????Observation????"
+    capabilities: [can_be_assigned, can_evolve]
+
+  policy:
+    label: "??"
+    label_en: "Policy"
+    icon: "Scale"
+    color: "#ef4444"
+    glow: "#f87171"
+    size: 12
+    size_3d: 0.4
+    layer: 0
+    description: "??????????????"
+    capabilities: [can_constrain, can_evolve, can_be_governed]
+
+  tool:
+    label: "??"
+    label_en: "Tool"
+    icon: "Wrench"
+    color: "#64748b"
+    glow: "#94a3b8"
+    size: 8
+    size_3d: 0.25
+    layer: 4
+    description: "????????????"
+    capabilities: [can_be_used, can_be_listed, can_form_dependencies]
+
+  service:
+    label: "??"
+    label_en: "Service"
+    icon: "Briefcase"
+    color: "#14b8a6"
+    glow: "#2dd4bf"
+    size: 10
+    size_3d: 0.35
+    layer: 3
+    description: "?????????????????"
+    capabilities: [can_be_offered, can_be_purchased, can_be_reviewed]
+
+  ai_agent:
+    label: "AI ???"
+    label_en: "AI Agent"
+    icon: "Bot"
+    color: "#7c3aed"
+    glow: "#8b5cf6"
+    size: 9
+    size_3d: 0.3
+    layer: 4
+    description: "AI???????????"
+    capabilities: [can_execute, can_observe, can_earn_reputation]
+
+  government:
+    label: "????"
+    label_en: "Government"
+    icon: "Landmark"
+    color: "#dc2626"
+    glow: "#ef4444"
+    size: 18
+    size_3d: 0.55
+    layer: 1
+    description: "?????????"
+    capabilities: [can_regulate, can_certify, can_issue_policy]
+
+  knowledge:
+    label: "??"
+    label_en: "Knowledge"
+    icon: "BookOpen"
+    color: "#0ea5e9"
+    glow: "#38bdf8"
+    size: 8
+    size_3d: 0.25
+    layer: 3
+    description: "??????????????"
+    capabilities: [can_be_referenced, can_be_verified, can_form_dependencies]
+
+  event:
+    label: "??"
+    label_en: "Event"
+    icon: "Calendar"
+    color: "#f97316"
+    glow: "#fb923c"
+    size: 7
+    size_3d: 0.2
+    layer: 5
+    description: "????????????????????"
+    capabilities: [can_trigger_change, can_be_cited]
+
+# ============================================================
+# Relationship Types
+# ============================================================
+relationship_types:
+  belongs_to:
+    label: "??"
+    label_en: "Belongs To"
+    color: "#94a3b8"
+    bidirectional: false
+    allowed_pairs:
+      - [company, industry]
+      - [provider, industry]
+      - [capability, company]
+      - [capability, provider]
+      - [person, company]
+      - [product, company]
+      - [service, provider]
+      - [tool, company]
+      - [ai_agent, company]
+      - [government, industry]
+
+  partners_with:
+    label: "??"
+    label_en: "Partners With"
+    color: "#22c55e"
+    bidirectional: true
+    allowed_pairs:
+      - [company, company]
+      - [company, provider]
+      - [provider, provider]
+      - [company, government]
+      - [person, company]
+
+  competes_with:
+    label: "??"
+    label_en: "Competes With"
+    color: "#ef4444"
+    bidirectional: true
+    allowed_pairs:
+      - [company, company]
+      - [provider, provider]
+      - [product, product]
+
+  invests_in:
+    label: "??"
+    label_en: "Invests In"
+    color: "#f59e0b"
+    bidirectional: false
+    allowed_pairs:
+      - [company, company]
+      - [government, company]
+      - [provider, company]
+
+  depends_on:
+    label: "??"
+    label_en: "Depends On"
+    color: "#8b5cf6"
+    bidirectional: false
+    allowed_pairs:
+      - [capability, capability]
+      - [product, capability]
+      - [service, capability]
+      - [tool, capability]
+      - [ai_agent, capability]
+      - [knowledge, knowledge]
+
+  certified_by:
+    label: "??"
+    label_en: "Certified By"
+    color: "#3b82f6"
+    bidirectional: false
+    allowed_pairs:
+      - [company, provider]
+      - [provider, provider]
+      - [person, provider]
+      - [company, government]
+
+  triggers:
+    label: "??"
+    label_en: "Triggers"
+    color: "#f97316"
+    bidirectional: false
+    allowed_pairs:
+      - [event, node_created]
+      - [event, score_changed]
+      - [event, relationship_added]
+      - [policy, capability]
+
+# ============================================================
+# Universe Views ? ??????
+# ============================================================
+views:
+  ecosystem:
+    label: "????"
+    label_en: "Ecosystem"
+    question: "????"
+    question_en: "Who am I?"
+    icon: "Network"
+    description: "???????????????????"
+    layout_2d: "cose"
+    layout_3d: "spherical"
+    visible_types: [industry, company, provider, person, ai_agent, government]
+
+  business:
+    label: "????"
+    label_en: "Business Value"
+    question: "????"
+    question_en: "Where am I?"
+    icon: "TrendingUp"
+    description: "?????????????????"
+    layout_2d: "concentric"
+    layout_3d: "tiered"
+    visible_types: [company, provider, product, service, capability]
+
+  growth:
+    label: "????"
+    label_en: "Growth Path"
+    question: "?????"
+    question_en: "How am I changing?"
+    icon: "Map"
+    description: "??????????????????"
+    layout_2d: "breadthfirst"
+    layout_3d: "spiral"
+    visible_types: [company, provider, person, capability]
+
+  distribution:
+    label: "????"
+    label_en: "Distribution"
+    question: "????"
+    question_en: "Where to go?"
+    icon: "Globe"
+    description: "??/??????????????????"
+    layout_2d: "grid"
+    layout_3d: "planar"
+    visible_types: [industry, company, provider, government]
+
+  future:
+    label: "????"
+    label_en: "Future Evolution"
+    question: "????"
+    question_en: "Who to connect with?"
+    icon: "Compass"
+    description: "??????????????????"
+    layout_2d: "cose"
+    layout_3d: "constellation"
+    visible_types: [company, ai_agent, event, knowledge, capability]
+
+# ============================================================
+# Lifecycle Stages ? ??????
+# ============================================================
+lifecycle:
+  stages:
+    - key: position
+      label: "??"
+      label_en: "Position"
+      icon: "Crosshair"
+      order: 0
+      description: "????????????"
+    - key: selfknow
+      label: "??"
+      label_en: "Self-Knowledge"
+      icon: "Eye"
+      order: 1
+      description: "????????????"
+    - key: action
+      label: "??"
+      label_en: "Action"
+      icon: "Zap"
+      order: 2
+      description: "????????"
+    - key: provision
+      label: "??"
+      label_en: "Provision"
+      icon: "Compass"
+      order: 3
+      description: "Universe ????????"
+    - key: accumulate
+      label: "??"
+      label_en: "Accumulate"
+      icon: "Clock"
+      order: 4
+      description: "?????????"
+    - key: reputation
+      label: "??"
+      label_en: "Reputation"
+      icon: "Shield"
+      order: 5
+      description: "??????"
+
+# ============================================================
+# Capability Catalog
+# ============================================================
+capability_catalog:
+  - id: entity_building
+    label: "????"
+    label_en: "Entity Building"
+    category: "content"
+    description: "??????????????"
+
+  - id: evidence_management
+    label: "????"
+    label_en: "Evidence Management"
+    category: "trust"
+    description: "??????????????"
+
+  - id: content_engineering
+    label: "????"
+    label_en: "Content Engineering"
+    category: "content"
+    description: "AI ??????????"
+
+  - id: ai_visibility
+    label: "AI ???"
+    label_en: "AI Visibility"
+    category: "geo"
+    description: "??? AI ??????????"
+
+  - id: authority_building
+    label: "????"
+    label_en: "Authority Building"
+    category: "trust"
+    description: "????????????"
+
+  - id: monitoring_analytics
+    label: "????"
+    label_en: "Monitoring & Analytics"
+    category: "data"
+    description: "GEO ????????????"
+
+  - id: geo_strategy
+    label: "GEO ??"
+    label_en: "GEO Strategy"
+    category: "geo"
+    description: "?? GEO ?????????"
+
+  - id: certification_service
+    label: "????"
+    label_en: "Certification Service"
+    category: "trust"
+    description: "?????????????"
+
+# ============================================================
+# Node Type Capability Matrix
+# ============================================================
+node_capability_matrix:
+  can_own_capabilities: [company, provider, person]
+  can_form_relationships: [company, provider, person, ai_agent]
+  can_earn_reputation: [company, provider, person, ai_agent, product]
+  can_be_certified: [company, provider, industry]
+  can_trade: [company, provider]
+  can_be_reviewed: [product, service, tool]
+  can_evolve: [company, provider, capability, role, policy]
+  can_observe: [ai_agent]
+  can_execute: [ai_agent, tool]
+  can_regulate: [government, policy]
+  can_issue_policy: [government]
+  can_trigger_change: [event, policy]

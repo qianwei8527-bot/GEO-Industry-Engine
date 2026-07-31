@@ -3,10 +3,11 @@ import Link from 'next/link';
 import { Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useState, useEffect, useCallback } from 'react';
-import { ArrowLeft, Shield, TrendingUp, AlertTriangle, Map, BarChart3, Target, ArrowRight, Search, ExternalLink } from 'lucide-react';
-import { api } from '@/lib/api';
+import { ArrowLeft, Shield, TrendingUp, AlertTriangle, Map, BarChart3, Target, ArrowRight, Search, ExternalLink, Brain } from 'lucide-react';
+import { api } from '@/lib/api'
+import AgentInsight from '@/components/AgentInsight';
 
-type TabKey = 'identity' | 'opportunity' | 'risk' | 'roadmap';
+type TabKey = 'identity' | 'opportunity' | 'risk' | 'roadmap' | 'ai';
 const TABS: { key: TabKey; name: string; icon: any }[] = [
   { key: 'identity', name: '身份与位置', icon: Shield },
   { key: 'opportunity', name: '机会雷达', icon: TrendingUp },
@@ -77,7 +78,8 @@ function ResultContent() {
         {activeTab==='identity' && <IdentityTab data={data} />}
         {activeTab==='opportunity' && <OpportunityTab data={data} />}
         {activeTab==='risk' && <RiskTab data={data} />}
-        {activeTab==='roadmap' && <RoadmapTab data={data} />}
+        {activeTab==='roadmap' && <RoadmapTab data={data} id={id} />}
+        {activeTab==='ai' && <AITab id={id} />}
       </div>
     </div>
   </div>)
@@ -174,7 +176,7 @@ function RiskTab({ data }: any) {
   </div>)
 }
 
-function RoadmapTab({ data }: any) {
+function RoadmapTab({ data, id }: any) {
   const d = data.decision || {};
   const scores = d.scores || {};
   const roadmap = scores.roadmap || {};
@@ -213,6 +215,7 @@ function RoadmapTab({ data }: any) {
           <div className='border-t mt-6 pt-3 mb-4'>
             <div className='text-xs text-slate-400 mb-2'>相关功能:</div>
             <div className='flex flex-wrap gap-2'>
+              <Link href={'/detection/compare?company_id=' + encodeURIComponent(id || '') + '&name=' + encodeURIComponent(data?.company?.name || '')} className='text-xs px-2 py-1 bg-emerald-50 text-emerald-600 rounded hover:bg-emerald-100 font-medium'>竞争对比</Link>
               <Link href='/certification/apply' className='text-xs px-2 py-1 bg-blue-50 rounded hover:bg-blue-100'>申请认证</Link>
               <Link href='/assets' className='text-xs px-2 py-1 bg-blue-50 rounded hover:bg-blue-100'>补充缺失数据</Link>
               <Link href='/navigation' className='text-xs px-2 py-1 bg-blue-50 rounded hover:bg-blue-100'>产业定位</Link>
@@ -223,6 +226,22 @@ function RoadmapTab({ data }: any) {
     </div>
     <div className='bg-blue-50 border border-blue-100 rounded-xl p-4 text-sm text-blue-700'>行动路线基于 GEO Optimization Roadmap 模型生成，随数据变化动态调整。</div>
   </div>)
+}
+
+function AITab({ id }: { id: string | null }) {
+  if (!id) return (
+    <div className='bg-slate-900 border border-slate-800 rounded-lg p-6 text-center'>
+      <Brain className='w-8 h-8 text-slate-600 mx-auto mb-3' />
+      <p className='text-sm text-slate-500'>缂哄皯浼佷笟 ID锛屾棤娉曡繍琛?AI 璇婃柇</p>
+    </div>
+  );
+  return (
+    <div className='space-y-6'>
+      <h3 className='text-lg font-bold text-gray-900 flex items-center gap-2'><Brain className='w-5 h-5 text-emerald-500' />AI 鏅鸿兘璇婃柇</h3>
+      <p className='text-sm text-slate-500 mb-2'>鍩轰簬 Context Engine + Decision Engine + Agent OS 鐢熸垚鐨勪紒涓?GEO 鏅鸿兘鍒嗘瀽</p>
+      <AgentInsight companyId={id} type='diagnose' />
+    </div>
+  );
 }
 
 export default function DetectionResultPage() {

@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react';
 import { Building2, Search, CheckCircle, XCircle } from 'lucide-react';
 import Link from 'next/link';
+import { api } from '@/lib/api';
 
 interface CompanyItem { id: string; name: string; geo_id: string; industry_id: string|null; is_verified: boolean; geo_score: number; subscription_tier: string; created_at: string }
 
@@ -12,7 +13,7 @@ export default function AdminCompaniesPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch('/api/v1/admin/companies').then(r=>r.json()).then(d=>{setCompanies(d);setFiltered(d);setLoading(false)}).catch(()=>setLoading(false));
+    api.companies.list().then(d=>{setCompanies(d as CompanyItem[] || []);setFiltered(d as CompanyItem[] || []);setLoading(false)}).catch(()=>setLoading(false));
   }, []);
 
   useEffect(() => {

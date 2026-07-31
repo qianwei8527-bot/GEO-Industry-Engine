@@ -1,11 +1,17 @@
 ﻿'use client';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { LayoutDashboard, Sliders, Building2, Factory, ShieldCheck, Activity, ChevronRight } from 'lucide-react';
+import { LayoutDashboard, Sliders, Building2, Factory, ShieldCheck, Activity, ChevronRight, Globe, Database, FileText, Bot, Radio, Server } from 'lucide-react';
 import { useState } from 'react';
 
 const sidebarItems = [
   { href: '/admin', label: '仪表盘', icon: LayoutDashboard },
+  { href: '/admin/universe', label: '宇宙监控', icon: Globe },
+  { href: '/admin/nodes', label: '节点管理', icon: Database },
+  { href: '/admin/rules', label: '规则引擎', icon: FileText },
+  { href: '/admin/agents', label: '智能体', icon: Bot },
+  { href: '/admin/data', label: '数据管道', icon: Radio },
+  { href: '/admin/system', label: '系统健康', icon: Server },
   { href: '/admin/config', label: '配置管理', icon: Sliders },
   { href: '/admin/companies', label: '企业管理', icon: Building2 },
   { href: '/admin/industries', label: '行业管理', icon: Factory },
@@ -26,7 +32,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             <ChevronRight className={`w-4 h-4 transition-transform ${collapsed ? '' : 'rotate-180'}`} />
           </button>
         </div>
-        <nav className="flex-1 py-2">
+        <nav className="flex-1 py-2 overflow-y-auto">
           {sidebarItems.map(item => {
             const active = pathname === item.href || (item.href !== '/admin' && pathname.startsWith(item.href));
             return (
@@ -42,7 +48,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           })}
         </nav>
         <div className="p-3 border-t border-slate-700 text-xs text-slate-500">
-          {!collapsed && <span>GEO-IE v1.0</span>}
+          {!collapsed && <span>GEO Universe Alpha 1.0</span>}
         </div>
       </aside>
       <main className="flex-1 overflow-auto">

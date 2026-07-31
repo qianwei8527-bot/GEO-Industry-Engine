@@ -1,6 +1,7 @@
 ﻿'use client';
 import { useEffect, useState } from 'react';
 import { Activity, Database, Server, CheckCircle, AlertTriangle } from 'lucide-react';
+import { api } from '@/lib/api';
 
 export default function AdminHealthPage() {
   const [health, setHealth] = useState<any>(null);
@@ -9,8 +10,8 @@ export default function AdminHealthPage() {
 
   useEffect(() => {
     Promise.all([
-      fetch('/api/v1/admin/health').then(r=>r.json()),
-      fetch('/api/v1/admin/db-stats').then(r=>r.json()),
+      api.admin.health(),
+      api.admin.dbStats(),
     ]).then(([h,d])=>{setHealth(h);setDbStats(d);setLoading(false)}).catch(()=>setLoading(false));
   }, []);
 

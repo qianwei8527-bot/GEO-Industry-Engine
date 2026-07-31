@@ -1,0 +1,240 @@
+# GEO Universe Reputation Engine Configuration
+# Phase C5.1 — All weights, decay params, and dimension definitions are configurable.
+# Do NOT hardcode these values in the engine code.
+#
+# Updated: v1.1 — 7-dimension (added AI Recognition Trust), Snapshot model, Explanation layer
+
+version: "1.1"
+
+dimensions:
+  - id: capability
+    label: "能力信誉"
+    label_en: "Capability Trust"
+    aggregation_weight: 0.22
+  - id: delivery
+    label: "交付信誉"
+    label_en: "Delivery Trust"
+    aggregation_weight: 0.22
+  - id: relationship
+    label: "合作信誉"
+    label_en: "Relationship Trust"
+    aggregation_weight: 0.18
+  - id: industry
+    label: "行业认可"
+    label_en: "Industry Trust"
+    aggregation_weight: 0.10
+  - id: innovation
+    label: "创新能力"
+    label_en: "Innovation Trust"
+    aggregation_weight: 0.08
+  - id: governance
+    label: "规范程度"
+    label_en: "Governance Trust"
+    aggregation_weight: 0.08
+  - id: ai_recognition
+    label: "AI识别可信"
+    label_en: "AI Recognition Trust"
+    aggregation_weight: 0.12
+
+reputation_status:
+  levels:
+    - id: UNKNOWN
+      label: "N/A"
+      description: "无足够证据，世界尚未形成判断"
+      min_events: 0
+    - id: DEVELOPING
+      label: "developing"
+      description: "正在积累证据，已有初步认知"
+      min_events: 1
+      min_overall: 1
+    - id: ESTABLISHED
+      label: "established"
+      description: "信誉已建立，有稳定证据支撑"
+      min_events: 3
+      min_overall: 50
+    - id: TRUSTED
+      label: "trusted"
+      description: "信誉得到多方验证"
+      min_events: 10
+      min_overall: 75
+    - id: AUTHORITY
+      label: "authority"
+      description: "行业权威，信誉不可置疑"
+      min_events: 20
+      min_overall: 90
+
+event_types:
+  capability_verified:
+    dimension: capability
+    impact: positive
+    base_weight: 8.0
+  certification_passed:
+    dimension: capability
+    impact: positive
+    base_weight: 9.0
+  certification_expired:
+    dimension: capability
+    impact: negative
+    base_weight: -5.0
+  customer_success:
+    dimension: delivery
+    impact: positive
+    base_weight: 7.0
+  customer_failure:
+    dimension: delivery
+    impact: negative
+    base_weight: -9.0
+  partnership_completed:
+    dimension: relationship
+    impact: positive
+    base_weight: 6.0
+  partnership_terminated:
+    dimension: relationship
+    impact: negative
+    base_weight: -7.0
+  industry_award:
+    dimension: industry
+    impact: positive
+    base_weight: 8.0
+  industry_citation:
+    dimension: industry
+    impact: positive
+    base_weight: 5.0
+  innovation_release:
+    dimension: innovation
+    impact: positive
+    base_weight: 6.0
+  compliance_audit_passed:
+    dimension: governance
+    impact: positive
+    base_weight: 7.0
+  compliance_violation:
+    dimension: governance
+    impact: negative
+    base_weight: -10.0
+  peer_endorsement:
+    dimension: relationship
+    impact: positive
+    base_weight: 5.0
+  negative_feedback:
+    dimension: delivery
+    impact: negative
+    base_weight: -6.0
+  relationship_established:
+    dimension: relationship
+    impact: positive
+    base_weight: 4.0
+  relationship_strengthened:
+    dimension: relationship
+    impact: positive
+    base_weight: 5.0
+  ai_agent_cited:
+    dimension: ai_recognition
+    impact: positive
+    base_weight: 5.0
+  ai_search_indexed:
+    dimension: ai_recognition
+    impact: positive
+    base_weight: 4.0
+  ai_misclassified:
+    dimension: ai_recognition
+    impact: negative
+    base_weight: -4.0
+
+source_types:
+  - id: government
+    label: "政府/官方"
+    reliability: 1.0
+  - id: association
+    label: "行业协会"
+    reliability: 0.9
+  - id: enterprise_customer
+    label: "企业客户"
+    reliability: 0.85
+  - id: smb_customer
+    label: "中小企业客户"
+    reliability: 0.7
+  - id: partner
+    label: "合作伙伴"
+    reliability: 0.8
+  - id: self_report
+    label: "自我声明"
+    reliability: 0.3
+  - id: ai_observation
+    label: "AI 观察"
+    reliability: 0.5
+  - id: individual_user
+    label: "个人用户"
+    reliability: 0.6
+  - id: anonymous
+    label: "匿名"
+    reliability: 0.3
+
+evidence_weights:
+  government_certification: 1.0
+  industry_certification: 0.9
+  customer_verified: 0.9
+  partner_endorsement: 0.8
+  case_study_published: 0.7
+  peer_reviewed: 0.7
+  ai_observation: 0.5
+  self_declared: 0.3
+
+source_reliability:
+  government: 1.0
+  industry_association: 0.9
+  enterprise_customer: 0.85
+  smb_customer: 0.7
+  partner: 0.8
+  individual_user: 0.6
+  ai_inferred: 0.5
+  self_report: 0.3
+  anonymous: 0.3
+
+time_decay:
+  certification:
+    half_life_days: 730
+  project_success:
+    half_life_days: 365
+  project_failure:
+    half_life_days: 540
+  industry_award:
+    half_life_days: 365
+  innovation_release:
+    half_life_days: 180
+  partnership:
+    half_life_days: 180
+  compliance_violation:
+    half_life_days: 1095
+  ai_recognition_event:
+    half_life_days: 240
+
+level_thresholds:
+  A_plus: 95
+  A: 85
+  A_minus: 78
+  B_plus: 70
+  B: 60
+  B_minus: 50
+  C: 40
+  D: 25
+  E: 0
+
+trust_propagation:
+  enabled: false          # v1.0: off. Enable in C5.2
+  damping_factor: 0.5
+  max_hops: 3
+  min_relationship_strength: 0.3
+  allowed_transfers:
+    capability: [industry, ai_recognition]
+    delivery: [capability, relationship]
+    relationship: [relationship, capability]
+    industry: [ai_recognition, capability]
+    innovation: [ai_recognition, industry]
+    governance: []
+    ai_recognition: [industry, capability]
+
+snapshot:
+  algorithm_version: "1.0"
+  recompute_interval_hours: 168  # weekly
+  max_events_per_recompute: 1000

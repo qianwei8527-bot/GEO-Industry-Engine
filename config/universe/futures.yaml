@@ -1,0 +1,201 @@
+# GEO Universe Future State Registry
+# Industry-specific evolution paths. All future states are configurable,
+# not hardcoded. Cross-industry reuse: education, medical, legal, etc.
+#
+# This is a Universe-managed asset, not developer code.
+
+version: "1.0.0-alpha"
+description: "GEO Universe Future State Registry ? ??????????"
+
+# ============================================================
+# Company Future States (GEO??)
+# ============================================================
+company_futures:
+  - id: "entry_provider"
+    label: "Entry ???"
+    label_en: "Entry Provider"
+    order: 1
+    stage: "position"
+    description: "????????????????????"
+    required_capabilities: [observe, build]
+    min_evidence: 3
+    min_relationships: 1
+    min_influence: 10
+    success_conditions:
+      - "????????"
+      - "????????"
+    failure_conditions:
+      - "6????????"
+      - "??????"
+
+  - id: "active_provider"
+    label: "Active ???"
+    label_en: "Active Provider"
+    order: 2
+    stage: "action"
+    description: "????????????????????"
+    required_capabilities: [observe, build, connect, trade]
+    min_evidence: 10
+    min_relationships: 5
+    min_influence: 30
+    success_conditions:
+      - "?? 5+ ????"
+      - "????????"
+      - "??????"
+    failure_conditions:
+      - "??????? 30%"
+      - "?????? C"
+
+  - id: "trusted_provider"
+    label: "Trusted ???"
+    label_en: "Trusted Provider"
+    order: 3
+    stage: "provision"
+    description: "????????????AI ???????"
+    required_capabilities: [observe, build, connect, trade, certify]
+    min_evidence: 25
+    min_relationships: 12
+    min_influence: 55
+    reputation_min: "B"
+    success_conditions:
+      - "?? 3+ ????"
+      - "?? 10+ ????"
+      - "?????? Top 25%"
+    failure_conditions:
+      - "??????"
+      - "??????"
+
+  - id: "industry_authority"
+    label: "Industry Authority"
+    label_en: "Industry Authority"
+    order: 4
+    stage: "accumulate"
+    description: "?????????????????????"
+    required_capabilities: [observe, build, connect, trade, certify, govern, teach, research]
+    min_evidence: 50
+    min_relationships: 25
+    min_influence: 75
+    reputation_min: "A"
+    success_conditions:
+      - "????????"
+      - "????????"
+      - "?????????"
+    failure_conditions:
+      - "??????"
+      - "??????"
+
+  - id: "ecosystem_platform"
+    label: "Ecosystem Platform"
+    label_en: "Ecosystem Platform"
+    order: 5
+    stage: "reputation"
+    description: "???????????????????"
+    required_capabilities: [observe, build, connect, trade, certify, govern, teach, research, invest, recommend]
+    min_evidence: 100
+    min_relationships: 50
+    min_influence: 90
+    reputation_min: "A"
+    success_conditions:
+      - "????????"
+      - "?? 100+ ????"
+    failure_conditions:
+      - "??????????"
+
+# ============================================================
+# Provider Future States
+# ============================================================
+provider_futures:
+  - id: "specialist_service"
+    label: "Specialist ??"
+    label_en: "Specialist Service"
+    order: 1
+    stage: "position"
+    description: "????????????"
+    required_capabilities: [serve, observe]
+    min_evidence: 5
+    min_relationships: 2
+
+  - id: "trusted_specialist"
+    label: "Trusted Specialist"
+    label_en: "Trusted Specialist"
+    order: 2
+    stage: "action"
+    description: "???????????"
+    required_capabilities: [serve, observe, certify, connect]
+    min_evidence: 15
+    min_relationships: 8
+    reputation_min: "B"
+
+  - id: "industry_authority_provider"
+    label: "Industry Authority"
+    label_en: "Industry Authority"
+    order: 3
+    stage: "provision"
+    description: "?????????"
+    required_capabilities: [serve, observe, certify, connect, govern, teach]
+    min_evidence: 30
+    min_relationships: 20
+    reputation_min: "A"
+
+# ============================================================
+# AI Agent Future States
+# ============================================================
+ai_agent_futures:
+  - id: "basic_agent"
+    label: "Basic Agent"
+    label_en: "Basic Agent"
+    order: 1
+    stage: "position"
+    description: "?? AI ?????????????"
+    required_capabilities: [observe, learn]
+    min_evidence: 5
+
+  - id: "adaptive_agent"
+    label: "Adaptive Agent"
+    label_en: "Adaptive Agent"
+    order: 2
+    stage: "action"
+    description: "????????????"
+    required_capabilities: [observe, learn, adapt, serve]
+    min_evidence: 20
+    min_relationships: 5
+    min_influence: 40
+
+  - id: "recommendation_agent"
+    label: "Recommendation Agent"
+    label_en: "Recommendation Agent"
+    order: 3
+    stage: "provision"
+    description: "?????????????"
+    required_capabilities: [observe, learn, adapt, serve, recommend]
+    min_evidence: 40
+    min_relationships: 15
+    min_influence: 60
+    reputation_min: "B"
+
+# ============================================================
+# Cross-industry templates (for future adoption)
+# ============================================================
+cross_industry:
+  education:
+    label: "????"
+    stages:
+      - "Student (??)"
+      - "Practitioner (???)"
+      - "Expert (??)"
+      - "Educator (???)"
+      - "Institution Builder (?????)"
+  medical:
+    label: "????"
+    stages:
+      - "Clinic (??)"
+      - "Specialist Center (????)"
+      - "Medical Network (????)"
+      - "Research Hospital (????)"
+  legal:
+    label: "????"
+    stages:
+      - "Junior Firm (????)"
+      - "Specialist Firm (????)"
+      - "Industry Authority (????)"
+      - "Legal Platform (????)"

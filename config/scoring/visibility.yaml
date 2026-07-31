@@ -1,108 +1,105 @@
-# AI可见度传统评分配置 (Traditional Visibility Scoring)
-# 版本: v1.0 | 最后更新: 2026-07-28
-# 加载方式: ConfigLoader.load('scoring', 'visibility')
-# 用途: Decision Engine 计算实体在网络搜索中的传统可见度
-# 与 geo_visibility.yaml 的区别: 本文件关注传统SEO可见度，geo_visibility关注AI引擎可见度
-# 关联: config/scoring/geo_visibility.yaml, assessment.yaml
-
-schema_version: "1.0"
-
-# ============================================================
-# 主权重
-# ============================================================
+schema_version: '1.0'
 weights:
-  completeness: 0.3      # 信息完整度 (企业官网/黄页/B2B平台信息覆盖)
-  authority: 0.3         # 权威度 (域名权威、外链质量、品牌提及)
-  evidence: 0.2          # 证据得分 (内容质量、数据引用、第三方评价)
-  activity: 0.2          # 活跃度 (内容更新频率、社交媒体活跃、新闻发布)
-
-# ============================================================
-# 二级维度
-# ============================================================
+  completeness: 0.3
+  authority: 0.3
+  evidence: 0.2
+  activity: 0.2
 completeness:
   sub_weights:
-    website_completeness: 0.30     # 官网信息完整度
-    directory_listing: 0.25        # 黄页/商业目录覆盖
-    platform_presence: 0.25        # 平台入驻覆盖 (B2B/地图/社交)
-    structured_data: 0.20          # Schema/JSON-LD标记
+    website_completeness: 0.3
+    directory_listing: 0.25
+    platform_presence: 0.25
+    structured_data: 0.2
   platforms_to_check:
-    - "百度百科"
-    - "天眼查/企查查"
-    - "百度地图/高德"
-    - "知乎/CSDN"
-    - "百度企业信用"
-
+  - 百度百科
+  - 天眼查/企查查
+  - 百度地图/高德
+  - 知乎/CSDN
+  - 百度企业信用
 authority:
   sub_weights:
-    domain_authority: 0.40        # 域名权威度
-    backlink_quality: 0.25        # 反向链接质量
-    brand_mentions: 0.20          # 品牌提及量
-    media_coverage: 0.15          # 媒体覆盖率
-  domain_authority_scale: [0, 100]
+    domain_authority: 0.4
+    backlink_quality: 0.25
+    brand_mentions: 0.2
+    media_coverage: 0.15
+  domain_authority_scale:
+  - 0
+  - 100
   high_authority_sources:
-    - "政府网站 (.gov)"
-    - "主流媒体"
-    - "行业权威"
-    - "学术机构"
-
+  - 政府网站 (.gov)
+  - 主流媒体
+  - 行业权威
+  - 学术机构
 evidence:
   sub_weights:
-    content_quality: 0.35          # 内容质量
-    data_citation: 0.25            # 数据引用
-    third_party_review: 0.25       # 第三方评价
-    certification_display: 0.15    # 资质展示
-
+    content_quality: 0.35
+    data_citation: 0.25
+    third_party_review: 0.25
+    certification_display: 0.15
 activity:
   sub_weights:
-    content_update_frequency: 0.35  # 内容更新频率
-    social_activity: 0.25           # 社媒活跃度
-    news_presence: 0.25             # 新闻曝光
-    community_engagement: 0.15      # 社区互动
+    content_update_frequency: 0.35
+    social_activity: 0.25
+    news_presence: 0.25
+    community_engagement: 0.15
   update_frequency_tiers:
-    daily:    { score: 100, label: "日更" }
-    weekly:   { score: 80,  label: "周更" }
-    monthly:  { score: 50,  label: "月更" }
-    quarterly: { score: 25,  label: "季更" }
-    stale:    { score: 5,   label: "停更" }
+    daily:
+      score: 100
+      label: 日更
+    weekly:
+      score: 80
+      label: 周更
+    monthly:
+      score: 50
+      label: 月更
+    quarterly:
+      score: 25
+      label: 季更
+    stale:
+      score: 5
+      label: 停更
   staleness_days: 90
-
-# ============================================================
-# 阈值
-# ============================================================
 thresholds:
-  high: 80       # 高可见度
-  medium: 50     # 中等
-  low: 20        # 低可见度
-
-# ============================================================
-# 搜索引擎权重 (Search Engine Weighting, 中国市场)
-# ============================================================
+  high: 80
+  medium: 50
+  low: 20
 search_engines:
-  baidu:    { weight: 0.50, priority: 1 }
-  bing:     { weight: 0.15, priority: 2 }
-  sougou:   { weight: 0.10, priority: 3 }
-  google:   { weight: 0.10, priority: 4 }
-  so360:    { weight: 0.08, priority: 5 }
-  shenma:   { weight: 0.07, priority: 6 }
-
-# ============================================================
-# 行业系数
-# ============================================================
+  baidu:
+    weight: 0.5
+    priority: 1
+  bing:
+    weight: 0.15
+    priority: 2
+  sougou:
+    weight: 0.1
+    priority: 3
+  google:
+    weight: 0.1
+    priority: 4
+  so360:
+    weight: 0.08
+    priority: 5
+  shenma:
+    weight: 0.07
+    priority: 6
 industry_multipliers:
-  ecommerce:  { completeness: 1.2, activity: 1.3 }
-  education:  { authority: 1.3, evidence: 1.2 }
-  saas:       { completeness: 1.1, authority: 1.2 }
-  healthcare: { authority: 1.4, evidence: 1.3 }
-
-# ============================================================
-# 计算配置
-# ============================================================
+  ecommerce:
+    completeness: 1.2
+    activity: 1.3
+  education:
+    authority: 1.3
+    evidence: 1.2
+  saas:
+    completeness: 1.1
+    authority: 1.2
+  healthcare:
+    authority: 1.4
+    evidence: 1.3
 computation:
   batch_size: 100
   cache_ttl_hours: 24
   recalculate_timeout_minutes: 60
-
 version_history:
-  - version: "1.0"
-    date: "2026-07-28"
-    changes: "初始版本: 传统可见度四维模型+搜索引擎加权+行业系数"
+- version: '1.0'
+  date: '2026-07-28'
+  changes: '初始版本: 传统可见度四维模型+搜索引擎加权+行业系数'

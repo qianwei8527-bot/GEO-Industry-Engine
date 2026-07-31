@@ -1,0 +1,25 @@
+# GEO Opportunity Matching Engine - Match Score Weights
+# Sprint 3.1 Phase B | 2026-07-29
+# All weights hot-reloadable via reload_weights(), no code changes required
+
+weights:
+  capability_overlap: 0.25    # Capability tag intersection rate
+  industry_fit: 0.20          # Industry vertical match (core differentiator)
+  trust_score: 0.20           # Provider trust score
+  geo_score: 0.15             # Provider GEO composite score
+  certification: 0.10         # Certification level bonus
+  budget_fit: 0.10            # Budget range alignment
+
+thresholds:
+  strong_match: 0.75          # Top recommendation
+  moderate_match: 0.50        # List display
+  weak_match: 0.25            # Candidate pool
+
+industry_templates:
+  default:
+    capability_overlap: 0.25
+    industry_fit: 0.20
+    trust_score: 0.20
+    geo_score: 0.15
+    certification: 0.10
+    budget_fit: 0.10

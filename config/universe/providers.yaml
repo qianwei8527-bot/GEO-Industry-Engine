@@ -1,0 +1,60 @@
+# GEO Universe AI Provider Configuration
+# All AI model providers are registered here.
+# Providers can be enabled/disabled and configured independently.
+
+version: "1.0.0-alpha"
+description: "GEO Universe AI Provider Registry"
+
+default_provider: "openai"
+
+providers:
+  openai:
+    enabled: true
+    label: "OpenAI"
+    models:
+      - "gpt-4o"
+      - "gpt-4-turbo"
+      - "gpt-3.5-turbo"
+    api_key_env: "OPENAI_API_KEY"
+    base_url: "https://api.openai.com/v1"
+
+  claude:
+    enabled: true
+    label: "Anthropic Claude"
+    models:
+      - "claude-sonnet-4-20250514"
+      - "claude-opus-4-20250514"
+      - "claude-haiku-3-5"
+    api_key_env: "ANTHROPIC_API_KEY"
+    base_url: "https://api.anthropic.com"
+
+  gemini:
+    enabled: true
+    label: "Google Gemini"
+    models:
+      - "gemini-2.5-pro"
+      - "gemini-2.5-flash"
+    api_key_env: "GEMINI_API_KEY"
+
+  deepseek:
+    enabled: true
+    label: "DeepSeek"
+    models:
+      - "deepseek-chat"
+      - "deepseek-reasoner"
+    api_key_env: "DEEPSEEK_API_KEY"
+    base_url: "https://api.deepseek.com"
+
+  doubao:
+    enabled: false
+    label: "Doubao"
+    models:
+      - "doubao-pro"
+    api_key_env: "DOUBAO_API_KEY"
+
+  openclaw:
+    enabled: false
+    label: "OpenClaw"
+    models:
+      - "openclaw-v1"
+    api_key_env: "OPENCLAW_API_KEY"

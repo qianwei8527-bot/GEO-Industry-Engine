@@ -3,6 +3,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.database import get_db
 from app.models.certification import Certification,CertStatus,CertLevel
+from app.models.evidence import Evidence
 from app.schemas.certification import CertificationApply,CertificationReview,CertificationResponse
 from datetime import datetime,timedelta
 import uuid
@@ -41,9 +42,26 @@ async def review_cert(cert_id:str,data:CertificationReview,db:AsyncSession=Depen
     r=await db.execute(select(Certification).where(Certification.id==cert_id))
     cert=r.scalar_one_or_none()
     if not cert:raise HTTPException(404,'Certification not found')
-    if data.action=='approve':cert.status=CertStatus.APPROVED;cert.issued_at=datetime.utcnow();cert.expires_at=datetime.utcnow()+timedelta(days=730)
-    elif data.action=='reject':cert.status=CertStatus.REJECTED
-    elif data.action=='request_more':cert.status=CertStatus.PENDING
+    if data.action=='approve':
+        cert.status=CertStatus.APPROVED
+        cert.issued_at=datetime.utcnow()
+        cert.expires_at=datetime.utcnow()+timedelta(days=730)
+        evidence=Evidence(
+            entity_id=cert.entity_id,
+            entity_type=cert.entity_type.value if hasattr(cert.entity_type,'value') else str(cert.entity_type),
+            claim="GEO认证通过: "+str(cert.level.value if hasattr(cert.level,'value') else cert.level)+"级",
+            source_url="/certification/"+str(cert.id),
+            confidence_level=1.0,
+            source_type="certification",
+            verified=True,
+            verified_by=cert.reviewer_id,
+            verified_at=datetime.utcnow()
+        )
+        db.add(evidence)
+    elif data.action=='reject':
+        cert.status=CertStatus.REJECTED
+    elif data.action=='request_more':
+        cert.status=CertStatus.PENDING
     cert.reviewer_id=uuid.uuid4();cert.review_comment=data.comment;cert.reviewed_at=datetime.utcnow()
     await db.commit();await db.refresh(cert)
     return CertificationResponse.model_validate(cert)

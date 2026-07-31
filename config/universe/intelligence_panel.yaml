@@ -1,0 +1,208 @@
+agent_constraints:
+  citation_format: 'Rule {id}: {name} -> {explanation}'
+  description: All panel data must cite Universe Rules
+  rule: Agent interprets panel data; does NOT create new data.
+data_sources:
+  dynamic: 'Layer 3: GeoEvent table'
+  evolution: 'Layer 4: GrowthStage + ValueChain tables'
+  graph: 'Layer 2: Graph API /ecosystem'
+  intelligence: 'Layer 5: Decision Engine + Reputation + AgentOS'
+  node: 'Layer 1: Node table (companies/providers/industries)'
+  rules: 'Layer 0: Universe Rules YAML'
+description: GEO Intelligence Panel configuration — defines panel sections per node
+  type
+node_types:
+  capability:
+    enabled_sections:
+    - status
+    - direction
+    - learning
+    - resources
+    - data
+    label: Capability Node
+    label_cn: 能力节点
+  company:
+    enabled_sections:
+    - status
+    - assessment
+    - direction
+    - learning
+    - resources
+    - data
+    - business
+    label: Enterprise Node
+    label_cn: 企业节点
+    section_config:
+      assessment:
+        actions:
+        - action: rerun_detection
+          endpoint: /detection
+          label_cn: 重新检测GEO能力
+        - action: view_report
+          endpoint: /agent/report/{id}
+          label_cn: 查看诊断报告
+      business:
+        fields:
+        - key: candidate_providers
+          label_cn: 候选服务商
+          source: marketplace
+        - key: market_demands
+          label_cn: 市场需求
+          source: market_demand
+        - key: match_results
+          label_cn: 匹配结果
+          source: matching_engine
+      data:
+        fields:
+        - key: evidence_count
+          label_cn: 证据记录
+          source: evidence
+        - key: capability_count
+          label_cn: 能力数量
+          source: capability
+        - key: relationship_count
+          label_cn: 关系数量
+          source: graph
+        - key: competitors
+          label_cn: 竞争对手
+          source: competitor
+      direction:
+        fields:
+        - key: next_stage
+          label_cn: 下一阶段
+          source: growth_stage
+        - key: gap_analysis
+          label_cn: 能力差距
+          source: benchmark
+        - key: recommended_actions
+          label_cn: 行动建议
+          source: agent_diagnose
+      learning:
+        fields: []
+      resources:
+        fields: []
+      status:
+        fields:
+        - key: geo_score
+          label_cn: GEO评分
+          source: decision_engine
+        - key: industry_rank
+          label_cn: 行业排名
+          source: benchmark
+        - key: growth_stage
+          label_cn: 成长阶段
+          source: growth_stage
+        - key: reputation_level
+          label_cn: 信誉等级
+          source: reputation
+        - key: entity_type
+          label_cn: 企业类型
+          source: node
+  industry:
+    enabled_sections:
+    - status
+    - direction
+    - data
+    - business
+    label: Industry Node
+    label_cn: 行业节点
+  person:
+    enabled_sections:
+    - status
+    - assessment
+    - direction
+    - learning
+    - resources
+    - business
+    label: Person Node
+    label_cn: 个人节点（远期）
+  provider:
+    enabled_sections:
+    - status
+    - direction
+    - data
+    - business
+    label: Provider Node
+    label_cn: 服务商节点
+    section_config:
+      business:
+        fields:
+        - key: matched_demands
+          label_cn: 匹配需求
+          source: matching_engine
+        - key: active_opportunities
+          label_cn: 商业机会
+          source: marketplace
+      data:
+        fields:
+        - key: capability_count
+          label_cn: 能力数量
+          source: provider_capability
+        - key: evidence_count
+          label_cn: 成功案例
+          source: evidence
+      direction:
+        fields:
+        - key: capability_coverage
+          label_cn: 能力覆盖
+          source: provider_capability
+        - key: industry_focus
+          label_cn: 行业聚焦
+          source: graph
+      status:
+        fields:
+        - key: geo_score
+          label_cn: GEO评分
+          source: decision_engine
+        - key: reputation_level
+          label_cn: 信誉等级
+          source: reputation
+        - key: is_verified
+          label_cn: 认证状态
+          source: node
+  technology:
+    enabled_sections:
+    - status
+    - direction
+    - learning
+    - data
+    label: Technology Node
+    label_cn: 技术节点（远期）
+panel_structure:
+  fixed_sections:
+  - icon: Activity
+    id: status
+    name: Current Status
+    name_cn: 当前状态
+    order: 1
+  - icon: BarChart3
+    id: assessment
+    name: Assessment
+    name_cn: 能力测评
+    order: 2
+  - icon: Compass
+    id: direction
+    name: Direction
+    name_cn: 发展方向
+    order: 3
+  - icon: BookOpen
+    id: learning
+    name: Learning
+    name_cn: 学习成长
+    order: 4
+  - icon: Link2
+    id: resources
+    name: Resources
+    name_cn: 资源连接
+    order: 5
+  - icon: Database
+    id: data
+    name: Data Assets
+    name_cn: 数据资产
+    order: 6
+  - icon: Briefcase
+    id: business
+    name: Business
+    name_cn: 商业机会
+    order: 7
+version: '1.0'

@@ -1,4 +1,4 @@
-# 参考: CrewAI Agent Registry + Dify Agent 注册模式
+﻿# GEO Agent Registry — Agent OS v3.0
 from typing import Dict, List, Optional, Type
 from app.agents.core.base_agent import BaseAgent, AgentContext, AgentResult
 
@@ -30,6 +30,9 @@ class AgentRegistry:
             'company': ['CompanyIntelligence'],
             'geo_growth': ['GEOGrowth'],
             'analyze': ['DataAnalyst'],
+            'diagnose': ['EnterpriseDiagnostician'],
+            'match': ['ProviderMatcher'],
+            'observe': ['GEOObservationAgent'],
         }
         names = intent_map.get(intent, list(self._agents.keys()))
         return [a for n, a in self._agents.items() if n in names]

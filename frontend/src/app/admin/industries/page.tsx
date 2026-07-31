@@ -1,6 +1,7 @@
 ﻿'use client';
 import { useEffect, useState } from 'react';
 import { Factory } from 'lucide-react';
+import { api } from '@/lib/api';
 interface IndustryItem { id: string; name: string; code: string; level: number; sort_order: number }
 
 export default function AdminIndustriesPage() {
@@ -8,7 +9,7 @@ export default function AdminIndustriesPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch('/api/v1/admin/industries').then(r=>r.json()).then(d=>{setIndustries(d);setLoading(false)}).catch(()=>setLoading(false));
+    api.admin.listIndustries().then((d: any)=>{setIndustries(d);setLoading(false)}).catch(()=>setLoading(false));
   }, []);
 
   if (loading) return <div className="text-slate-400">加载中...</div>;
