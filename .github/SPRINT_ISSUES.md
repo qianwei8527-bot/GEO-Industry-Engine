@@ -114,17 +114,45 @@
   ```
   ## 验收标准
   - [ ] master 分支受保护
-  - [ ] 要求 PR review (至少 1 人)
   - [ ] 要求 CI status checks 通过
+  - [ ] 要求 conversation resolution
+  - [ ] 要求 branches up to date
   - [ ] 禁止 force push
   - [ ] CODEOWNERS 文件设置
 
   ## 操作
-  1. GitHub Settings → Branches → Add rule
+  1. GitHub Settings -> Branches -> Add rule
   2. Branch name pattern: master
-  3. Require a pull request before merging: ✓
-  4. Require approvals: 1
-  5. Require status checks to pass: ✓
-  6. search: pr-check, backend-tests, frontend-build
-  7. Do not allow bypassing: ✓
+  3. Require a pull request before merging: yes
+  4. Require approvals: 0 (OPC单人仓库)
+  5. Require status checks to pass: yes
+  6. Status checks: PR Check (Lint), Backend Tests, Frontend Build
+  7. Require branches to be up to date: yes
+  8. Require conversation resolution: yes
+  9. Do not allow bypassing: yes
+  ```
+
+### Issue 7: Ruff Lint Debt Governance
+- **Title:** [Infra] Ruff 历史 lint 债务分阶段治理
+- **Labels:** infra, backend, P2
+- **Body:**
+  ```
+  ## 验收标准
+  - [ ] 建立当前 Ruff 错误分类与数量基线
+  - [ ] 按规则分批清理 F401（未使用导入）、导入顺序及格式问题
+  - [ ] 每批修改单独提交并运行后端测试
+  - [ ] 逐步扩大 CI Ruff 门禁范围（从 --select E9,F63,F7,F82 扩展）
+  - [ ] 最终实现 ruff check backend/ 零错误
+
+  ## 当前门禁
+  ruff check backend/ --select E9,F63,F7,F82
+  （仅阻止语法错误、未定义名称等严重问题）
+
+  ## 治理阶段
+  1. 建立基线：运行 ruff check backend/ --statistics 统计各类错误数量
+  2. 第一批：F401（未使用导入）— 低风险，纯清理
+  3. 第二批：导入顺序 I001 — 纯格式
+  4. 第三批：F841（未使用变量）— 低风险
+  5. 后续：逐步扩大 select 范围
+  6. 最终：ruff check backend/ 全量零错误
   ```
