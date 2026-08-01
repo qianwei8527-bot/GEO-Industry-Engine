@@ -384,6 +384,10 @@ class RelationshipIntelligenceEngine:
     @classmethod
     def reset(cls):
         cls._instance = None
+        try:
+            get_relationship_intelligence_engine.cache_clear()
+        except Exception:
+            pass
 
 
 # ---- Singleton accessor ----

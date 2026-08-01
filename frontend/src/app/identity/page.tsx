@@ -196,7 +196,7 @@ export default function IdentityPage() {
             {results.length === 0 && searchQuery && !loading && (
               <div className="text-center py-12 text-gray-500">
                 <MapPin className="w-12 h-12 mx-auto mb-4 text-gray-700" />
-                <p>未找到 "{searchQuery}"</p>
+                <p>未找到 &quot;{searchQuery}&quot;</p>
                 <p className="text-sm mt-2">尝试其他关键词，或确认企业已录入系统</p>
               </div>
             )}

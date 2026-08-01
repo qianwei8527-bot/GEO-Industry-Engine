@@ -1,9 +1,8 @@
-"""Universe Node — the unified protocol for all Views.
-
-Every View (Ecosystem, Business, Growth, Distribution, Future)
-reads nodes through this interface. Changing how a node is displayed
-only requires changing the View renderer, not the node data.
-"""
+/**
+ * Universe Node — the unified protocol for all Views.
+ * Every View (Ecosystem, Business, Growth, Distribution, Future)
+ * reads nodes through this interface.
+ */
 
 export interface UniverseNode {
   id: string;

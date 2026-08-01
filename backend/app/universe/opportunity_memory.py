@@ -434,6 +434,10 @@ class OpportunityMemoryEngine:
     def reset(cls):
         cls._instance = None
         OpportunityMemoryStore.reset()
+        try:
+            get_opportunity_memory_engine.cache_clear()
+        except Exception:
+            pass
 
 
 @lru_cache()

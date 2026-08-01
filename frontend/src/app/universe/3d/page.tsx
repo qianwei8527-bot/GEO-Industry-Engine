@@ -101,6 +101,7 @@ export default function Universe3DPage() {
 
     let animId: number;
     function draw() {
+      if (!canvas) return;
       animId = requestAnimationFrame(draw);
       const w = canvas.width, h = canvas.height;
       const dpr = window.devicePixelRatio || 1;
@@ -252,7 +253,7 @@ export default function Universe3DPage() {
       ];
       legendItems.forEach((item, i) => {
         const y = legendY + 32 * dpr + i * 20 * dpr;
-        ctx.fillStyle = COLORS[item.type];
+        ctx.fillStyle = getNodeColor(item.type, "#3b82f6");
         ctx.beginPath();
         ctx.arc(legendX + 15 * dpr, y, 6 * dpr, 0, Math.PI * 2);
         ctx.fill();

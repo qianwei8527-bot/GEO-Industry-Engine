@@ -25,7 +25,7 @@ from app.universe.possibility_engine import get_possibility_engine, PossibilityE
 from app.universe.future_registry import get_future_registry, FutureStateRegistry, FutureStateTemplate
 from app.universe.connection_engine import get_connection_engine, FutureConnectionEngine, ConnectionReport
 from app.universe.reputation_engine import get_reputation_engine
-from app.universe.relationship_engine import get_relationship_engine, RelationshipEngine, Relationship, RelationshipEvent, RelationshipReputation, ReputationEngine, ReputationEvent, ReputationSnapshot, ReputationExplanation
+from app.universe.relationship_engine import get_relationship_engine, RelationshipEngine, Relationship, RelationshipEvent, RelationshipReputation
 from app.models.company import Company
 from app.models.provider import Provider
 from app.models.industry import Industry
@@ -594,4 +594,104 @@ async def get_adjusted_confidence(opportunity_id: str, base: float = 0.5):
         "base_confidence": base,
         "adjusted_confidence": adjusted,
         "delta": round(adjusted - base, 2),
+    }
+
+# ---- Universe Home Aggregation (Phase D0.2) ----
+
+@router.get("/home/{node_type}/{node_id}")
+async def universe_home(node_type: str, node_id: str, db: AsyncSession = Depends(get_db)):
+    """Aggregate a node's complete Universe Home view.
+
+    Combines:
+      - Context Engine (identity + position + memory + capability + risk + direction)
+      - Possibility Graph (30/90/180 day future states + required connections)
+      - Memory velocity (growth trend)
+
+    Output drives the Node Cockpit: who I am / where I am / my past / my future.
+    """
+    if node_type not in ("company", "provider", "industry", "ai_agent", "government"):
+        raise HTTPException(400, f"Unsupported node type: {node_type}")
+
+    # Load base data from DB when possible
+    extra = {"name": node_id}
+    try:
+        uid = uuid.UUID(node_id) if len(node_id) == 36 else node_id
+        if node_type == "company":
+            company = await db.get(Company, uid) if isinstance(uid, uuid.UUID) else None
+            if company:
+                extra = {
+                    "name": company.name,
+                    "description": getattr(company, "description", ""),
+                    "industry_id": str(company.industry_id) if company.industry_id else "",
+                    "geo_score": company.geo_score or 0,
+                    "trust_score": getattr(company, "trust_score", 0) or 0,
+                    "evidence_count": (await db.execute(
+                        select(func.count(Evidence.id)).where(Evidence.entity_id == uid))).scalar() or 0,
+                    "capability_count": (await db.execute(
+                        select(func.count(Capability.id)).where(Capability.company_id == uid))).scalar() or 0,
+                    "certification_count": 0,
+                }
+                rel_count = (await db.execute(
+                    select(func.count(Relationship.id)).where(Relationship.source_id == uid))).scalar() or 0
+                extra["relationship_count"] = rel_count
+                extra["relationships_list"] = []
+        elif node_type == "provider":
+            provider = await db.get(Provider, uid) if isinstance(uid, uuid.UUID) else None
+            if provider:
+                extra = {
+                    "name": f"Provider {str(uid)[:8]}",
+                    "trust_score": getattr(provider, "trust_score", 0) or 0,
+                    "geo_score": getattr(provider, "geo_score", 0) or 0,
+                    "evidence_count": (await db.execute(
+                        select(func.count(Evidence.id)).where(Evidence.entity_id == uid))).scalar() or 0,
+                    "capability_count": (await db.execute(
+                        select(func.count(ProviderCapability.id)).where(ProviderCapability.provider_id == uid))).scalar() or 0,
+                }
+    except Exception:
+        pass  # fall back to engine defaults
+
+    # 1. Context Engine — who / where / past / risks / direction
+    ctx = get_context_engine().understand(node_id, node_type, extra)
+
+    # 2. Possibility Graph — future states
+    possibility = None
+    try:
+        graph = get_possibility_engine().project(ctx)
+        possibility = graph.to_dict()
+    except Exception as e:
+        possibility = {"error": str(e), "states": {}, "transitions": []}
+
+    # 3. Memory velocity
+    velocity = None
+    try:
+        velocity = get_memory_engine().get_growth_velocity(node_id)
+    except Exception:
+        velocity = {"trend": "unknown"}
+
+    # 4. Reputation snapshot (compact)
+    rep_snap = None
+    try:
+        rep = get_reputation_engine().get_profile(node_id)
+        rep_snap = rep.to_dict() if rep else None
+    except Exception:
+        rep_snap = None
+
+    return {
+        "node_id": node_id,
+        "node_type": node_type,
+        "identity": ctx.identity,
+        "position": ctx.current_position,
+        "memory": {
+            "timeline": ctx.historical_memory,
+            "velocity": velocity,
+        },
+        "capability": ctx.capability_state,
+        "relationship": ctx.relationship_context,
+        "industry": ctx.industry_context,
+        "future_signals": ctx.future_signals,
+        "risk": ctx.risk_assessment,
+        "direction": ctx.recommended_direction,
+        "reputation": rep_snap,
+        "possibility": possibility,
+        "computed_at": ctx.computed_at,
     }
