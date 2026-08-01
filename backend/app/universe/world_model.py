@@ -14,11 +14,39 @@
 from dataclasses import dataclass, field
 from typing import Dict, List, Optional, Any
 from datetime import datetime, timezone
-from functools import lru_cache
 import uuid
 
 from app.universe.registry import UniverseRegistry, get_registry
 from app.universe.event_backbone import UniverseEvent, get_event_backbone
+from sqlalchemy import select
+
+from app.models.knowledge_candidate import KnowledgeCandidate as KnowledgeCandidateRecord
+from app.models.world_model import WorldModelProposalRecord, IndustryContextRecord
+
+
+
+def _to_dt(value) -> Optional[datetime]:
+    if not value:
+        return None
+    try:
+        return datetime.fromisoformat(str(value).replace("Z", "+00:00"))
+    except (ValueError, TypeError):
+        return None
+
+
+def _dt_iso(value) -> str:
+    if not value:
+        return ""
+    if isinstance(value, datetime):
+        return value.isoformat()
+    return str(value)
+
+
+def _to_uuid(value) -> uuid.UUID:
+    try:
+        return uuid.UUID(str(value))
+    except (ValueError, TypeError):
+        return uuid.uuid4()
 
 
 @dataclass
@@ -105,6 +133,7 @@ class KnowledgeCandidate:
 class WorldModelProposal:
     """A governed proposal to evolve the Universe ontology."""
     proposal_id: str = field(default_factory=lambda: str(uuid.uuid4()))
+    candidate_id: str = ""
     candidate_key: str = ""
     concept_name: str = ""
     concept_type: str = ""
@@ -173,6 +202,196 @@ class IndustryContextModel:
         }
 
 
+
+class KnowledgePersistenceRepository:
+    """Durable repository for the Living World Model."""
+
+    async def save_candidate(self, db, candidate: KnowledgeCandidate, candidate_key: str) -> None:
+        rec = (await db.execute(
+            select(KnowledgeCandidateRecord).where(KnowledgeCandidateRecord.candidate_key == candidate_key)
+        )).scalars().first()
+        fields = {
+            "concept_name": candidate.name,
+            "concept_type": candidate.category,
+            "recognition_state": candidate.status,
+            "confidence": candidate.confidence,
+            "occurrence_count": candidate.evidence_count,
+            "source_diversity": len(set(candidate.sources)),
+            "emergence_score": candidate.confidence,
+            "first_observed_at": _to_dt(candidate.first_seen),
+            "last_observed_at": _to_dt(candidate.last_seen),
+            "is_synthetic": candidate.is_synthetic,
+            "sources": candidate.sources,
+            "evidence_ids": candidate.evidence_ids,
+            "observation_ids": candidate.observation_ids,
+            "proposal_id": candidate.proposal_id,
+            "adoption_record": candidate.adoption_record,
+        }
+        if rec is None:
+            rec = KnowledgeCandidateRecord(
+                id=_to_uuid(candidate.candidate_id),
+                candidate_key=candidate_key,
+                **fields,
+            )
+            db.add(rec)
+        else:
+            candidate.candidate_id = str(rec.id)
+            for key, value in fields.items():
+                setattr(rec, key, value)
+        await db.commit()
+
+    async def save_proposal(self, db, proposal: WorldModelProposal) -> None:
+        rec = (await db.execute(
+            select(WorldModelProposalRecord).where(WorldModelProposalRecord.proposal_id == proposal.proposal_id)
+        )).scalars().first()
+        fields = {
+            "candidate_id": _to_uuid(proposal.candidate_id) if proposal.candidate_id else None,
+            "candidate_key": proposal.candidate_key,
+            "concept_name": proposal.concept_name,
+            "concept_type": proposal.concept_type,
+            "status": proposal.status,
+            "ontology_suggestion": proposal.ontology_suggestion,
+            "evidence_ids": proposal.evidence_ids,
+            "source_ids": proposal.source_ids,
+            "confidence": proposal.confidence,
+            "emergence_score": proposal.emergence_score,
+            "proposed_by": proposal.proposed_by,
+            "reviewed_by": proposal.reviewed_by or None,
+            "reviewed_at": _to_dt(proposal.reviewed_at),
+            "reason": proposal.reason or None,
+            "law_ids": proposal.law_ids,
+            "law_explanation": proposal.law_explanation,
+            "correlation_id": proposal.correlation_id,
+            "adopted_at": _to_dt(proposal.adopted_at),
+            "registry_update_pending": proposal.registry_update_pending,
+        }
+        if rec is None:
+            rec = WorldModelProposalRecord(
+                id=_to_uuid(proposal.proposal_id),
+                proposal_id=proposal.proposal_id,
+                **fields,
+            )
+            db.add(rec)
+        else:
+            for key, value in fields.items():
+                setattr(rec, key, value)
+        await db.commit()
+
+    async def save_industry_context(self, db, ctx: IndustryContextModel) -> None:
+        rec = (await db.execute(
+            select(IndustryContextRecord).where(IndustryContextRecord.industry_id == ctx.industry_id)
+        )).scalars().first()
+        fields = {
+            "name": ctx.name,
+            "emerging_concepts": ctx.emerging_concepts,
+            "proposals": ctx.proposals,
+            "evidence_links": ctx.evidence_ids,
+            "summary": ctx.summary,
+            "updated_at": datetime.now(timezone.utc),
+        }
+        if rec is None:
+            rec = IndustryContextRecord(
+                industry_id=ctx.industry_id,
+                **fields,
+            )
+            db.add(rec)
+        else:
+            for key, value in fields.items():
+                setattr(rec, key, value)
+        await db.commit()
+
+    async def restore(self, model: "LivingWorldModel", db) -> Dict[str, int]:
+        model.candidates.clear()
+        model.proposals.clear()
+        model.industry_contexts.clear()
+        model.integrated.clear()
+
+        cand_rows = (await db.execute(
+            select(KnowledgeCandidateRecord).order_by(KnowledgeCandidateRecord.created_at)
+        )).scalars().all()
+        for r in cand_rows:
+            key = r.candidate_key or f"{r.concept_type}:{r.concept_name.lower()}"
+            candidate = KnowledgeCandidate(
+                candidate_id=str(r.id),
+                name=r.concept_name,
+                category=r.concept_type,
+                confidence=r.confidence or 0.0,
+                evidence_count=r.occurrence_count or 0,
+                first_seen=_dt_iso(r.first_observed_at),
+                last_seen=_dt_iso(r.last_observed_at),
+                sources=r.sources or [],
+                affected_domains=[],
+                signals=[],
+                status=r.recognition_state or "observed",
+                evidence_ids=r.evidence_ids or [],
+                observation_ids=r.observation_ids or [],
+                is_synthetic=r.is_synthetic or False,
+                proposal_id=r.proposal_id,
+                adoption_record=r.adoption_record,
+            )
+            model.candidates[key] = candidate
+
+        prop_rows = (await db.execute(
+            select(WorldModelProposalRecord).order_by(WorldModelProposalRecord.created_at)
+        )).scalars().all()
+        for r in prop_rows:
+            proposal = WorldModelProposal(
+                proposal_id=r.proposal_id,
+                candidate_id=str(r.candidate_id) if r.candidate_id else "",
+                candidate_key=r.candidate_key,
+                concept_name=r.concept_name,
+                concept_type=r.concept_type,
+                status=r.status or "pending",
+                ontology_suggestion=r.ontology_suggestion or {},
+                evidence_ids=r.evidence_ids or [],
+                source_ids=r.source_ids or [],
+                confidence=r.confidence or 0.0,
+                emergence_score=r.emergence_score or 0.0,
+                proposed_by=r.proposed_by or "",
+                reviewed_by=r.reviewed_by or "",
+                reviewed_at=_dt_iso(r.reviewed_at),
+                reason=r.reason or "",
+                law_ids=r.law_ids or [],
+                law_explanation=r.law_explanation or [],
+                correlation_id=r.correlation_id or "",
+                created_at=_dt_iso(r.created_at),
+                adopted_at=_dt_iso(r.adopted_at),
+                registry_update_pending=r.registry_update_pending if r.registry_update_pending is not None else True,
+            )
+            model.proposals[proposal.proposal_id] = proposal
+
+        ctx_rows = (await db.execute(select(IndustryContextRecord))).scalars().all()
+        for r in ctx_rows:
+            ctx = IndustryContextModel(
+                industry_id=r.industry_id,
+                name=r.name or r.industry_id,
+                updated_at=_dt_iso(r.updated_at),
+                emerging_concepts=r.emerging_concepts or [],
+                proposals=r.proposals or [],
+                evidence_ids=r.evidence_links or [],
+                summary=r.summary or "",
+            )
+            model.industry_contexts[ctx.industry_id] = ctx
+
+        for candidate in model.candidates.values():
+            if candidate.status == "adopted" and candidate.adoption_record:
+                model.integrated.append({
+                    "name": candidate.name,
+                    "category": candidate.category,
+                    "adopted_at": candidate.adoption_record.get("adopted_at", ""),
+                    "evidence_count": candidate.evidence_count,
+                    "confidence": candidate.confidence,
+                    "sources": candidate.sources,
+                    "registry_update_pending": True,
+                })
+
+        return {
+            "candidates": len(model.candidates),
+            "proposals": len(model.proposals),
+            "industry_contexts": len(model.industry_contexts),
+        }
+
+
 class LivingWorldModel:
     """Manages the Universe's emerging knowledge and governs the
     Observation -> Knowledge -> Proposal -> Law -> Adoption pipeline.
@@ -183,7 +402,8 @@ class LivingWorldModel:
 
     _instance: Optional["LivingWorldModel"] = None
 
-    def __init__(self):
+    def __init__(self, repository: "KnowledgePersistenceRepository" = None):
+        self.repository = repository or KnowledgePersistenceRepository()
         self.candidates: Dict[str, KnowledgeCandidate] = {}
         self.proposals: Dict[str, WorldModelProposal] = {}
         self.industry_contexts: Dict[str, IndustryContextModel] = {}
@@ -202,10 +422,10 @@ class LivingWorldModel:
 
     # ---- Observe ----
 
-    def observe(self, concept_name: str, category: str, source: str,
-                domain: str = None, signal_data: Dict = None,
-                evidence_id: str = None, observation_id: str = None,
-                synthetic: bool = False) -> KnowledgeCandidate:
+    async def observe(self, concept_name: str, category: str, source: str,
+                      domain: str = None, signal_data: Dict = None,
+                      evidence_id: str = None, observation_id: str = None,
+                      synthetic: bool = False, db=None) -> KnowledgeCandidate:
         """Record an observation of a potentially new concept.
 
         Existing candidates accumulate evidence. New concepts start as
@@ -244,12 +464,14 @@ class LivingWorldModel:
         if candidate.status == "observed" and candidate.confidence >= 0.3:
             candidate.promote()
             self._log(f"Promoted to emerging: {concept_name}")
+        if db is not None:
+            await self.repository.save_candidate(db, candidate, key)
         return candidate
 
     # ---- Recognize ----
 
-    def recognize(self, candidate_key: str, evidence_status: str = "verified",
-                  reviewer: str = None) -> KnowledgeCandidate:
+    async def recognize(self, candidate_key: str, evidence_status: str = "verified",
+                        reviewer: str = None, db=None) -> KnowledgeCandidate:
         """Recognize a candidate only when verified evidence is sufficient."""
         candidate = self.candidates.get(candidate_key)
         if not candidate:
@@ -263,12 +485,14 @@ class LivingWorldModel:
         candidate.status = "recognized"
         candidate.recognized_by = reviewer
         self._log(f"Recognized: {candidate.name} ({candidate.category})")
+        if db is not None:
+            await self.repository.save_candidate(db, candidate, candidate_key)
         return candidate
 
     # ---- Propose ----
 
-    def propose(self, candidate_key: str, proposed_by: str,
-                ontology_suggestion: Dict = None, reason: str = "") -> WorldModelProposal:
+    async def propose(self, candidate_key: str, proposed_by: str,
+                      ontology_suggestion: Dict = None, reason: str = "", db=None) -> WorldModelProposal:
         """Create a governed ontology proposal from a recognized candidate."""
         candidate = self.candidates.get(candidate_key)
         if not candidate:
@@ -281,6 +505,7 @@ class LivingWorldModel:
             raise ValueError("proposed_by must be a governance actor")
 
         proposal = WorldModelProposal(
+            candidate_id=candidate.candidate_id,
             candidate_key=candidate_key,
             concept_name=candidate.name,
             concept_type=candidate.category,
@@ -309,12 +534,16 @@ class LivingWorldModel:
             },
         ))
         self._log(f"Proposed: {candidate.name} -> {candidate.category} ontology")
+        if db is not None:
+            await self.repository.save_candidate(db, candidate, candidate_key)
+            await self.repository.save_proposal(db, proposal)
         return proposal
 
     # ---- Governance ----
 
     async def review_proposal(self, proposal_id: str, actor: str, decision: str,
-                              reason: str = "", evidence_status: str = "verified") -> WorldModelProposal:
+                              reason: str = "", evidence_status: str = "verified",
+                              db=None) -> WorldModelProposal:
         """Review a proposal. Approval requires Law Governance; rejection requires reason."""
         proposal = self.proposals.get(proposal_id)
         if not proposal:
@@ -339,6 +568,9 @@ class LivingWorldModel:
             proposal.reason = reason
             candidate.status = "recognized"
             self._log(f"Proposal rejected: {candidate.name} ({reason})")
+            if db is not None:
+                await self.repository.save_candidate(db, candidate, proposal.candidate_key)
+                await self.repository.save_proposal(db, proposal)
             return proposal
 
         from app.universe.law_engine import get_law_engine
@@ -369,9 +601,12 @@ class LivingWorldModel:
         proposal.law_ids = law_result.get("applied_laws", [])
         proposal.law_explanation = law_result.get("explanation", [])
         self._log(f"Proposal approved: {candidate.name} via {proposal.law_ids}")
+        if db is not None:
+            await self.repository.save_candidate(db, candidate, proposal.candidate_key)
+            await self.repository.save_proposal(db, proposal)
         return proposal
 
-    def adopt(self, proposal_id: str, actor: str) -> WorldModelProposal:
+    async def adopt(self, proposal_id: str, actor: str, db=None) -> WorldModelProposal:
         """Adopt an approved proposal. Never mutates Registry automatically."""
         proposal = self.proposals.get(proposal_id)
         if not proposal:
@@ -416,12 +651,16 @@ class LivingWorldModel:
             },
         ))
         self._log(f"Adopted: {candidate.name} (registry update pending)")
+        if db is not None:
+            await self.repository.save_candidate(db, candidate, proposal.candidate_key)
+            await self.repository.save_proposal(db, proposal)
         return proposal
 
     # ---- Industry Context ----
 
-    def assess_industry(self, industry_id: str, name: str = None,
-                        evidence_ids: List[str] = None, summary: str = None) -> IndustryContextModel:
+    async def assess_industry(self, industry_id: str, name: str = None,
+                              evidence_ids: List[str] = None, summary: str = None,
+                              db=None) -> IndustryContextModel:
         """Build a lightweight context view for an industry from current candidates."""
         matched_keys = [
             key for key, c in self.candidates.items()
@@ -451,7 +690,14 @@ class LivingWorldModel:
             summary=summary or f"{len(matched_keys)} concepts observed in {industry_id}",
         )
         self.industry_contexts[industry_id] = ctx
+        if db is not None:
+            await self.repository.save_industry_context(db, ctx)
         return ctx
+
+    # ---- Persistence / Restore ----
+
+    async def restore_from_db(self, db) -> Dict[str, int]:
+        return await self.repository.restore(self, db)
 
     # ---- Query ----
 

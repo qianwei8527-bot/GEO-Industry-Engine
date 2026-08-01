@@ -45,3 +45,6 @@ from app.models.refresh_token import RefreshToken
 from app.models.observation import ObservationSource, ObservationRun, ObservationArtifact
 
 from app.models.geo_visibility import QuestionSet, AIObservationRun, AIAnswerArtifact, VisibilityResult
+from app.models.knowledge_candidate import KnowledgeCandidate
+from app.models.candidate_change import CandidateChange
+from app.models.world_model import WorldModelProposalRecord, IndustryContextRecord

@@ -737,6 +737,23 @@ async def universe_home(node_type: str, node_id: str, db: AsyncSession = Depends
     }
 
 
+@router.get("/node/{node_type}/{node_id}/home")
+async def node_universe_home(node_type: str, node_id: str, db: AsyncSession = Depends(get_db)):
+    """C6.10 Universe Home aggregation for a single node.
+
+    The service assembles identity / position / story / ecosystem /
+    future / opportunities itself from DB + Universe engines.
+    """
+    if node_type not in ("company", "provider", "industry", "ai_agent", "government"):
+        raise HTTPException(400, f"Unsupported node type: {node_type}")
+    from app.services.universe_home import get_universe_home_service
+    try:
+        return await get_universe_home_service().build(db, node_type, node_id)
+    except Exception as e:
+        raise HTTPException(500, f"Universe Home aggregation failed: {str(e)}")
+
+
+
 # ---- Transaction Engine (Phase C6) — C6-T1 hardened ----
 
 from app.universe.transaction_engine import (

@@ -152,16 +152,16 @@ effects:
 6. adopted 后 Registry 不被自动修改。
 7. Event Backbone 可查询 proposal_created / proposal_approved / concept_adopted 三类事件。
 
-## 十、后续（C6.8.5 Persistence Hardening）
+## 十、C6.8.5 完成项与后续
 
-- KnowledgeCandidate / WorldModelProposal / IndustryContext 落库。
+- KnowledgeCandidate / WorldModelProposal / IndustryContext 已落库（migration `c6g14a1b2c3d4`）。
 - Law Registry 治理接口。
 - Registry 人工合并接口。
 - Event Backbone 升级为 `universe_events` 索引表。
 
 ## 十一、实现状态
 
-- `backend/app/universe/world_model.py`：KnowledgeCandidate 生命周期、WorldModelProposal、IndustryContextModel、Law 检查、Event Backbone 事件均已实现。
+- `backend/app/universe/world_model.py`：KnowledgeCandidate 生命周期、WorldModelProposal、IndustryContextModel、Law 检查、Event Backbone 事件均已实现；C6.8.5 起为“内存缓存 + DB repository”，支持 `restore_from_db()`。
 - `config/universe/laws.yaml`：新增 `ontology_adoption_governance` 治理 Law，总数 4 条。
 - Registry 保持只读：adoption 只返回 `registry_update_pending=true`，不自动写入 `registry.yaml`。
-- 测试：`backend/tests/test_c68_living_world_model.py` 7/7 通过；C6.7/C6.6.6 定向测试继续通过；后端全量回归 185 passed。
+- 测试：`backend/tests/test_c68_living_world_model.py` 7/7、`test_c685_knowledge_persistence.py` 3/3 通过；C6.7/C6.6.6 定向测试继续通过；后端全量回归 188 passed。
