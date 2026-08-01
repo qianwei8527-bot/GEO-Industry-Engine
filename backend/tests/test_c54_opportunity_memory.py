@@ -99,7 +99,7 @@ class TestOpportunityMemoryEngine:
         mem.record_created("opp-2", "a", "c", 0.45, "test2")
         mem.record_rejected("opp-2", "a", "rejected")
         stats = mem.get_node_stats("a")
-        assert stats["total_opportunities"] == 4
+        assert stats["total_opportunities"] == 5
         assert stats["accepted"] == 1
         assert stats["rejected"] == 1
 

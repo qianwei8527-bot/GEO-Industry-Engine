@@ -1,0 +1,23 @@
+# C6.3 Observation Sources — whitelist only.
+# Sources are created/enabled by system_admin. Node users may only suggest.
+version: "1.0.0"
+
+defaults:
+  rate_limit_seconds: 60
+  timeout_seconds: 10
+  max_content_size: 1048576
+  allowed_content_types: [text/html, application/json, application/ld+json]
+  retention_days: 30
+  requires_review: true
+
+sources:
+  - source_id: "xingchen-official"
+    name: "星辰AI营销科技官网"
+    source_type: "official_website"
+    domain: "example.com"
+    base_url: "https://example.com/xingchen"
+    trust_tier: "high"
+    node_id: ""
+    parser_type: "meta"
+    schedule_minutes: 1440
+    enabled: true

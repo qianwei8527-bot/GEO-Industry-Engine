@@ -5,6 +5,7 @@
 # Layer 3: AI Provider Interface (unified model adapters)
 
 from app.universe.rules import RuleEngine, UniverseRules, get_rule_engine
+from app.universe.ecosystem_graph import EcosystemGraphEngine, EcosystemNodeReport, get_ecosystem_graph_engine
 from app.universe.world_model import LivingWorldModel, KnowledgeCandidate, get_world_model
 from app.universe.position_engine import PositionEngine, PositionReport, get_position_engine
 from app.universe.memory_engine import MemoryEngine, Fact, Evidence, MemoryEvent, Story, get_memory_engine
@@ -30,6 +31,7 @@ from app.universe.ai_provider import (
 __all__ = [
     # Layer 0
     "RuleEngine", "UniverseRules", "get_rule_engine",
+    "EcosystemGraphEngine", "EcosystemNodeReport", "get_ecosystem_graph_engine",
     "UniverseRegistry", "get_registry",
     "UniverseNode", "NodePosition", "NodeTrajectory", "is_valid_node_type", "get_node_type_label", "get_node_type_color",
     # Layer 1

@@ -66,6 +66,7 @@ class ConnectionCandidate:
     network_position_bonus: float = 0.0
     connected_future_state: str = ""
     edge_strength: str = ""             # strong | moderate | weak
+    source_kind: str = "seed"           # real | verified | seed | synthetic (Gate 0-4)
     recommendation: str = ""
 
     def to_dict(self):
@@ -84,6 +85,7 @@ class ConnectionCandidate:
             },
             "connects_to_future": self.connected_future_state,
             "edge_strength": self.edge_strength,
+            "source_kind": self.source_kind,
             "recommendation": self.recommendation,
         }
 
@@ -403,6 +405,7 @@ class FutureConnectionEngine:
             candidate_node_type=candidate["type"],
             candidate_name=candidate["name"],
             candidate_label=candidate.get("label", ""),
+            source_kind=candidate.get("source_kind", "seed"),
             future_alignment_score=round(alignment, 2),
             capability_complementarity=round(cap_complementarity, 2),
             trust_compatibility=round(trust_compat, 2),

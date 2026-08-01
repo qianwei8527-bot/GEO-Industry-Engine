@@ -85,6 +85,9 @@ class Relationship:
     total_projects: int = 0
     successful_projects: int = 0
     duration_days: int = 0
+    purpose: str = ''
+    industry: str = ''
+    value_exchange: List = field(default_factory=list)
     metadata: Dict = None
     def __post_init__(self):
         if not self.relationship_id: self.relationship_id = str(uuid.uuid4())[:8]
@@ -236,7 +239,7 @@ class RelationshipReputationCalculator:
             relationship_id=relationship_id,
             stability=stability, reciprocity=reciprocity,
             outcome=outcome, communication=comm,
-            value_creation=vc,
+            value_creation=outcome,
             overall=round(overall, 1), level=level,
             events_count=len(events)
         )

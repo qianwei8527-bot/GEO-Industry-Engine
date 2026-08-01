@@ -1,0 +1,2 @@
+{"node_a": "syn-09", "node_b": "syn-01", "title": "知行数据服务（仿真） 仿真交易", "status": "settled", "is_synthetic": true}
+{"node_a": "syn-10", "node_b": "syn-01", "title": "弘毅交付（仿真） 仿真交易", "status": "failed", "is_synthetic": true}

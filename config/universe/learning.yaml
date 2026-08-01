@@ -1,0 +1,130 @@
+# C6.1 Continuous Learning Loop Configuration
+# All review rules, deduplication, engine mappings, time horizons and
+# transaction freeze settings are managed here — never hardcoded.
+
+version: "1.0.0"
+
+# ── Transaction freeze (C6-T1 → C6.1) ──
+transactions:
+  enabled: false
+  learning_source_enabled: false
+  seed_allowed_environments: [development, test]
+
+# ── Node deduplication (Gate 0-3) ──
+deduplication:
+  match_fields:
+    - key: "credit_code"
+      label: "统一社会信用代码"
+      weight: 1.0
+      exact: true
+    - key: "website"
+      label: "官网域名"
+      weight: 0.9
+      normalize: "domain"
+    - key: "company_name"
+      label: "标准化企业名称"
+      weight: 0.8
+      normalize: "name"
+    - key: "region_name"
+      label: "地区"
+      weight: 0.4
+    - key: "contact_email"
+      label: "联系方式"
+      weight: 0.5
+  match_levels:
+    - id: "exact_match"
+      min_score: 0.95
+      action: "reuse"
+    - id: "probable_match"
+      min_score: 0.70
+      action: "review"
+    - id: "possible_duplicate"
+      min_score: 0.45
+      action: "manual_confirm"
+    - id: "new_node"
+      min_score: 0.0
+      action: "create"
+
+# ── Review policy (Gate) ──
+review:
+  impact_levels:
+    - id: "low"
+      label: "低影响"
+      description: "简介、非关键展示字段"
+      auto_approve_sources: [admin, verified_evidence]
+    - id: "medium"
+      label: "中影响"
+      description: "能力、产品、阶段判断"
+      auto_approve_sources: [verified_evidence]
+    - id: "high"
+      label: "高影响"
+      description: "身份、关系、信誉、行业归属"
+      auto_approve_sources: []
+  rules:
+    self_report_cannot_raise_reputation: true
+    unverified_evidence_defaults_to_review: true
+    high_impact_requires_human: true
+    verified_evidence_can_trigger_recompute: true
+    rules_and_weights_never_auto_change: true
+    ai_can_classify_but_not_approve: true
+
+# ── Affected engine mapping (no full re-run) ──
+affected_engines:
+  profile:
+    - position
+    - reputation
+    - possibility
+    - connection
+  capability:
+    - position
+    - possibility
+    - connection
+  evidence:
+    - reputation
+    - position
+  relationship:
+    - reputation
+    - connection
+  industry:
+    - position
+    - possibility
+  goals:
+    - possibility
+
+# ── Possibility time horizons (Gate 0-5) ──
+possibility_horizons:
+  - days: 30
+    label: "T+30"
+  - days: 90
+    label: "T+90"
+  - days: 180
+    label: "T+180"
+
+possibility_unavailable_reason: "当前数据不足，无法生成该时间窗推演"
+
+# ── Data quality weights (Gate 0-1, also used by LearningLoop) ──
+data_quality_weights:
+  profile_completeness: 0.30
+  evidence_coverage: 0.20
+  evidence_verification: 0.20
+  source_diversity: 0.10
+  freshness: 0.05
+  overall_confidence: 0.15
+
+evidence_verification_weights:
+  verified: 1.0
+  pending: 0.2
+  self_report: 0.1
+  rejected: 0.0
+
+# ── Observation inputs (C6.1 scope) ──
+observation_inputs:
+  enabled:
+    - user_evidence
+    - evidence_verification_change
+    - profile_update
+    - admin_industry_observation
+  disabled:
+    - web_crawler
+    - unverified_transaction_outcome
+    - external_ai_generated_fact

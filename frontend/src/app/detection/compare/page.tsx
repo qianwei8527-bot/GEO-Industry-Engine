@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { api } from '@/lib/api';
+import { authedFetch } from '@/lib/authFetch';
 import { BarChart3, TrendingUp, Shield, Target, ArrowLeft, Users, Search, Brain, Activity, AlertTriangle, CheckCircle, Lightbulb, ExternalLink } from 'lucide-react';
 
 const METRIC_LABELS: Record<string, string> = {
@@ -22,6 +23,7 @@ const METRIC_ICONS: Record<string, any> = {
 function ComparisonInsight({ result, companyId }: { result: any; companyId: string }) {
   if (!result?.comparisons) return (
     <div className="text-center py-6 text-slate-500">
+      <div className="mb-6 px-4 py-3 bg-amber-50 border border-amber-200 rounded-xl text-sm text-amber-800">尚未建立真实观测基线：AI 可见度对比需要至少一次真实观测样本后生成，当前不展示占位结论。</div>
       <Activity className="w-6 h-6 mx-auto mb-2" />
       <p className="text-sm">Run a comparison to see AI-generated strategic assessment</p>
     </div>
@@ -42,6 +44,7 @@ function ComparisonInsight({ result, companyId }: { result: any; companyId: stri
   const totalGaps = allWeaknesses.length;
   const hasEvidenceGaps = comparisons.some((c: any) => c.evidence_gap && c.evidence_gap.delta < 0);
 
+  const noBaseline = !sessionStorage.getItem("geo_baseline");
   return (
     <div className="space-y-4">
       {/* Strategic Summary */}

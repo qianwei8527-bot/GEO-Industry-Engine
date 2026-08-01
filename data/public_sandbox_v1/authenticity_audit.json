@@ -1,0 +1,293 @@
+{
+  "audited_at": "2026-08-01T10:15:43.162026+00:00",
+  "rows": [
+    {
+      "node": "清华大学",
+      "url": "https://www.tsinghua.edu.cn",
+      "fetch_status": "unverified_snapshot",
+      "http": null,
+      "reason": "connect_failure",
+      "official": true
+    },
+    {
+      "node": "清华大学",
+      "url": "https://openalex.org",
+      "fetch_status": "unverified_snapshot",
+      "http": null,
+      "reason": "connect_failure",
+      "official": false
+    },
+    {
+      "node": "清华大学",
+      "url": "https://www.gov.cn",
+      "fetch_status": "unverified_snapshot",
+      "http": null,
+      "reason": "connect_failure",
+      "official": false
+    },
+    {
+      "node": "北京大学",
+      "url": "https://www.pku.edu.cn",
+      "fetch_status": "unverified_snapshot",
+      "http": null,
+      "reason": "connect_failure",
+      "official": true
+    },
+    {
+      "node": "北京大学",
+      "url": "https://openalex.org",
+      "fetch_status": "unverified_snapshot",
+      "http": null,
+      "reason": "connect_failure",
+      "official": false
+    },
+    {
+      "node": "北京大学",
+      "url": "https://www.gov.cn",
+      "fetch_status": "unverified_snapshot",
+      "http": null,
+      "reason": "connect_failure",
+      "official": false
+    },
+    {
+      "node": "复旦大学",
+      "url": "https://www.fudan.edu.cn",
+      "fetch_status": "unverified_snapshot",
+      "http": null,
+      "reason": "connect_failure",
+      "official": true
+    },
+    {
+      "node": "复旦大学",
+      "url": "https://openalex.org",
+      "fetch_status": "unverified_snapshot",
+      "http": null,
+      "reason": "connect_failure",
+      "official": false
+    },
+    {
+      "node": "复旦大学",
+      "url": "https://www.gov.cn",
+      "fetch_status": "unverified_snapshot",
+      "http": null,
+      "reason": "connect_failure",
+      "official": false
+    },
+    {
+      "node": "上海交通大学",
+      "url": "https://www.sjtu.edu.cn",
+      "fetch_status": "unverified_snapshot",
+      "http": null,
+      "reason": "connect_failure",
+      "official": true
+    },
+    {
+      "node": "上海交通大学",
+      "url": "https://openalex.org",
+      "fetch_status": "unverified_snapshot",
+      "http": null,
+      "reason": "connect_failure",
+      "official": false
+    },
+    {
+      "node": "上海交通大学",
+      "url": "https://www.gov.cn",
+      "fetch_status": "unverified_snapshot",
+      "http": null,
+      "reason": "connect_failure",
+      "official": false
+    },
+    {
+      "node": "科大讯飞",
+      "url": "https://www.iflytek.com",
+      "fetch_status": "unverified_snapshot",
+      "http": null,
+      "reason": "connect_failure",
+      "official": true
+    },
+    {
+      "node": "科大讯飞",
+      "url": "https://openalex.org",
+      "fetch_status": "unverified_snapshot",
+      "http": null,
+      "reason": "connect_failure",
+      "official": false
+    },
+    {
+      "node": "科大讯飞",
+      "url": "https://www.gov.cn",
+      "fetch_status": "unverified_snapshot",
+      "http": null,
+      "reason": "connect_failure",
+      "official": false
+    },
+    {
+      "node": "好未来",
+      "url": "https://www.100tal.com",
+      "fetch_status": "unverified_snapshot",
+      "http": null,
+      "reason": "connect_failure",
+      "official": true
+    },
+    {
+      "node": "好未来",
+      "url": "https://openalex.org",
+      "fetch_status": "unverified_snapshot",
+      "http": null,
+      "reason": "connect_failure",
+      "official": false
+    },
+    {
+      "node": "好未来",
+      "url": "https://www.gov.cn",
+      "fetch_status": "unverified_snapshot",
+      "http": null,
+      "reason": "connect_failure",
+      "official": false
+    },
+    {
+      "node": "网易有道",
+      "url": "https://www.youdao.com",
+      "fetch_status": "unverified_snapshot",
+      "http": null,
+      "reason": "connect_failure",
+      "official": true
+    },
+    {
+      "node": "网易有道",
+      "url": "https://openalex.org",
+      "fetch_status": "unverified_snapshot",
+      "http": null,
+      "reason": "connect_failure",
+      "official": false
+    },
+    {
+      "node": "网易有道",
+      "url": "https://www.gov.cn",
+      "fetch_status": "unverified_snapshot",
+      "http": null,
+      "reason": "connect_failure",
+      "official": false
+    },
+    {
+      "node": "视源股份",
+      "url": "https://www.cvte.com",
+      "fetch_status": "unverified_snapshot",
+      "http": null,
+      "reason": "connect_failure",
+      "official": true
+    },
+    {
+      "node": "视源股份",
+      "url": "https://openalex.org",
+      "fetch_status": "unverified_snapshot",
+      "http": null,
+      "reason": "connect_failure",
+      "official": false
+    },
+    {
+      "node": "视源股份",
+      "url": "https://www.gov.cn",
+      "fetch_status": "unverified_snapshot",
+      "http": null,
+      "reason": "connect_failure",
+      "official": false
+    },
+    {
+      "node": "中国科学院",
+      "url": "https://www.cas.cn",
+      "fetch_status": "unverified_snapshot",
+      "http": null,
+      "reason": "connect_failure",
+      "official": true
+    },
+    {
+      "node": "中国科学院",
+      "url": "https://openalex.org",
+      "fetch_status": "unverified_snapshot",
+      "http": null,
+      "reason": "connect_failure",
+      "official": false
+    },
+    {
+      "node": "中国科学院",
+      "url": "https://www.gov.cn",
+      "fetch_status": "unverified_snapshot",
+      "http": null,
+      "reason": "connect_failure",
+      "official": false
+    },
+    {
+      "node": "中国教育科学研究院",
+      "url": "https://www.nies.edu.cn",
+      "fetch_status": "unverified_snapshot",
+      "http": null,
+      "reason": "dns_failure",
+      "official": true
+    },
+    {
+      "node": "中国教育科学研究院",
+      "url": "https://openalex.org",
+      "fetch_status": "unverified_snapshot",
+      "http": null,
+      "reason": "connect_failure",
+      "official": false
+    },
+    {
+      "node": "中国教育科学研究院",
+      "url": "https://www.gov.cn",
+      "fetch_status": "unverified_snapshot",
+      "http": null,
+      "reason": "connect_failure",
+      "official": false
+    },
+    {
+      "node": "国家教育行政学院",
+      "url": "https://www.naea.edu.cn",
+      "fetch_status": "unverified_snapshot",
+      "http": null,
+      "reason": "connect_failure",
+      "official": true
+    },
+    {
+      "node": "国家教育行政学院",
+      "url": "https://openalex.org",
+      "fetch_status": "unverified_snapshot",
+      "http": null,
+      "reason": "connect_failure",
+      "official": false
+    },
+    {
+      "node": "国家教育行政学院",
+      "url": "https://www.gov.cn",
+      "fetch_status": "unverified_snapshot",
+      "http": null,
+      "reason": "connect_failure",
+      "official": false
+    },
+    {
+      "node": "中国教育装备行业协会",
+      "url": "https://www.ceeia.cn",
+      "fetch_status": "unverified_snapshot",
+      "http": null,
+      "reason": "connect_failure",
+      "official": true
+    },
+    {
+      "node": "中国教育装备行业协会",
+      "url": "https://openalex.org",
+      "fetch_status": "unverified_snapshot",
+      "http": null,
+      "reason": "connect_failure",
+      "official": false
+    },
+    {
+      "node": "中国教育装备行业协会",
+      "url": "https://www.gov.cn",
+      "fetch_status": "unverified_snapshot",
+      "http": null,
+      "reason": "connect_failure",
+      "official": false
+    }
+  ]
+}

@@ -25,7 +25,7 @@ from app.universe.possibility_engine import get_possibility_engine, PossibilityE
 from app.universe.future_registry import get_future_registry, FutureStateRegistry, FutureStateTemplate
 from app.universe.connection_engine import get_connection_engine, FutureConnectionEngine, ConnectionReport
 from app.universe.reputation_engine import get_reputation_engine
-from app.universe.relationship_engine import get_relationship_engine, RelationshipEngine, Relationship, RelationshipEvent, RelationshipReputation, ReputationEngine, ReputationEvent, ReputationSnapshot, ReputationExplanation
+from app.universe.relationship_engine import get_relationship_engine, RelationshipEngine, Relationship, RelationshipEvent, RelationshipReputation
 from app.models.company import Company
 from app.models.provider import Provider
 from app.models.industry import Industry
@@ -308,8 +308,11 @@ async def get_connection_history(node_id: str):
 # ---- Reputation Engine (Phase C5.1) ----
 
 @router.post("/reputation/event")
-async def record_reputation_event(data: dict):
-    """Record a reputation event. ONLY way to change reputation. No set."""
+async def record_reputation_event(data: dict, db: AsyncSession = Depends(get_db)):
+    """Record a reputation event. ONLY way to change reputation. No set.
+
+    C6.1 Gate 0-2: every event is durably persisted; DB is the source of truth.
+    """
     engine = get_reputation_engine()
     event = engine.record_event(
         node_id=data.get("node_id", ""),
@@ -321,15 +324,46 @@ async def record_reputation_event(data: dict):
         evidence_refs=data.get("evidence_refs", []),
         timestamp=data.get("timestamp"),
     )
+    try:
+        await engine.persist_event(db, event)
+        await db.commit()
+    except Exception:
+        await db.rollback()
     return event.to_dict()
 
 
 @router.get("/reputation/node/{node_id}")
-async def get_reputation_profile(node_id: str):
-    """Get a node's reputation profile with full explanation."""
+async def get_reputation_profile(node_id: str, db: AsyncSession = Depends(get_db)):
+    """Get a node's reputation profile with full explanation.
+
+    C6.2 lazy restore: if memory has no events for this node, load from DB first.
+    """
     engine = get_reputation_engine()
+    if not engine.event_store.get_events(node_id):
+        try:
+            await engine.restore_from_db(db, node_id)
+        except Exception:
+            pass
     exp = engine.get_explanation(node_id)
     return exp.to_dict()
+
+
+@router.post("/reputation/restore/{node_id}")
+async def restore_reputation(node_id: str, data: dict = None, db: AsyncSession = Depends(get_db)):
+    """C6.1 Gate 0-2: restore a node's reputation from durable DB events."""
+    node_type = (data or {}).get("node_type", "company")
+    engine = get_reputation_engine()
+    snap = await engine.restore_from_db(db, node_id, node_type)
+    return snap.to_dict()
+
+
+@router.post("/reputation/rebuild/{node_id}")
+async def rebuild_reputation(node_id: str, data: dict = None, db: AsyncSession = Depends(get_db)):
+    """C6.1 Gate 0-2: rebuild reputation state by replaying durable events."""
+    node_type = (data or {}).get("node_type", "company")
+    engine = get_reputation_engine()
+    snap = await engine.rebuild(db, node_id, node_type)
+    return snap.to_dict()
 
 
 @router.get("/reputation/history/{node_id}")
@@ -595,3 +629,387 @@ async def get_adjusted_confidence(opportunity_id: str, base: float = 0.5):
         "adjusted_confidence": adjusted,
         "delta": round(adjusted - base, 2),
     }
+
+# ---- Universe Home Aggregation (Phase D0.2) ----
+
+@router.get("/home/{node_type}/{node_id}")
+async def universe_home(node_type: str, node_id: str, db: AsyncSession = Depends(get_db)):
+    """Aggregate a node's complete Universe Home view.
+
+    Combines:
+      - Context Engine (identity + position + memory + capability + risk + direction)
+      - Possibility Graph (30/90/180 day future states + required connections)
+      - Memory velocity (growth trend)
+
+    Output drives the Node Cockpit: who I am / where I am / my past / my future.
+    """
+    if node_type not in ("company", "provider", "industry", "ai_agent", "government"):
+        raise HTTPException(400, f"Unsupported node type: {node_type}")
+
+    # Load base data from DB when possible
+    extra = {"name": node_id}
+    try:
+        uid = uuid.UUID(node_id) if len(node_id) == 36 else node_id
+        if node_type == "company":
+            company = await db.get(Company, uid) if isinstance(uid, uuid.UUID) else None
+            if company:
+                extra = {
+                    "name": company.name,
+                    "description": getattr(company, "description", ""),
+                    "industry_id": str(company.industry_id) if company.industry_id else "",
+                    "geo_score": company.geo_score or 0,
+                    "trust_score": getattr(company, "trust_score", 0) or 0,
+                    "evidence_count": (await db.execute(
+                        select(func.count(Evidence.id)).where(Evidence.entity_id == uid))).scalar() or 0,
+                    "capability_count": (await db.execute(
+                        select(func.count(Capability.id)).where(Capability.company_id == uid))).scalar() or 0,
+                    "certification_count": 0,
+                }
+                rel_count = (await db.execute(
+                    select(func.count(Relationship.id)).where(Relationship.source_id == uid))).scalar() or 0
+                extra["relationship_count"] = rel_count
+                extra["relationships_list"] = []
+        elif node_type == "provider":
+            provider = await db.get(Provider, uid) if isinstance(uid, uuid.UUID) else None
+            if provider:
+                extra = {
+                    "name": f"Provider {str(uid)[:8]}",
+                    "trust_score": getattr(provider, "trust_score", 0) or 0,
+                    "geo_score": getattr(provider, "geo_score", 0) or 0,
+                    "evidence_count": (await db.execute(
+                        select(func.count(Evidence.id)).where(Evidence.entity_id == uid))).scalar() or 0,
+                    "capability_count": (await db.execute(
+                        select(func.count(ProviderCapability.id)).where(ProviderCapability.provider_id == uid))).scalar() or 0,
+                }
+    except Exception:
+        pass  # fall back to engine defaults
+
+    # 1. Context Engine — who / where / past / risks / direction
+    ctx = get_context_engine().understand(node_id, node_type, extra)
+
+    # 2. Possibility Graph — future states
+    possibility = None
+    try:
+        graph = get_possibility_engine().project(ctx)
+        possibility = graph.to_dict()
+    except Exception as e:
+        possibility = {"error": str(e), "states": {}, "transitions": []}
+
+    # 3. Memory velocity
+    velocity = None
+    try:
+        velocity = get_memory_engine().get_growth_velocity(node_id)
+    except Exception:
+        velocity = {"trend": "unknown"}
+
+    # 4. Reputation snapshot (compact) — lazy restore from DB (C6.2)
+    rep_snap = None
+    try:
+        re = get_reputation_engine()
+        if not re.event_store.get_events(node_id):
+            try:
+                await re.restore_from_db(db, node_id)
+            except Exception:
+                pass
+        rep = re.get_profile(node_id)
+        rep_snap = rep.to_dict() if rep else None
+    except Exception:
+        rep_snap = None
+
+    return {
+        "node_id": node_id,
+        "node_type": node_type,
+        "identity": ctx.identity,
+        "position": ctx.current_position,
+        "memory": {
+            "timeline": ctx.historical_memory,
+            "velocity": velocity,
+        },
+        "capability": ctx.capability_state,
+        "relationship": ctx.relationship_context,
+        "industry": ctx.industry_context,
+        "future_signals": ctx.future_signals,
+        "risk": ctx.risk_assessment,
+        "direction": ctx.recommended_direction,
+        "reputation": rep_snap,
+        "possibility": possibility,
+        "computed_at": ctx.computed_at,
+    }
+
+
+@router.get("/node/{node_type}/{node_id}/home")
+async def node_universe_home(node_type: str, node_id: str, db: AsyncSession = Depends(get_db)):
+    """C6.10 Universe Home aggregation for a single node.
+
+    The service assembles identity / position / story / ecosystem /
+    future / opportunities itself from DB + Universe engines.
+    """
+    if node_type not in ("company", "provider", "industry", "ai_agent", "government"):
+        raise HTTPException(400, f"Unsupported node type: {node_type}")
+    from app.services.universe_home import get_universe_home_service
+    try:
+        return await get_universe_home_service().build(db, node_type, node_id)
+    except Exception as e:
+        raise HTTPException(500, f"Universe Home aggregation failed: {str(e)}")
+
+
+
+# ---- Transaction Engine (Phase C6) — C6-T1 hardened ----
+
+from app.universe.transaction_engine import (
+    get_transaction_engine,
+    TransactionEngine,
+    TransactionScope,
+    UniverseTransaction,
+)
+from app.models.transaction_record import (
+    UniverseTransactionRecord,
+    TransactionEventRecord,
+)
+from datetime import datetime as _dt
+from sqlalchemy import select as _txselect
+
+
+async def _tx_record_to_dict(rec: UniverseTransactionRecord) -> dict:
+    """Reconstruct a transaction dict from a persisted DB record."""
+    scope = rec.scope_json or {}
+    return {
+        "transaction_id": rec.transaction_id,
+        "node_a_id": rec.node_a_id,
+        "node_b_id": rec.node_b_id,
+        "node_a_name": rec.node_a_name or rec.node_a_id,
+        "node_b_name": rec.node_b_name or rec.node_b_id,
+        "scope": scope,
+        "linked_opportunity_id": rec.linked_opportunity_id or "",
+        "relationship_id": rec.relationship_id or "",
+        "stage": rec.stage,
+        "previous_stage": rec.previous_stage or "",
+        "expected_value": rec.expected_value_json or {},
+        "milestone_count": rec.milestone_count or 0,
+        "milestones_completed": rec.milestones_completed or 0,
+        "created_at": rec.created_at.isoformat() if rec.created_at else "",
+        "updated_at": rec.updated_at.isoformat() if rec.updated_at else "",
+        "outcome": rec.outcome_json,
+    }
+
+
+async def _persist_transaction(db, tx: UniverseTransaction, outcome: dict = None):
+    """Upsert transaction state into durable storage."""
+    rec = await db.get(UniverseTransactionRecord, tx.transaction_id)
+    if not rec:
+        rec = UniverseTransactionRecord(transaction_id=tx.transaction_id)
+    rec.node_a_id = tx.node_a_id
+    rec.node_b_id = tx.node_b_id
+    rec.node_a_name = tx.node_a_name
+    rec.node_b_name = tx.node_b_name
+    rec.stage = tx.stage
+    rec.previous_stage = tx.previous_stage
+    rec.scope_json = tx.scope.to_dict()
+    rec.linked_opportunity_id = tx.linked_opportunity_id or None
+    rec.relationship_id = tx.relationship_id or None
+    rec.expected_value_json = tx.expected_value.to_dict()
+    rec.milestone_count = tx.milestone_count
+    rec.milestones_completed = tx.milestones_completed
+    if outcome is not None:
+        rec.outcome_json = outcome
+    db.add(rec)
+    await db.commit()
+
+
+async def _persist_event(db, event) -> None:
+    """Persist one transaction event (idempotent by event_id)."""
+    exists = await db.get(TransactionEventRecord, event.event_id)
+    if exists:
+        return
+    rec = TransactionEventRecord(
+        event_id=event.event_id,
+        transaction_id=event.transaction_id,
+        event_type=event.event_type,
+        actor_id=event.actor_id or None,
+        description=event.description or None,
+        milestone_index=event.milestone_index,
+        details_json=event.details or {},
+        timestamp=_dt.fromisoformat(event.timestamp.replace("Z", "+00:00")) if event.timestamp else _dt.utcnow(),
+    )
+    db.add(rec)
+    await db.commit()
+
+
+def _require_actor(data: dict, tx: UniverseTransaction) -> str:
+    """C6-T1 authorization: actor must be one of the transaction parties."""
+    actor = (data.get("actor_id") or "").strip()
+    if not actor:
+        raise HTTPException(400, "actor_id is required")
+    if actor not in (tx.node_a_id, tx.node_b_id):
+        raise HTTPException(403, "actor_id is not a party of this transaction")
+    return actor
+
+
+@router.post("/transactions/propose")
+async def propose_transaction(data: dict, db: AsyncSession = Depends(get_db)):
+    """Propose a transaction from a relationship opportunity or node pair.
+
+    Input: {node_a_id, node_b_id, scope:{...}, node_a_name?, node_b_name?, linked_opportunity_id?}
+    C6-T1: node_a_id/node_b_id are required; state is persisted.
+    """
+    node_a = (data.get("node_a_id") or "").strip()
+    node_b = (data.get("node_b_id") or "").strip()
+    if not node_a or not node_b:
+        raise HTTPException(400, "node_a_id and node_b_id are required")
+    if node_a == node_b:
+        raise HTTPException(400, "node_a_id and node_b_id must differ")
+
+    engine = get_transaction_engine()
+    tx = engine.propose(
+        node_a_id=node_a,
+        node_b_id=node_b,
+        scope=data.get("scope", {}),
+        node_a_name=data.get("node_a_name", ""),
+        node_b_name=data.get("node_b_name", ""),
+        linked_opportunity_id=data.get("linked_opportunity_id", ""),
+    )
+    await _persist_transaction(db, tx)
+    # Persist the proposed event
+    events = engine.get_transaction_with_history(tx.transaction_id)
+    if events and events.get("events"):
+        for e in events["events"]:
+            from app.universe.transaction_engine import TransactionEvent as _TE
+            try:
+                await _persist_event(db, _TE(**e))
+            except Exception:
+                pass
+    return engine.get_transaction_with_history(tx.transaction_id)
+
+
+@router.post("/transactions/{transaction_id}/transition")
+async def transition_transaction(transaction_id: str, data: dict, db: AsyncSession = Depends(get_db)):
+    """Advance a transaction: agreed | started | milestone_completed | delivered | reviewed.
+
+    C6-T1: actor must be a party; state is persisted.
+    """
+    engine = get_transaction_engine()
+    tx = engine._transactions.get(transaction_id)
+    if not tx:
+        raise HTTPException(404, "Transaction not found")
+    actor = _require_actor(data, tx)
+    event = engine.transition(
+        transaction_id=transaction_id,
+        event_type=data.get("event_type", ""),
+        actor_id=actor,
+        description=data.get("description", ""),
+        milestone_index=data.get("milestone_index", -1),
+        details=data.get("details", {}),
+    )
+    await _persist_event(db, event)
+    await _persist_transaction(db, tx)
+    return {"event": event.to_dict(), "transaction": engine.get_transaction_with_history(transaction_id)}
+
+
+@router.post("/transactions/{transaction_id}/complete")
+async def complete_transaction(transaction_id: str, data: dict, db: AsyncSession = Depends(get_db)):
+    """Complete a transaction: settled | failed | cancelled.
+
+    C6-T1:
+      - actor must be a party
+      - client reputation_delta values are ignored (server computes)
+      - failed/cancelled do not deduct reputation
+      - result is persisted
+    """
+    engine = get_transaction_engine()
+    tx = engine._transactions.get(transaction_id)
+    if not tx:
+        raise HTTPException(404, "Transaction not found")
+    actor = _require_actor(data, tx)
+    outcome = engine.complete(
+        transaction_id=transaction_id,
+        status=data.get("status", "settled"),
+        value_realized=data.get("value_realized", {}),
+        relationship_growth=data.get("relationship_growth", ""),
+        notes=data.get("notes", ""),
+        actor_id=actor,
+    )
+    await _persist_transaction(db, tx, outcome.to_dict())
+    # Persist any events produced by complete (delivered/reviewed/settled/failed)
+    events = engine.get_transaction_with_history(transaction_id)
+    if events and events.get("events"):
+        from app.universe.transaction_engine import TransactionEvent as _TE
+        for e in events["events"]:
+            try:
+                await _persist_event(db, _TE(**e))
+            except Exception:
+                pass
+    return {"outcome": outcome.to_dict(), "transaction": engine.get_transaction_with_history(transaction_id)}
+
+
+@router.get("/transactions/{transaction_id}")
+async def get_transaction(transaction_id: str, db: AsyncSession = Depends(get_db)):
+    """Get a transaction with full event history (from memory or durable storage)."""
+    engine = get_transaction_engine()
+    result = engine.get_transaction_with_history(transaction_id)
+    if result:
+        return result
+    rec = await db.get(UniverseTransactionRecord, transaction_id)
+    if not rec:
+        raise HTTPException(404, "Transaction not found")
+    d = await _tx_record_to_dict(rec)
+    ev_rows = (await db.execute(
+        _txselect(TransactionEventRecord).where(TransactionEventRecord.transaction_id == transaction_id)
+        .order_by(TransactionEventRecord.timestamp)
+    )).scalars().all()
+    d["events"] = [
+        {"event_id": e.event_id, "event_type": e.event_type, "actor_id": e.actor_id,
+         "description": e.description, "milestone_index": e.milestone_index,
+         "details": e.details_json or {}, "timestamp": e.timestamp.isoformat() if e.timestamp else ""}
+        for e in ev_rows
+    ]
+    return d
+
+
+@router.get("/transactions/node/{node_id}")
+async def get_node_transactions(node_id: str, db: AsyncSession = Depends(get_db)):
+    """Get all transactions involving a node (memory + durable storage)."""
+    engine = get_transaction_engine()
+    results = engine.get_node_transactions(node_id)
+    recs = (await db.execute(
+        _txselect(UniverseTransactionRecord).where(
+            (UniverseTransactionRecord.node_a_id == node_id) | (UniverseTransactionRecord.node_b_id == node_id)
+        ).order_by(UniverseTransactionRecord.updated_at.desc())
+    )).scalars().all()
+    seen = {r["transaction_id"] for r in results}
+    for rec in recs:
+        if rec.transaction_id in seen:
+            continue
+        d = await _tx_record_to_dict(rec)
+        ev_rows = (await db.execute(
+            _txselect(TransactionEventRecord).where(TransactionEventRecord.transaction_id == rec.transaction_id)
+        )).scalars().all()
+        d["events"] = [{"event_id": e.event_id, "event_type": e.event_type,
+                        "description": e.description, "timestamp": e.timestamp.isoformat() if e.timestamp else ""}
+                       for e in ev_rows]
+        results.append(d)
+    return results
+
+
+@router.post("/transactions/seed")
+async def seed_transaction():
+    """Seed a sample transaction and complete the full loop.
+
+    C6.1 freeze: only allowed in development/test environments.
+    """
+    import os as _os
+    env = (_os.environ.get("APP_ENV") or getattr(settings, "APP_ENV", "development") or "development").lower()
+    allowed = ["development", "test"]
+    # Read from learning.yaml to keep configuration authoritative
+    try:
+        import yaml as _yaml
+        _p = _os.path.join(_os.path.dirname(_os.path.dirname(_os.path.dirname(_os.path.dirname(_os.path.abspath(__file__))))),
+                           'config', 'universe', 'learning.yaml')
+        if _os.path.exists(_p):
+            _cfg = _yaml.safe_load(open(_p, encoding='utf-8'))
+            allowed = _cfg.get("transactions", {}).get("seed_allowed_environments", allowed)
+    except Exception:
+        pass
+    if env not in allowed:
+        raise HTTPException(403, "transaction seed is disabled in this environment (C6.1 freeze)")
+    engine = get_transaction_engine()
+    return engine.seed_sample_data()

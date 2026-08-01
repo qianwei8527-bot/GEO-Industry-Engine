@@ -243,11 +243,8 @@ class DeepSeekProvider(BaseAIProvider):
                 model=resp.model,
                 usage={"prompt_tokens": resp.usage.prompt_tokens, "completion_tokens": resp.usage.completion_tokens},
             )
-        except ImportError:
-            return ChatCompletionResponse(
-                content=f"[DeepSeek not configured] Model: {model}",
-                model=model,
-            )
+        except ImportError as e:
+            raise RuntimeError("deepseek provider library not installed") from e
 
     def list_models(self) -> List[str]:
         return [self.default_model, "deepseek-reasoner"]

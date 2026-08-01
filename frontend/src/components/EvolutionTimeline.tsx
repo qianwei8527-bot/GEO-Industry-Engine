@@ -101,10 +101,10 @@ export default function EvolutionTimeline({ entityId }: { entityId: string }) {
         <div className="px-6 py-10 text-center">
           <Award className="w-10 h-10 text-gray-700 mx-auto mb-3" />
           <p className="text-gray-400 text-sm max-w-md mx-auto">{data.message}</p>
-          {data.current_stage && (
+          {data.current_state && (
             <div className="mt-4 inline-flex items-center gap-2 bg-gray-800 px-4 py-2 rounded-lg">
               <Target className="w-4 h-4 text-gray-500" />
-              <span className="text-sm text-gray-300">当前阶段：{data.current_stage}</span>
+              <span className="text-sm text-gray-300">当前阶段：{data.current_state}</span>
             </div>
           )}
         </div>

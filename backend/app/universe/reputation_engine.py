@@ -34,7 +34,7 @@ class ReputationEvent:
     recorded_at: str = ''
 
     def __post_init__(self):
-        if not self.event_id: self.event_id = str(uuid.uuid4())[:8]
+        if not self.event_id: self.event_id = str(uuid.uuid4())
         if not self.timestamp: self.timestamp = datetime.now(timezone.utc).isoformat()
         if not self.recorded_at: self.recorded_at = datetime.now(timezone.utc).isoformat()
         if self.evidence_refs is None: self.evidence_refs = []
@@ -127,6 +127,10 @@ class EventStore:
         if cls._instance is None: cls._instance = cls()
         return cls._instance
     def append(self, event):
+        # C6.1 Gate 0-2: idempotent append by event_id.
+        existing = self._events.get(event.node_id, [])
+        if any(e.event_id == event.event_id for e in existing):
+            return event
         self._events.setdefault(event.node_id, []).append(event)
         return event
     def get_events(self, node_id, since=None, dimensions=None):
@@ -370,6 +374,59 @@ class ReputationEngine:
         return self.snapshot_manager.create_snapshot(node_id=node_id, node_type=node_type, dimensions=dims, overall_score=overall, overall_level=level, status=status, trend=trend, trend_momentum=momentum, total_events=len(events), event_range_start=events[0].timestamp if events else '', event_range_end=events[-1].timestamp if events else '')
     def get_history(self, node_id):
         return [e.to_dict() for e in self.event_store.get_events(node_id)]
+
+    # ---- C6.1 Gate 0-2: durable reputation source of truth ----
+
+    async def persist_event(self, db, event) -> bool:
+        """Persist one reputation event to DB. Idempotent (event_id PK)."""
+        from app.models.reputation_event_record import ReputationEventRecord
+        exists = await db.get(ReputationEventRecord, event.event_id)
+        if exists:
+            return False
+        rec = ReputationEventRecord(
+            event_id=event.event_id, node_id=event.node_id, node_type=event.node_type,
+            event_type=event.event_type, dimension=event.dimension, impact=event.impact,
+            base_weight=event.base_weight, evidence_weight=event.evidence_weight,
+            source_type=event.source_type, source_id=event.source_id or None,
+            source_weight=event.source_weight, effective_weight=event.effective_weight,
+            evidence_refs=event.evidence_refs or [], description=event.description,
+            timestamp=datetime.fromisoformat(event.timestamp.replace('Z','+00:00')) if event.timestamp else datetime.now(timezone.utc),
+            recorded_at=datetime.fromisoformat(event.recorded_at.replace('Z','+00:00')) if event.recorded_at else datetime.now(timezone.utc),
+        )
+        db.add(rec)
+        return True
+
+    async def restore_from_db(self, db, node_id: str, node_type: str = 'company') -> ReputationSnapshot:
+        """Load all persisted events for a node into memory and recalculate.
+
+        DB is the source of truth; memory never overrides it.
+        """
+        from sqlalchemy import select
+        from app.models.reputation_event_record import ReputationEventRecord
+        rows = (await db.execute(
+            select(ReputationEventRecord).where(ReputationEventRecord.node_id == node_id)
+            .order_by(ReputationEventRecord.timestamp)
+        )).scalars().all()
+        # Clear memory events for this node before replay
+        if node_id in self.event_store._events:
+            del self.event_store._events[node_id]
+        for r in rows:
+            ev = ReputationEvent(
+                event_id=r.event_id, node_id=r.node_id, node_type=r.node_type,
+                event_type=r.event_type, dimension=r.dimension, impact=r.impact,
+                base_weight=r.base_weight, evidence_weight=r.evidence_weight,
+                source_type=r.source_type, source_id=r.source_id or '',
+                source_weight=r.source_weight, effective_weight=r.effective_weight,
+                evidence_refs=r.evidence_refs or [], description=r.description or '',
+                timestamp=r.timestamp.isoformat() if r.timestamp else '',
+                recorded_at=r.recorded_at.isoformat() if r.recorded_at else '',
+            )
+            self.event_store.append(ev)
+        return self.recalculate(node_id, node_type)
+
+    async def rebuild(self, db, node_id: str, node_type: str = 'company') -> ReputationSnapshot:
+        """Rebuild reputation state from durable events (replay)."""
+        return await self.restore_from_db(db, node_id, node_type)
     def archive_all(self, node_id):
         for snap in self._snapshots.get(node_id, []):
             snap.is_current = False
@@ -407,6 +464,10 @@ class ReputationEngine:
         ReputationCalculator.reset()
         ExplanationBuilder.reset()
         TrustPropagator.reset()
+        try:
+            get_reputation_engine.cache_clear()
+        except Exception:
+            pass
 
 @lru_cache()
 def get_reputation_engine():

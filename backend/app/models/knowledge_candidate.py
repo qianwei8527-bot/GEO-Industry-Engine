@@ -22,12 +22,19 @@ class KnowledgeCandidate(Base):
     concept_name: Mapped[str] = mapped_column(String(255), nullable=False, index=True)
     concept_type: Mapped[str] = mapped_column(String(64), nullable=False, default="unknown",
         comment="role / capability / organization / product / relationship_type")
+    candidate_key: Mapped[str | None] = mapped_column(String(255), nullable=True, index=True)
     description: Mapped[str | None] = mapped_column(Text, nullable=True)
 
     # State machine
     recognition_state: Mapped[str] = mapped_column(String(32), nullable=False, default="observed", index=True,
         comment="observed / emerging / recognized / adopted / rejected")
     confidence: Mapped[float] = mapped_column(Float, default=0.0)
+    is_synthetic: Mapped[bool] = mapped_column(Boolean, default=False)
+    sources: Mapped[list | None] = mapped_column(JSONB, nullable=True)
+    evidence_ids: Mapped[list | None] = mapped_column(JSONB, nullable=True)
+    observation_ids: Mapped[list | None] = mapped_column(JSONB, nullable=True)
+    proposal_id: Mapped[str | None] = mapped_column(String(128), nullable=True)
+    adoption_record: Mapped[dict | None] = mapped_column(JSONB, nullable=True)
 
     # Emergence Score components
     occurrence_count: Mapped[int] = mapped_column(Integer, default=0)

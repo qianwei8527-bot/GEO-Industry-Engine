@@ -1,0 +1,7 @@
+{
+  "real_nodes": 12,
+  "synthetic_nodes": 12,
+  "synthetic_never_touches_real": true,
+  "results_never_seeded": true,
+  "evidence_requires_source": true
+}

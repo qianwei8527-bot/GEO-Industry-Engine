@@ -30,6 +30,7 @@ dependencies = [
     "python-dotenv==1.0.1",
     "email-validator==2.2.0",
     "pyyaml==6.0.2",
+    "openai>=1.40.0",
 ]
 
 [project.optional-dependencies]
@@ -48,12 +49,19 @@ where = ["."]
 [tool.ruff]
 line-length = 100
 target-version = "py311"
-exclude = [".pytest_cache", "alembic/", "__pycache__"]
+# One-time scripts and legacy scratch files are excluded from the quality gate.
+# They are tracked in git history but are not part of the runtime surface.
+exclude = [
+    ".pytest_cache", "alembic/", "__pycache__",
+    "patch1.py", "patch_step1.py", "patch_tests_b64.py",
+    "tmp_10.py", "tmp_fixes.py", "_fix_suspense.py",
+]
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "N", "W", "B", "UP"]
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
+asyncio_default_test_loop_scope = "session"
 testpaths = ["../tests"]
 addopts = "-v --tb=short"

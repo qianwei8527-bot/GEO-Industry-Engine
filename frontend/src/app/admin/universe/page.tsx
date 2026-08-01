@@ -4,6 +4,19 @@ import { useState, useEffect } from "react";
 import { api } from "@/lib/api";
 import { Globe, Loader2, Activity, Eye, TrendingUp, Clock, Zap, Shield, AlertCircle } from "lucide-react";
 
+interface UniverseOverview {
+  universe_stats?: {
+    industries?: number;
+    companies?: number;
+    relationships?: number;
+    observations?: number;
+  };
+}
+
+interface DbStatsPayload {
+  counts?: Record<string, number>;
+}
+
 export default function AdminUniversePage() {
   const [stats, setStats] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -13,7 +26,10 @@ export default function AdminUniversePage() {
       api.graph.overview().catch(() => null),
       api.admin.dbStats().catch(() => null),
     ]).then(([overview, dbStats]) => {
-      setStats({ overview: overview?.universe_stats || {}, db: dbStats?.counts || {} });
+      setStats({
+        overview: ((overview ?? {}) as UniverseOverview).universe_stats || {},
+        db: ((dbStats ?? {}) as DbStatsPayload).counts || {},
+      });
       setLoading(false);
     });
   }, []);

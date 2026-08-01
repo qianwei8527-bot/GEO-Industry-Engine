@@ -62,7 +62,7 @@ export default function IntelligencePanel({ nodeData, nodeDetail, onClose }: Pro
 
     setLoading(true);
     api.universe.panel(nodeType, rawId)
-      .then((data: PanelData) => setPanelData(data))
+      .then((data) => { if (data) setPanelData(data as PanelData); })
       .catch(() => setPanelData(null))
       .finally(() => setLoading(false));
   }, [nodeData]);

@@ -1,0 +1,24 @@
+{"node_id": "real-01", "event_type": "public_record", "title": "清华大学 公开名录登记", "description": "来自 moedu_universities 的公开机构登记", "impact_score": 0.5}
+{"node_id": "real-02", "event_type": "public_record", "title": "北京大学 公开名录登记", "description": "来自 moedu_universities 的公开机构登记", "impact_score": 0.5}
+{"node_id": "real-03", "event_type": "public_record", "title": "复旦大学 公开名录登记", "description": "来自 moedu_universities 的公开机构登记", "impact_score": 0.5}
+{"node_id": "real-04", "event_type": "public_record", "title": "上海交通大学 公开名录登记", "description": "来自 moedu_universities 的公开机构登记", "impact_score": 0.5}
+{"node_id": "real-05", "event_type": "public_record", "title": "科大讯飞 公开名录登记", "description": "来自 ror 的公开机构登记", "impact_score": 0.5}
+{"node_id": "real-06", "event_type": "public_record", "title": "好未来 公开名录登记", "description": "来自 ror 的公开机构登记", "impact_score": 0.5}
+{"node_id": "real-07", "event_type": "public_record", "title": "网易有道 公开名录登记", "description": "来自 ror 的公开机构登记", "impact_score": 0.5}
+{"node_id": "real-08", "event_type": "public_record", "title": "视源股份 公开名录登记", "description": "来自 ror 的公开机构登记", "impact_score": 0.5}
+{"node_id": "real-09", "event_type": "public_record", "title": "中国科学院 公开名录登记", "description": "来自 ror 的公开机构登记", "impact_score": 0.5}
+{"node_id": "real-10", "event_type": "public_record", "title": "中国教育科学研究院 公开名录登记", "description": "来自 ror 的公开机构登记", "impact_score": 0.5}
+{"node_id": "real-11", "event_type": "public_record", "title": "国家教育行政学院 公开名录登记", "description": "来自 moedu_stats 的公开机构登记", "impact_score": 0.5}
+{"node_id": "real-12", "event_type": "public_record", "title": "中国教育装备行业协会 公开名录登记", "description": "来自 moedu_stats 的公开机构登记", "impact_score": 0.5}
+{"node_id": "syn-01", "event_type": "synthetic_event", "title": "启明教育云（仿真） 仿真事件", "description": "high_evidence_mature", "impact_score": 0.3}
+{"node_id": "syn-02", "event_type": "synthetic_event", "title": "新芽智学（仿真） 仿真事件", "description": "self_report_only_new", "impact_score": 0.3}
+{"node_id": "syn-03", "event_type": "synthetic_event", "title": "博闻数字课堂（仿真） 仿真事件", "description": "capability_without_evidence", "impact_score": 0.3}
+{"node_id": "syn-04", "event_type": "synthetic_event", "title": "星辰教育科技（仿真·疑似重名） 仿真事件", "description": "same_name_duplicate", "impact_score": 0.3}
+{"node_id": "syn-05", "event_type": "synthetic_event", "title": "曜石智联（仿真·域名近似） 仿真事件", "description": "domain_probable_duplicate", "impact_score": 0.3}
+{"node_id": "syn-06", "event_type": "synthetic_event", "title": "慧谷教育科技（仿真） 仿真事件", "description": "verified_media_report", "impact_score": 0.3}
+{"node_id": "syn-07", "event_type": "synthetic_event", "title": "云梯课堂（仿真） 仿真事件", "description": "unverifiable_case", "impact_score": 0.3}
+{"node_id": "syn-08", "event_type": "synthetic_event", "title": "晨光学习平台（仿真） 仿真事件", "description": "evidence_expired", "impact_score": 0.3}
+{"node_id": "syn-09", "event_type": "synthetic_event", "title": "知行数据服务（仿真） 仿真事件", "description": "successful_transaction", "impact_score": 0.3}
+{"node_id": "syn-10", "event_type": "synthetic_event", "title": "弘毅交付（仿真） 仿真事件", "description": "failed_unarbitrated_transaction", "impact_score": 0.3}
+{"node_id": "syn-11", "event_type": "synthetic_event", "title": "联思生态（仿真） 仿真事件", "description": "relationship_growing", "impact_score": 0.3}
+{"node_id": "syn-12", "event_type": "synthetic_event", "title": "远舟评测（仿真） 仿真事件", "description": "observation_rejected", "impact_score": 0.3}

@@ -1,0 +1,62 @@
+# C6.2 Access Control — server-side enforcement only.
+# Frontend hiding is never a substitute for backend checks.
+
+version: "1.0.0"
+
+roles:
+  system_admin:
+    label: 系统管理员
+    platform_actions: [evidence_verify, change_approve, change_reject, change_apply, node_rebuild, manage_membership]
+  reviewer:
+    label: 审核员
+    platform_actions: [evidence_verify, change_approve, change_reject]
+  node_owner:
+    label: 节点所有者
+    node_actions: [evidence_submit, change_create, manage_membership]
+  node_editor:
+    label: 节点编辑者
+    node_actions: [evidence_submit, change_create]
+  node_viewer:
+    label: 节点只读成员
+    node_actions: []
+
+# Action -> allowed platform roles
+platform_permissions:
+  evidence_verify: [reviewer, system_admin]
+  evidence_reject: [reviewer, system_admin]
+  change_approve_high: [reviewer, system_admin]
+  change_reject: [reviewer, system_admin]
+  change_apply: [system_admin]
+  node_rebuild: [system_admin]
+  manage_membership: [system_admin, node_owner]
+
+# Node membership roles
+node_roles:
+  - id: node_owner
+    label: 所有者
+    can_submit_evidence: true
+    can_create_change: true
+    can_verify_evidence: false
+    can_manage_members: true
+  - id: node_editor
+    label: 编辑者
+    can_submit_evidence: true
+    can_create_change: true
+    can_verify_evidence: false
+    can_manage_members: false
+  - id: node_viewer
+    label: 只读
+    can_submit_evidence: false
+    can_create_change: false
+    can_verify_evidence: false
+    can_manage_members: false
+
+# Four-eyes principle: submitter != verifier (high impact mandatory)
+four_eyes:
+  enabled: true
+  high_impact_requires_different_users: true
+
+# Transaction freeze continues
+transactions:
+  enabled: false
+  learning_source_enabled: false
