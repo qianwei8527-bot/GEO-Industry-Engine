@@ -41,8 +41,8 @@ async def seed():
         for eid, claim, url, stype, conf, verified in evs:
             ev_id = str(uuid.uuid4())
             sql = text(
-                "INSERT INTO evidence (id, entity_type, entity_id, claim, source_url, source_type, confidence_level, verified, tenant_id, created_at) "
-                "VALUES (:id, 'company', :eid, :claim, :url, :stype, :conf, :ver, NULL, NOW())"
+                "INSERT INTO evidence (id, entity_type, entity_id, claim, source_url, source_type, confidence_level, verified, tenant_id, created_at, updated_at) "
+                "VALUES (:id, 'company', :eid, :claim, :url, :stype, :conf, :ver, NULL, NOW(), NOW())"
             )
             await db.execute(sql, {"id": ev_id, "eid": eid, "claim": claim, "url": url, "stype": stype, "conf": conf, "ver": verified})
         print("Added " + str(len(evs)) + " evidence records")

@@ -11,7 +11,7 @@ export default function MarketplacePage() {
 
   useEffect(() => {
     (async () => {
-      try { const data = await api.marketplace.listProviders(); setProviders(data.providers || []); }
+      try { const data = await api.marketplace.listProviders() as any; setProviders(data.providers || []); }
       catch (e) { console.error(e); }
       finally { setLoading(false); }
     })();

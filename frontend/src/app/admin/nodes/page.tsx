@@ -15,7 +15,7 @@ export default function AdminNodesPage() {
       api.companies.list("").catch(() => []),
       api.marketplace.listProviders().catch(() => []),
       api.industries.list().catch(() => []),
-    ]).then(([comp, prov, ind]) => {
+    ]).then(([comp, prov, ind]: [any, any, any]) => {
       const all = [
         ...(Array.isArray(comp) ? comp : (comp.companies || comp.items || [])).map((c: any) => ({ ...c, _type: "企业" })),
         ...(Array.isArray(prov) ? prov : (prov.providers || prov.items || [])).map((p: any) => ({ ...p, _type: "服务商" })),
