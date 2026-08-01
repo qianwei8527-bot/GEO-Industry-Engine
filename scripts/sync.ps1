@@ -39,8 +39,9 @@ With commit: push after a successful commit.
 .\scripts\sync.ps1 pull
 
 .EXAMPLE
-git switch -c agent/c55-universe-home
+git switch master
 .\scripts\sync.ps1 pull
+git switch -c agent/c55-universe-home
 
 .EXAMPLE
 .\scripts\sync.ps1 commit -Paths backend/app/api/v1/universe.py,frontend/src/types/universe.ts -Message "fix: universe sync"
@@ -118,17 +119,16 @@ function Invoke-Pull {
     $branch = Get-CurrentBranch
     Assert-CleanTree
 
+    $upstream = & $Git rev-parse --verify --quiet --abbrev-ref --symbolic-full-name '@{u}'
+    if ($LASTEXITCODE -ne 0) {
+        throw "Branch '$branch' has no upstream. Sync master first, then create the task branch; or push this branch first to establish upstream."
+    }
+
     Invoke-Git @('fetch', 'origin')
     Write-Host "Current branch: $branch" -ForegroundColor Cyan
     & $Git status --short --branch
 
-    & $Git rev-parse --abbrev-ref --symbolic-full-name '@{u}' 2>$null
-    if ($LASTEXITCODE -eq 0) {
-        Invoke-Git @('pull', '--ff-only')
-    }
-    else {
-        Invoke-Git @('pull', '--ff-only', 'origin', $branch)
-    }
+    Invoke-Git @('pull', '--ff-only')
 
     & $Git status --short --branch
     Write-Host 'Ready: up to date and clean.' -ForegroundColor Green
@@ -243,7 +243,7 @@ function Invoke-Push {
 function Show-Status {
     $branch = Get-CurrentBranch
 
-    $upstream = & $Git rev-parse --abbrev-ref --symbolic-full-name '@{u}' 2>$null
+    $upstream = & $Git rev-parse --verify --quiet --abbrev-ref --symbolic-full-name '@{u}'
     if ($LASTEXITCODE -ne 0) {
         $upstream = '(none)'
     }
