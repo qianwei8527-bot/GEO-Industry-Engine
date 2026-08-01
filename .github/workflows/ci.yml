@@ -25,7 +25,7 @@ jobs:
         with: { python-version: "3.12" }
       - run: pip install ruff
       - name: Backend critical lint
-          run: ruff check backend/ --select E9,F63,F7,F82
+        run: ruff check backend/ --select E9,F63,F7,F82
 
       # Frontend lint
       - uses: actions/setup-node@v4
