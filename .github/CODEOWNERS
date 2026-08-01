@@ -1,0 +1,15 @@
+﻿# Global CODEOWNERS for GEO-Industry-Engine
+# Default owners for everything in the repo
+* @qianwei8527-bot
+
+# Universe engines (Phase C1-C5.4)
+backend/app/universe/ @qianwei8527-bot
+
+# Design documents (frozen designs)
+docs/ @qianwei8527-bot
+
+# CI/CD workflows
+.github/workflows/ @qianwei8527-bot
+
+# Frontend
+frontend/ @qianwei8527-bot
