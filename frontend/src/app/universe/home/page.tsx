@@ -6,7 +6,7 @@ import {
   Eye, Zap, Clock, Loader2, ChevronRight, TrendingUp, Link2,
   Star, Award, AlertCircle, CheckCircle2, ArrowUpRight,
   Network, Database, Sparkles, Layers, GitBranch, Radio,
-  Activity, Crosshair, BookOpen, Briefcase, Search, RefreshCw,
+  Activity, Crosshair, BookOpen, Briefcase, Search, RefreshCw, Globe,
 } from "lucide-react";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api/v1";
@@ -52,6 +52,9 @@ export default function UniverseHomePage() {
   const [panel, setPanel] = useState<any>(null);
   const [reputation, setReputation] = useState<any>(null);
   const [opportunities, setOpportunities] = useState<any[]>([]);
+  const [learningHistory, setLearningHistory] = useState<any[]>([]);
+  const [externalObs, setExternalObs] = useState<any[]>([]);
+  const [visibility, setVisibility] = useState<any>(null);
   const [error, setError] = useState("");
 
   useEffect(() => {
@@ -93,6 +96,25 @@ export default function UniverseHomePage() {
       .then((data: any) => setOpportunities(Array.isArray(data) ? data : []))
       .catch(() => setOpportunities([]))
       .finally(() => setOppLoading(false));
+
+    fetch(`${API_BASE}/universe/nodes/${rawId}/learning-history`)
+      .then(r => r.ok ? r.json() : { history: [] })
+      .then((data: any) => setLearningHistory(Array.isArray(data.history) ? data.history : []))
+      .catch(() => setLearningHistory([]));
+
+    fetch(`${API_BASE}/universe/nodes/${rawId}/external-observations`, {
+      headers: { Authorization: `Bearer ${localStorage.getItem("geo_token") || ""}` },
+    })
+      .then(r => r.ok ? r.json() : { observations: [] })
+      .then((data: any) => setExternalObs(Array.isArray(data.observations) ? data.observations : []))
+      .catch(() => setExternalObs([]));
+
+    fetch(`${API_BASE}/geo/visibility/${rawId}`, {
+      headers: { Authorization: `Bearer ${localStorage.getItem("geo_token") || ""}` },
+    })
+      .then(r => r.ok ? r.json() : null)
+      .then(setVisibility)
+      .catch(() => setVisibility(null));
   }, [selected]);
 
   const handleSearch = async () => {
@@ -459,6 +481,89 @@ export default function UniverseHomePage() {
                   </div>
                 ) : (
                   <p className="text-sm text-slate-500">暂无未来推演。运行决策分析后生成。</p>
+                )}
+              </div>
+
+              <div className="bg-slate-900 border border-slate-800 rounded-xl p-5">
+                <h3 className="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-4 flex items-center gap-2">
+                  <TrendingUp className="w-4 h-4 text-emerald-400" /> GEO 可见度
+                </h3>
+                {visibility ? (
+                  <div className="space-y-3">
+                    {visibility.sample_insufficient && (
+                      <p className="text-xs text-amber-300 bg-amber-500/10 border border-amber-500/20 rounded-lg px-3 py-2">
+                        {visibility.low_sample_label || "样本不足"}：观测样本 {visibility.sample_size || 0}
+                      </p>
+                    )}
+                    <div className="grid grid-cols-2 gap-2">
+                      {(Object.entries(visibility.metrics || {})).slice(0, 6).map(([k, v]: any) => (
+                        <div key={k} className="bg-slate-800/50 rounded-lg p-2.5">
+                          <div className="text-[9px] text-slate-500 uppercase">{k.replace(/_/g, " ")}</div>
+                          <div className="text-base font-semibold text-emerald-300">{Math.round((v || 0) * 100)}%</div>
+                        </div>
+                      ))}
+                    </div>
+                    <p className="text-[10px] text-slate-500">
+                      AI 平台：{(visibility.providers || []).join(", ") || "无"} · 观测于 {visibility.captured_at?.slice(0, 10) || "—"}
+                    </p>
+                  </div>
+                ) : (
+                  <p className="text-sm text-slate-500">暂无可见度观测。运行检测后显示 AI 提及、引用与推荐情况。</p>
+                )}
+              </div>
+
+              <div className="bg-slate-900 border border-slate-800 rounded-xl p-5">
+                <h3 className="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-4 flex items-center gap-2">
+                  <Globe className="w-4 h-4 text-blue-400" /> 外部观察
+                </h3>
+                {externalObs.length > 0 ? (
+                  <div className="space-y-3">
+                    {externalObs.slice(0, 3).map((o: any, i: number) => (
+                      <div key={i} className="bg-slate-800/50 rounded-lg p-3">
+                        <div className="flex items-center justify-between mb-1">
+                          <span className="text-xs font-medium text-slate-200 truncate">{o.title || o.source_id}</span>
+                          <span className={`text-[9px] px-1.5 py-0.5 rounded ${o.trust_tier === "high" ? "bg-emerald-500/10 text-emerald-400" : "bg-amber-500/10 text-amber-300"}`}>
+                            {o.trust_tier}
+                          </span>
+                        </div>
+                        <p className="text-[10px] text-slate-500 truncate">{o.source_url}</p>
+                        <p className="text-[10px] text-slate-600 mt-1">{o.captured_at?.slice(0, 16).replace("T", " ")} · hash {o.content_hash?.slice(0, 8)}</p>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-sm text-slate-500">暂无外部观察。待审核的候选变化不会显示为已确认事实。</p>
+                )}
+              </div>
+
+              <div className="bg-slate-900 border border-slate-800 rounded-xl p-5">
+                <h3 className="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-4 flex items-center gap-2">
+                  <BookOpen className="w-4 h-4 text-sky-400" /> 最近变化
+                </h3>
+                {learningHistory.length > 0 ? (
+                  <div className="space-y-3">
+                    {learningHistory.slice(0, 4).map((h: any, i: number) => (
+                      <div key={i} className="bg-slate-800/50 rounded-lg p-3">
+                        <div className="flex items-center justify-between mb-1">
+                          <span className="text-xs font-medium text-slate-200">{h.signal_label || h.change_type}</span>
+                          <span className={`text-[9px] px-1.5 py-0.5 rounded ${h.review_status === "APPLIED" ? "bg-emerald-500/10 text-emerald-400" : h.review_status === "REJECTED" ? "bg-rose-500/10 text-rose-400" : "bg-amber-500/10 text-amber-300"}`}>
+                            {h.review_status}
+                          </span>
+                        </div>
+                        <p className="text-[10px] text-slate-500 mb-1.5">{h.evidence_summary || "无摘要"}</p>
+                        <div className="flex flex-wrap gap-1">
+                          {(h.affected_engines || []).slice(0, 3).map((e: string, j: number) => (
+                            <span key={j} className="text-[9px] px-1.5 py-0.5 rounded bg-sky-500/10 text-sky-300">{e}</span>
+                          ))}
+                          {(h.applicable_rules || []).slice(0, 2).map((r: string, j: number) => (
+                            <span key={j} className="text-[9px] px-1.5 py-0.5 rounded bg-slate-700 text-slate-400">{r}</span>
+                          ))}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-sm text-slate-500">暂无学习变化。新增证据或资料更新后会显示在这里。</p>
                 )}
               </div>
 

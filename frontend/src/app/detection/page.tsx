@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Search, Shield, TrendingUp, AlertTriangle, Map, Target, BarChart3, ArrowRight, Building2 } from 'lucide-react';
 import { api } from '@/lib/api';
+import { authedFetch } from '@/lib/authFetch';
+import { RadioTower, Loader2, CheckCircle2, XCircle } from 'lucide-react';
 
 const LAYERS = [
   { id: 'identity', name: '身份与位置', icon: Shield, desc: '我在AI世界中是谁？在产业中排名如何？' },
@@ -20,6 +22,12 @@ export default function DetectionPage() {
   const [activeLayer, setActiveLayer] = useState<LayerType>('identity');
   const [demoData, setDemoData] = useState<any>(null);
   const [demoLoading, setDemoLoading] = useState(true);
+  const [visNode, setVisNode] = useState("");
+  const [visProvider, setVisProvider] = useState("");
+  const [visReps, setVisReps] = useState(2);
+  const [visPreflight, setVisPreflight] = useState<any>(null);
+  const [visResult, setVisResult] = useState<any>(null);
+  const [visLoading, setVisLoading] = useState(false);
   const router = useRouter();
 
   // Load a real company to demonstrate the engine capabilities
@@ -97,6 +105,76 @@ export default function DetectionPage() {
         {['腾讯AI','张三','杭州AI营销','大模型基础设施'].map(s => (
           <button key={s} onClick={() => setQuery(s)} className='text-blue-500 hover:underline mx-2'>{s}</button>
         ))}
+      </div>
+
+      {/* C6.4-R AI Visibility Observation */}
+      <div className="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden mb-12">
+        <div className="px-6 py-4 border-b border-gray-100 flex items-center gap-3">
+          <RadioTower className="w-5 h-5 text-blue-600" />
+          <h2 className="font-semibold text-gray-900">AI 可见度观测</h2>
+          <span className="text-xs text-slate-400">真实数据标识 · 预算硬门禁 · neutral/branded 分离</span>
+        </div>
+        <div className="p-6">
+          <div className="flex flex-wrap gap-3 items-end mb-4">
+            <div>
+              <label className="block text-xs text-slate-500 mb-1">节点 ID</label>
+              <input value={visNode} onChange={e => setVisNode(e.target.value)} placeholder="如：b4578afd-..."
+                className="border border-gray-300 rounded-lg px-3 py-2 text-sm w-64 focus:outline-none focus:border-blue-500" />
+            </div>
+            <div>
+              <label className="block text-xs text-slate-500 mb-1">Provider</label>
+              <select value={visProvider} onChange={e => setVisProvider(e.target.value)}
+                className="border border-gray-300 rounded-lg px-3 py-2 text-sm">
+                <option value="">默认</option>
+                <option value="openai">OpenAI</option>
+                <option value="claude">Claude</option>
+                <option value="deepseek">DeepSeek</option>
+                <option value="gemini">Gemini</option>
+              </select>
+            </div>
+            <div>
+              <label className="block text-xs text-slate-500 mb-1">重复次数</label>
+              <input type="number" min={1} max={3} value={visReps} onChange={e => setVisReps(Number(e.target.value))}
+                className="border border-gray-300 rounded-lg px-3 py-2 text-sm w-20" />
+            </div>
+            <button onClick={async () => {
+              if (!visNode.trim()) return;
+              setVisLoading(true); setVisResult(null); setVisPreflight(null);
+              try {
+                const r = await authedFetch(`/geo/observation-runs`, {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({ node_id: visNode.trim(), provider: visProvider, question_keys: ["brand_recognition_1", "provider_recommendation_1", "expert_explanation_1"], repetitions: visReps }),
+                });
+                const data = await r.json();
+                setVisPreflight(data);
+                setVisResult(data);
+              } catch { /* ignore */ }
+              setVisLoading(false);
+            }} disabled={visLoading}
+              className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 disabled:opacity-50">
+              {visLoading ? <Loader2 className="w-4 h-4 inline animate-spin mr-1" /> : null}执行观测
+            </button>
+          </div>
+
+          {visPreflight && (
+            <div className={`text-sm rounded-lg px-4 py-3 ${visPreflight.status === "blocked" || visPreflight.allowed === false ? "bg-amber-50 border border-amber-200 text-amber-800" : "bg-green-50 border border-green-200 text-green-800"}`}>
+              <div className="font-medium mb-1 flex items-center gap-2">
+                {visPreflight.allowed === false ? <XCircle className="w-4 h-4" /> : <CheckCircle2 className="w-4 h-4" />}
+                {visPreflight.status === "blocked" ? "预算预检未通过" : visPreflight.status}
+              </div>
+              <div className="text-xs space-y-1">
+                {(visPreflight.reasons || []).map((r: string, i: number) => <div key={i}>· {r}</div>)}
+                {visPreflight.estimated_calls ? <div>预计调用 {visPreflight.estimated_calls} · 预计成本 {visPreflight.estimated_max_cost ?? "未知"} · 预算上限 {visPreflight.budget_limit} · 模式 {visPreflight.observation_mode || "—"}</div> : null}
+              </div>
+            </div>
+          )}
+          {visResult && visResult.status === "completed" && (
+            <div className="mt-3 text-xs text-slate-500">
+              真实回答已保存：{visResult.answers} 条 · provider {visResult.provider} · model {visResult.model} · 成本 {visResult.estimated_cost} · data_origin real（仅当 provider 已配置）
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Four Layers Tabs — powered by real demo data */}
