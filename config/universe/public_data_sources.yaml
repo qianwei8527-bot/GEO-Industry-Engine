@@ -1,0 +1,57 @@
+# C6.5 Public data source registry — whitelist + license + scope.
+# Real facts only from these sources; never copy full text, only metadata/excerpts/hash.
+version: "1.0.0"
+sources:
+  - id: "moedu_universities"
+    name: "教育部全国高等学校名单"
+    priority: P0
+    type: government
+    license: "官方公开名录"
+    fields: [institution_name, region, level, official_website, external_id]
+    url: "https://www.moe.gov.cn/jyb_xxgk/s5743/s5744/"
+  - id: "moedu_stats"
+    name: "教育部/国家统计局公开统计"
+    priority: P0
+    type: government
+    license: "官方公开统计"
+    fields: [industry, region, indicators]
+    url: "https://www.stats.gov.cn/"
+  - id: "ror"
+    name: "ROR Research Organization Registry"
+    priority: P0
+    type: registry
+    license: "CC0"
+    fields: [org_name, ror_id, country, org_type, website]
+    url: "https://ror.org/"
+  - id: "openalex"
+    name: "OpenAlex"
+    priority: P0
+    type: scholarly
+    license: "CC0 (metadata)"
+    fields: [work, author, institution, concept, cited_by]
+    url: "https://openalex.org/"
+  - id: "crossref"
+    name: "Crossref"
+    priority: P0
+    type: scholarly
+    license: "Crossref metadata API terms"
+    fields: [doi, title, publisher, year]
+    url: "https://www.crossref.org/"
+  - id: "ccgp"
+    name: "中国政府采购网公开公告"
+    priority: P1
+    type: government
+    license: "公开采购公告"
+    fields: [procurement, supplier, amount, date]
+    url: "http://www.ccgp.gov.cn/"
+  - id: "cnipa"
+    name: "国家知识产权局公开专利"
+    priority: P1
+    type: government
+    license: "公开专利著录项目"
+    fields: [patent, applicant, title, date]
+    url: "https://www.cnipa.gov.cn/"
+policy:
+  max_excerpt_chars: 1000
+  store_full_text: false
+  require_content_hash: true

@@ -1,7 +1,9 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.api.v1 import agent, universe, auth, users, entities, companies, industries, relationships, evidence, context, decision, admin, mcp_router, analytics, certification, subscriptions, marketplace, intelligence, payments, providers, assets, graph, identity, observation, knowledge
+from app.api.v1 import agent, universe, auth, users, entities, companies, industries, relationships, evidence, context, decision, admin, mcp_router, analytics, certification, subscriptions, marketplace, intelligence, payments, providers, assets, graph, identity, observation, knowledge, onboarding, learning, observation_external, geo, memory_universe
 from app.core.config import settings
+
+from app.services.observation_scheduler import get_observation_scheduler
 
 app = FastAPI(
     title=settings.PROJECT_NAME,
@@ -41,9 +43,19 @@ app.include_router(payments.router)
 app.include_router(universe.router)
 
 
+app.include_router(learning.router)
+app.include_router(observation_external.router)
+app.include_router(geo.router)
+app.include_router(memory_universe.router)
+app.include_router(onboarding.router)
 app.include_router(identity.router)
 app.include_router(observation.router)
 app.include_router(knowledge.router)
+
+@app.on_event("startup")
+async def _start_scheduler():
+    get_observation_scheduler().start()
+
 
 @app.get("/health")
 async def health_check():

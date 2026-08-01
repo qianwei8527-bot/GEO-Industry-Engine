@@ -1,0 +1,24 @@
+# C6.4 Visibility metrics — weights and rules.
+version: "1.0.0"
+metrics:
+  mention_rate:
+    label: 提及率
+    weight: 0.20
+  citation_rate:
+    label: 引用率
+    weight: 0.15
+  recommendation_rate:
+    label: 推荐率
+    weight: 0.20
+  top_position_rate:
+    label: 前列率
+    weight: 0.15
+  citation_share:
+    label: 引用份额
+    weight: 0.10
+  share_of_voice:
+    label: 声量份额
+    weight: 0.20
+min_sample_size: 3
+low_sample_label: "样本不足"
+calculation_version: "1.0"

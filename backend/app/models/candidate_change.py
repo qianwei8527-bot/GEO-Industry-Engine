@@ -63,3 +63,23 @@ class CandidateChange(Base):
     tenant_id: Mapped[uuid.UUID | None] = mapped_column(UUID(as_uuid=True), nullable=True)
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=datetime.utcnow, onupdate=datetime.utcnow)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=datetime.utcnow)
+
+    # ── C6.1 node-level change fields (appended via migration) ──
+    node_id: Mapped[str | None] = mapped_column(String(64), nullable=True, index=True)
+    source_id: Mapped[str | None] = mapped_column(String(128), nullable=True)
+    source_evidence_ids: Mapped[list | None] = mapped_column(JSONB, nullable=True)
+    before_value: Mapped[dict | None] = mapped_column(JSONB, nullable=True)
+    proposed_value: Mapped[dict | None] = mapped_column(JSONB, nullable=True)
+    confidence_level: Mapped[float] = mapped_column(Float, default=0.0)
+    impact_level: Mapped[str] = mapped_column(String(16), default="low",
+        comment="low / medium / high")
+    deduplication_hash: Mapped[str | None] = mapped_column(String(128), nullable=True, index=True)
+    affected_engines: Mapped[list | None] = mapped_column(JSONB, nullable=True)
+    applicable_rules: Mapped[list | None] = mapped_column(JSONB, nullable=True)
+    review_status: Mapped[str] = mapped_column(String(32), default="OBSERVED",
+        comment="OBSERVED / PENDING_REVIEW / APPROVED / REJECTED / APPLYING / APPLIED / FAILED / SUPERSEDED")
+    reviewed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    applied_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    actor_id: Mapped[str | None] = mapped_column(String(128), nullable=True)
+    rejection_reason: Mapped[str | None] = mapped_column(Text, nullable=True)
+    applied_result: Mapped[dict | None] = mapped_column(JSONB, nullable=True)

@@ -29,3 +29,19 @@ from app.models.geo_event import GeoEvent
 from app.models.growth_stage import GrowthStage
 from app.models.value_chain import ValueChain
 from app.models.reputation import Reputation
+
+from app.models.onboarding_session import OnboardingSession
+
+from app.models.transaction_record import UniverseTransactionRecord, TransactionEventRecord
+
+from app.models.reputation_event_record import ReputationEventRecord
+
+from app.models.governance import NodeMembership, AuditLog
+
+from app.models.change_audit import CandidateChangeAudit
+
+from app.models.refresh_token import RefreshToken
+
+from app.models.observation import ObservationSource, ObservationRun, ObservationArtifact
+
+from app.models.geo_visibility import QuestionSet, AIObservationRun, AIAnswerArtifact, VisibilityResult

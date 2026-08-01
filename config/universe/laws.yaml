@@ -1,0 +1,99 @@
+version: 1.0.0
+laws:
+- law_id: certification_trust_growth
+  version: '1.0'
+  status: active
+  owner: system_admin
+  description: 认证增强可信度：verified 认证才提高治理信誉；self_report 只记录记忆，不提高信誉。
+  priority: 50
+  trigger:
+    event_type:
+    - certification.approved
+  conditions:
+    evidence_status:
+      equals: verified
+  effects:
+    reputation:
+    - dimension: governance
+      delta: 10
+      event_type: certification_passed
+      source: government
+    position:
+      recompute: true
+    capability:
+      unlock:
+      - verified_provider
+    memory:
+      story: 节点获得已核验认证，信任基础建立。
+  constraints:
+    synthetic_block: true
+  audit:
+    require_explanation: true
+- law_id: certification_memory_only
+  version: '1.0'
+  status: active
+  owner: system_admin
+  description: 未核验认证只进入记忆，不提高信誉。
+  priority: 40
+  trigger:
+    event_type:
+    - certification.approved
+  conditions:
+    evidence_status:
+      equals:
+      - observed
+      - pending_review
+      - self_report
+  effects:
+    memory:
+      story: 节点提交认证，但证据未核验；仅记录，不提高信誉。
+  constraints:
+    synthetic_block: true
+  audit:
+    require_explanation: true
+- law_id: complaint_risk_override
+  version: '1.0'
+  status: active
+  owner: system_admin
+  description: 重大投诉覆盖增长：风险永远优先于增长，防止世界失真。
+  priority: 100
+  trigger:
+    event_type:
+    - complaint.verified
+    - negative_feedback
+  conditions: {}
+  effects:
+    reputation:
+    - dimension: delivery
+      delta: -12
+      event_type: negative_feedback
+      source: enterprise_customer
+    position:
+      recompute: true
+    memory:
+      story: 节点出现已核验投诉，信誉下调。
+  constraints:
+    synthetic_block: true
+  audit:
+    require_explanation: true
+- law_id: ontology_adoption_governance
+  version: '1.0'
+  status: active
+  owner: system_admin
+  description: 世界结构采纳是治理行为：verified 证据 + reviewer 决策才可批准；不自动修改 Registry。
+  priority: 60
+  trigger:
+    event_type:
+    - ontology.proposal_approved
+  conditions:
+    evidence_status:
+      equals: verified
+    source_type:
+      equals: governance
+  effects:
+    memory:
+      story: 世界结构提案经治理批准，概念进入 Universe 采纳流程。
+  constraints:
+    synthetic_block: true
+  audit:
+    require_explanation: true

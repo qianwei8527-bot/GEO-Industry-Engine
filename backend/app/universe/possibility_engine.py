@@ -123,6 +123,7 @@ class PossibilityGraph:
         self.convergence_points: List[str] = []  # state_ids where multiple paths meet
         self.divergence_points: List[str] = []   # state_ids where paths split
         self.generated_at: str = datetime.now(timezone.utc).isoformat()
+        self.horizon_availability: Dict[str, Any] = {}
 
     def add_state(self, state: FutureState):
         self.states[state.state_id] = state
@@ -175,6 +176,7 @@ class PossibilityGraph:
             "convergence_points": self.convergence_points,
             "divergence_points": self.divergence_points,
             "connection_needs": self.get_all_required_connections(),
+            "horizon_availability": self.horizon_availability,
             "summary": self._generate_summary(),
         }
 
@@ -316,6 +318,18 @@ class PossibilityEngine:
         graph.current_state = current
         graph.add_state(current)
 
+        # C6.1 Gate 0-5: horizons come from learning.yaml (30/90/180).
+        try:
+            import os as _os, yaml as _yaml
+            _p = _os.path.join(_os.path.dirname(_os.path.dirname(_os.path.dirname(_os.path.dirname(_os.path.abspath(__file__))))),
+                               'config', 'universe', 'learning.yaml')
+            _cfg = _yaml.safe_load(open(_p, encoding='utf-8')) if _os.path.exists(_p) else {}
+            self.horizons = [h['days'] for h in _cfg.get('possibility_horizons', [])]
+            self.horizon_unavailable_reason = _cfg.get('possibility_unavailable_reason', '当前数据不足，无法生成该时间窗推演')
+        except Exception:
+            self.horizons = [30, 90, 180]
+            self.horizon_unavailable_reason = '当前数据不足，无法生成该时间窗推演'
+
         # Get decision paths from Decision Engine
         report = self.decision_engine.decide(ctx)
         paths = report.paths[:4]  # Top 4 paths
@@ -326,6 +340,15 @@ class PossibilityEngine:
 
         # Detect convergence and divergence
         self._detect_convergence_divergence(graph)
+
+        # Availability: mark each configured horizon as available or unavailable
+        available = {s.horizon_days for s in graph.states.values() if s.horizon_days > 0}
+        graph.horizon_availability = {}
+        for h in getattr(self, 'horizons', [30, 90, 180]):
+            if h in available:
+                graph.horizon_availability[str(h)] = {"available": True, "states": sum(1 for s in graph.states.values() if s.horizon_days == h)}
+            else:
+                graph.horizon_availability[str(h)] = {"available": False, "reason": getattr(self, 'horizon_unavailable_reason', '')}
 
         return graph
 
@@ -353,8 +376,8 @@ class PossibilityEngine:
     def _project_path(self, graph: PossibilityGraph, current: FutureState,
                       path: CandidatePath, path_idx: int):
         """Project one decision path into a sequence of future states."""
-        horizons = [30, 90, 180]
-        max_horizon = min(path.timeframe_days, 180)
+        horizons = getattr(self, 'horizons', [30, 90, 180])
+        max_horizon = min(path.timeframe_days, max(horizons))
         applicable_horizons = [h for h in horizons if h <= max_horizon]
 
         prev_state = current

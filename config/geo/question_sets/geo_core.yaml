@@ -1,0 +1,104 @@
+# C6.4-R Question Library — 30 questions, 10 MECE intents.
+# neutral_discovery: no target brand in prompt (natural mention).
+# branded_probe: target brand explicitly named (understanding, not natural mention).
+version: 2
+industry: geo
+
+# ── 20 neutral discovery (2 per intent) ──
+neutral:
+  - question_id: brand_recognition_1
+    intent: 品牌认知
+    question_text: "谁是GEO领域最具代表性的服务商？"
+  - question_id: brand_recognition_2
+    intent: 品牌认知
+    question_text: "提到生成式引擎优化，你会首先想到哪些机构？"
+  - question_id: product_selection_1
+    intent: 产品选择
+    question_text: "企业做GEO应该选择什么样的产品和服务？"
+  - question_id: product_selection_2
+    intent: 产品选择
+    question_text: "有哪些工具可以提升企业在AI搜索中的可见度？"
+  - question_id: provider_recommendation_1
+    intent: 服务商推荐
+    question_text: "推荐几家值得考虑的GEO优化服务商？"
+  - question_id: provider_recommendation_2
+    intent: 服务商推荐
+    question_text: "中小型企业应该找哪类机构做AI搜索优化？"
+  - question_id: comparison_1
+    intent: 方案比较
+    question_text: "GEO与SEO的区别是什么，企业如何选择？"
+  - question_id: comparison_2
+    intent: 方案比较
+    question_text: "内容营销公司与技术型AI优化服务商哪个更适合GEO？"
+  - question_id: expert_explanation_1
+    intent: 专业解释
+    question_text: "GEO（生成式引擎优化）是如何影响企业被AI推荐的？"
+  - question_id: expert_explanation_2
+    intent: 专业解释
+    question_text: "为什么企业需要管理自己在AI回答中的品牌呈现？"
+  - question_id: regional_1
+    intent: 地区决策
+    question_text: "上海有哪些提供AI搜索可见度优化的服务商？"
+  - question_id: regional_2
+    intent: 地区决策
+    question_text: "北京和深圳的GEO服务市场有哪些主要参与者？"
+  - question_id: risk_1
+    intent: 风险判断
+    question_text: "选择GEO服务商时需要注意哪些风险？"
+  - question_id: risk_2
+    intent: 风险判断
+    question_text: "企业在AI可见度优化中常见的失败原因有哪些？"
+  - question_id: purchase_1
+    intent: 购买决策
+    question_text: "中小预算企业如何开始GEO优化？"
+  - question_id: purchase_2
+    intent: 购买决策
+    question_text: "预算有限时，GEO优化应该优先投入哪个环节？"
+  - question_id: alternative_1
+    intent: 竞争替代
+    question_text: "除了传统营销机构，还有哪些替代方案可以提升AI搜索可见度？"
+  - question_id: alternative_2
+    intent: 竞争替代
+    question_text: "自建内容团队与外包GEO服务相比有哪些优劣？"
+  - question_id: trust_1
+    intent: 信任验证
+    question_text: "如何判断一家GEO服务商是否可信？"
+  - question_id: trust_2
+    intent: 信任验证
+    question_text: "哪些证据可以证明一家机构在GEO领域有真实能力？"
+
+# ── 9 branded probes (3 per node) ──
+branded:
+  - question_id: probe_xingchen_1
+    intent: 品牌理解
+    question_text: "星辰AI营销科技是一家什么样的公司？"
+  - question_id: probe_xingchen_2
+    intent: 品牌能力
+    question_text: "星辰AI营销科技在GEO领域有哪些能力？"
+  - question_id: probe_xingchen_3
+    intent: 品牌信任
+    question_text: "星辰AI营销科技值得信任吗？依据是什么？"
+  - question_id: probe_dingxin_1
+    intent: 品牌理解
+    question_text: "鼎新云计算是一家什么样的公司？"
+  - question_id: probe_dingxin_2
+    intent: 品牌能力
+    question_text: "鼎新云计算在AI基础设施方面有哪些能力？"
+  - question_id: probe_dingxin_3
+    intent: 品牌信任
+    question_text: "鼎新云计算的客户认可度如何？"
+  - question_id: probe_weilai_1
+    intent: 品牌理解
+    question_text: "未来教育科技是一家什么样的公司？"
+  - question_id: probe_weilai_2
+    intent: 品牌能力
+    question_text: "未来教育科技在教育AI领域有哪些产品？"
+  - question_id: probe_weilai_3
+    intent: 品牌信任
+    question_text: "未来教育科技的教育数据能力可靠吗？"
+
+# ── 1 industry trust (neutral, global) ──
+industry:
+  - question_id: trust_industry_1
+    intent: 行业信任
+    question_text: "GEO服务行业整体可信度如何？选择服务商时最重要的信任指标是什么？"

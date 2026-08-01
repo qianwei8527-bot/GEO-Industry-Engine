@@ -1,0 +1,218 @@
+# C6.0 Onboarding Configuration
+# All step fields, required fields, evidence types, and thresholds are
+# managed here. The frontend must read this via API, not hardcode.
+version: "1.0.0"
+
+enabled_node_types:
+  - company
+
+# ── Step definitions ──
+steps:
+  - id: 1
+    key: "identity"
+    label: "企业身份"
+    fields:
+      - key: "company_name"
+        label: "企业名称"
+        required: true
+        example: "星辰AI营销科技"
+      - key: "description"
+        label: "企业简介"
+        required: true
+        example: "专注GEO与AI搜索优化的营销科技服务商"
+      - key: "region"
+        label: "所在地区"
+        required: false
+      - key: "founded_year"
+        label: "成立时间"
+        required: false
+      - key: "company_size"
+        label: "企业规模"
+        required: false
+        options: ["1-50人", "50-200人", "200-500人", "500-2000人", "2000人以上"]
+      - key: "website"
+        label: "官网"
+        required: false
+      - key: "contact_email"
+        label: "联系方式"
+        required: false
+      - key: "development_stage"
+        label: "当前发展阶段"
+        required: false
+        options: ["初创期", "成长期", "成熟期", "转型期"]
+
+  - id: 2
+    key: "industry"
+    label: "行业位置"
+    fields:
+      - key: "industry_id"
+        label: "一级行业"
+        required: true
+        source: "api:/industries"
+      - key: "sub_industry"
+        label: "二级行业"
+        required: false
+      - key: "track"
+        label: "细分赛道"
+        required: false
+      - key: "target_market"
+        label: "目标市场"
+        required: false
+      - key: "service_region"
+        label: "服务区域"
+        required: false
+      - key: "self_positioning"
+        label: "当前自我定位"
+        required: false
+
+  - id: 3
+    key: "capabilities"
+    label: "产品与能力"
+    fields:
+      - key: "products"
+        label: "产品/服务"
+        required: true
+        type: "list"
+        item_fields:
+          - key: "name"
+            label: "产品/服务名称"
+            required: true
+          - key: "product_type"
+            label: "产品类型"
+            required: false
+          - key: "target_customer"
+            label: "目标客户"
+            required: false
+          - key: "core_capability"
+            label: "核心能力"
+            required: true
+          - key: "differentiator"
+            label: "差异化优势"
+            required: false
+          - key: "problem_solved"
+            label: "已解决的问题"
+            required: false
+          - key: "delivery_method"
+            label: "交付方式"
+            required: false
+
+  - id: 4
+    key: "evidence"
+    label: "证据与背书"
+    fields:
+      - key: "evidence_items"
+        label: "证据资料"
+        required: false
+        type: "list"
+    evidence_types:
+      - id: "official_website"
+        label: "官网页面"
+      - id: "media_report"
+        label: "媒体报道"
+      - id: "customer_case"
+        label: "客户案例"
+      - id: "award_certification"
+        label: "获奖认证"
+      - id: "partner_org"
+        label: "合作机构"
+      - id: "expert_endorsement"
+        label: "专家背书"
+      - id: "data_result"
+        label: "数据成果"
+      - id: "ai_citation"
+        label: "AI引用记录"
+      - id: "other"
+        label: "其他可验证资料"
+
+  - id: 5
+    key: "goals"
+    label: "目标与问题"
+    fields:
+      - key: "key_problem"
+        label: "当前最重要的问题"
+        required: false
+      - key: "goal_30d"
+        label: "未来30天目标"
+        required: false
+      - key: "goal_90d"
+        label: "未来90天目标"
+        required: false
+      - key: "goal_180d"
+        label: "未来180天目标"
+        required: false
+      - key: "connection_wants"
+        label: "希望连接的资源"
+        required: false
+      - key: "risk_to_avoid"
+        label: "希望避免的风险"
+        required: false
+
+  - id: 6
+    key: "confirm"
+    label: "确认与激活"
+    fields: []
+
+# ── Validation rules ──
+validation:
+  evidence_url_required: true
+  duplicate_company_check: true
+  data_quality_threshold: 0.5
+  min_evidence_for_activation: 0
+  allow_skip_steps: false
+
+# ── Data quality: 6-dimension weighted score (C6.1 Gate 0-1) ──
+# profile_completeness may be 1.0 from a fully filled form, but
+# evidence_verification and overall_confidence must reflect self_report.
+data_quality_weights:
+  profile_completeness: 0.30
+  evidence_coverage: 0.20
+  evidence_verification: 0.20
+  source_diversity: 0.10
+  freshness: 0.05
+  overall_confidence: 0.15
+
+evidence_verification_weights:
+  verified: 1.0
+  pending: 0.2
+  self_report: 0.1
+  rejected: 0.0
+
+# ── Evidence confidence ──
+evidence_confidence:
+  official_website: 0.8
+  media_report: 0.7
+  customer_case: 0.8
+  award_certification: 1.0
+  partner_org: 0.7
+  expert_endorsement: 0.6
+  data_result: 0.8
+  ai_citation: 0.6
+  other: 0.3
+  self_report: 0.3
+
+# ── Activation pipeline ──
+activation_stages:
+  - id: "observation"
+    label: "观察记录"
+  - id: "identity"
+    label: "身份创建"
+  - id: "capability"
+    label: "能力录入"
+  - id: "evidence"
+    label: "证据提交"
+  - id: "position"
+    label: "位置计算"
+  - id: "reputation"
+    label: "信誉计算"
+  - id: "possibility"
+    label: "未来推演"
+  - id: "connection"
+    label: "连接发现"
+  - id: "memory"
+    label: "记忆写入"
+  - id: "snapshot"
+    label: "快照建立"
+
+retry:
+  max_retries: 2
+  timeout_seconds: 60
