@@ -1,4 +1,20 @@
 # GEO-Industry-Engine 架构规则
+## 0. V10.6 上位架构覆盖（2026-08-11）
+
+本规则以恒域世界 V10.6 为上位架构（docs/恒域世界_V10.6_四阶段演进架构总纲_含参考平台.md、docs/17-2_恒域世界_V10.6_整体重构_细节设计方案.md）。下文旧规则是 GEO 行业世界的实现记录，冲突时以 V10.6 为准。
+
+不可突破边界：
+
+1. 四个应用面固定：域主工作台 / 公共世界与客户协作端 / 平台运营后台 / 治理审计台；不建立平行路由。
+2. 统一产品形态：WorkBuddy 式「对话 + 任务 + 工作面」；6 种页面模板、6 种模块状态、5 级 truth scope。
+3. 权限真相源：node_memberships（Membership / ControlGrant）；域主不得自造 verified。
+4. 可信语义：Outcome 不直接改变 Reputation；simulation 不得写入生产关系；AI 提取默认 observed/inferred。
+5. 外部工具：Codex/OpenClaw/Dify/n8n 一律经 Provider Adapter/MCP/API 接入，不作为核心运行时。
+6. 未批准不新增数据库模型和迁移。
+7. 当前阶段为「单域真实经营闭环」，未经任务授权不得横向铺开。
+
+---
+
 
 > 所有架构设计必须遵守的规则。违反以下规则属于重大架构偏差。
 

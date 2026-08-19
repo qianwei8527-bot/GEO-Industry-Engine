@@ -3,7 +3,7 @@
 // C6.4 Gate 0: safe automatic refresh token renewal.
 // Single refresh lock, one retry, never logs tokens, clears session on failure.
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api/v1";
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8080/api/v1";
 
 let refreshPromise: Promise<string | null> | null = null;
 let refreshAttempts = 0;

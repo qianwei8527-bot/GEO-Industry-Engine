@@ -68,3 +68,5 @@
 | /api/v1/context/ | 33/08 | — | Sprint 3 |
 | /api/v1/geo-scores/ | 16/08 | — | Sprint 5 |
 | MCP Server | 26/33 | — | Sprint 3 |
+
+> **V10.6 适配（2026-08-11）**：本映射为现有实现记录；文档真相源以恒域世界 V10.6 总纲与 17-2 为准。

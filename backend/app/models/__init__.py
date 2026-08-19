@@ -48,3 +48,22 @@ from app.models.geo_visibility import QuestionSet, AIObservationRun, AIAnswerArt
 from app.models.knowledge_candidate import KnowledgeCandidate
 from app.models.candidate_change import CandidateChange
 from app.models.world_model import WorldModelProposalRecord, IndustryContextRecord
+from app.models.demand_event import DemandEvent
+from app.models.connection_candidate import ConnectionCandidate
+from app.models.world_model_contract import VerticalWorld, VerticalWorldVersion, WorldConcept, WorldConceptRelation, WorldBinding, WorldBindingEvidence
+from app.models.evidence_claim import EvidenceClaim
+from app.models.world_state_snapshot import WorldStateSnapshot
+from app.models.world_transition import WorldStateTransition
+from app.models.realm import RealmRegistry, RealmClaim, RealmDataAuthorization, RealmDataAsset
+from app.models.brand import Brand
+from app.models.product import Product
+from app.models.geo_project import (
+    GeoProject,
+    ProjectWorkItem,
+    ProjectArtifact,
+    ToolExecutionRecord,
+    ProjectOutcome,
+)
+from app.models.capability_definition import CapabilityDefinition
+from app.models.intake import ClientIntake, IntakeAnalysis
+from app.models.issue import IssueRecord, IssueEvent

@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>恒域世界 V10.6 后台管理面设计</title>
+<style>
+  :root {
+    --bg:#f6f8fb; --panel:#fff; --panel2:#f1f4f8; --text:#17233d; --muted:#5b6b84;
+    --border:#d8e0ea; --primary:#0b63e6; --primary-weak:#e8f0fe; --primary-strong:#084aa8;
+    --success:#16824a; --success-weak:#e7f5ec; --warning:#9a6500; --warning-weak:#fdf3df;
+    --danger:#c93442; --danger-weak:#fdebec; --inferred:#6c4cf6; --inferred-weak:#f0ecfe;
+  }
+  * { box-sizing:border-box; }
+  body { margin:0; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; background:var(--bg); color:var(--text); font-size:14px; line-height:1.6; }
+  .app { display:flex; min-height:100vh; }
+  .side { width:250px; flex:0 0 250px; background:var(--panel); border-right:1px solid var(--border); padding:16px 12px; position:sticky; top:0; height:100vh; overflow-y:auto; }
+  .side b.brand { display:block; font-size:15px; padding:4px 8px 14px; border-bottom:1px solid var(--border); }
+  .side nav a { display:block; padding:8px 10px; border-radius:6px; color:var(--text); font-size:13px; }
+  .side nav a:hover { background:var(--panel2); }
+  .side nav a.top { margin-top:16px; color:var(--muted); font-size:11px; text-transform:uppercase; }
+  .main { flex:1; min-width:0; padding:28px 32px; }
+  .wrap { max-width:1120px; margin:0 auto; }
+  h1 { font-size:24px; margin:0 0 4px; }
+  h2 { font-size:18px; margin:34px 0 12px; padding-top:18px; border-top:1px solid var(--border); }
+  h3 { font-size:15px; margin:22px 0 8px; }
+  .sub { color:var(--muted); font-size:13px; margin-bottom:18px; }
+  .panel { border:1px solid var(--border); border-radius:8px; background:var(--panel); padding:18px; margin-bottom:14px; }
+  .panel h4 { margin:0 0 10px; font-size:14px; }
+  table { width:100%; border-collapse:collapse; font-size:12px; }
+  th,td { text-align:left; padding:8px 10px; border-bottom:1px solid var(--border); vertical-align:top; }
+  th { color:var(--muted); font-weight:500; }
+  .chip { display:inline-flex; align-items:center; gap:4px; padding:2px 8px; border-radius:999px; font-size:11px; border:1px solid var(--border); color:var(--muted); background:var(--panel); }
+  .chip.green { background:var(--success-weak); color:var(--success); border-color:transparent; }
+  .chip.amber { background:var(--warning-weak); color:var(--warning); border-color:transparent; }
+  .chip.red { background:var(--danger-weak); color:var(--danger); border-color:transparent; }
+  .chip.purple { background:var(--inferred-weak); color:var(--inferred); border-color:transparent; }
+  .grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; }
+  .grid-3 { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; }
+  .card { border:1px solid var(--border); border-radius:8px; background:var(--panel); padding:14px; }
+  .card b { font-size:13px; }
+  .card span { display:block; color:var(--muted); font-size:12px; margin-top:6px; }
+  .code { background:var(--panel2); border:1px solid var(--border); border-radius:6px; padding:10px 12px; font-family:ui-monospace,SFMono-Regular,Consolas,monospace; font-size:12px; white-space:pre-wrap; }
+  @media (max-width:900px) { .app{flex-direction:column} .side{width:auto;flex:0 0 auto;height:auto;position:static;border-right:none;border-bottom:1px solid var(--border)} .main{padding:20px 16px} .grid,.grid-3{grid-template-columns:1fr} }
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="side">
+    <b class="brand">恒域世界 V10.6 后台管理面</b>
+    <nav>
+      <a class="top">平台运营后台</a>
+      <a href="#ops-overview">平台总览</a>
+      <a href="#ops-realms">域管理</a>
+      <a href="#ops-sources">数据源</a>
+      <a href="#ops-flags">Feature Flag</a>
+      <a href="#ops-monitor">接口监控</a>
+      <a href="#ops-system">系统配置</a>
+      <a class="top">治理审计台</a>
+      <a href="#gov-permissions">权限策略</a>
+      <a href="#gov-approvals">审批中心</a>
+      <a href="#gov-audit">审计日志</a>
+      <a href="#gov-risk">风险控制</a>
+      <a href="#gov-collective">共同治理</a>
+    </nav>
+  </aside>
+  <main class="main">
+    <div class="wrap">
+      <h1>后台管理面设计</h1>
+      <p class="sub">平台运营后台和治理审计台是管理应用面，共用统一壳层，只读真实数据，缺失接口保留真实空状态。</p>
+
+      <h2 id="ops-overview">平台总览</h2>
+      <div class="panel">
+        <h4>页面组成</h4>
+        <table>
+          <tr><th>模块</th><th>数据来源</th><th>设计规则</th></tr>
+          <tr><td>统计卡</td><td>/admin/db-stats、/admin/configs、/agent/list、/mcp/tools</td><td>接口失败显示 --，不造假</td></tr>
+          <tr><td>真实数据源状态</td><td>health、providers、capabilities、runs、snapshots</td><td>已连接/待配置/缺失/受阻</td></tr>
+          <tr><td>Feature Flag</td><td>本地配置</td><td>open / reserved / hidden</td></tr>
+        </table>
+      </div>
+
+      <h2 id="ops-realms">域管理</h2>
+      <div class="panel">
+        <h4>页面组成</h4>
+        <table>
+          <tr><th>模块</th><th>内容</th><th>真相源</th></tr>
+          <tr><td>Realm / Entity</td><td>域、主体、认领状态</td><td>realm_registry</td></tr>
+          <tr><td>Membership</td><td>成员、角色、权限</td><td>node_memberships / ControlGrant</td></tr>
+          <tr><td>审计</td><td>变更、回滚</td><td>AuditLog</td></tr>
+        </table>
+      </div>
+
+      <h2 id="ops-sources">数据源</h2>
+      <div class="panel">
+        <h4>数据源清单</h4>
+        <div class="grid-3">
+          <div class="card"><b>PostgreSQL</b><span>主数据存储，已连接。</span></div>
+          <div class="card"><b>Event Backbone</b><span>事件与审计，已连接。</span></div>
+          <div class="card"><b>外部 AI Provider</b><span>模型服务，待配置。</span></div>
+        </div>
+        <h4>规则</h4>
+        <div class="code">覆盖率与未知区必须真实展示；密钥只存后端；外部连接全部审计。</div>
+      </div>
+
+      <h2 id="ops-flags">Feature Flag</h2>
+      <div class="panel">
+        <table>
+          <tr><th>Flag</th><th>第一阶段</th><th>第二阶段</th><th>第三阶段</th><th>第四阶段</th></tr>
+          <tr><td>域主工作台</td><td>open</td><td>open</td><td>open</td><td>open</td></tr>
+          <tr><td>公共世界与客户协作端</td><td>open</td><td>open</td><td>open</td><td>open</td></tr>
+          <tr><td>平台运营后台</td><td>open</td><td>open</td><td>open</td><td>open</td></tr>
+          <tr><td>治理审计台</td><td>reserved</td><td>reserved</td><td>pilot</td><td>open</td></tr>
+          <tr><td>能力市场</td><td>hidden</td><td>internal</td><td>open</td><td>open</td></tr>
+          <tr><td>行业态势</td><td>hidden</td><td>local</td><td>network</td><td>open</td></tr>
+        </table>
+      </div>
+
+      <h2 id="ops-monitor">接口监控</h2>
+      <div class="panel">
+        <h4>监控对象</h4>
+        <table>
+          <tr><th>对象</th><th>真实接口</th><th>展示</th></tr>
+          <tr><td>后端健康</td><td>/admin/health</td><td>状态、版本、时间</td></tr>
+          <tr><td>数据表</td><td>/admin/db-stats</td><td>计数、总数</td></tr>
+          <tr><td>Agent</td><td>/agent/list</td><td>名称、描述</td></tr>
+          <tr><td>MCP 工具</td><td>/mcp/tools</td><td>名称、描述、参数</td></tr>
+          <tr><td>能力运行</td><td>/capabilities/runs</td><td>执行码、能力、来源、状态、truth</td></tr>
+          <tr><td>World 快照</td><td>/universe/world-state/snapshots</td><td>world、版本、范围、时间</td></tr>
+        </table>
+      </div>
+
+      <h2 id="ops-system">系统配置</h2>
+      <div class="panel">
+        <h4>配置目录</h4>
+        <table>
+          <tr><th>分类</th><th>文件目录</th></tr>
+          <tr><td>scoring</td><td>评分规则</td></tr>
+          <tr><td>analytics</td><td>分析配置</td></tr>
+          <tr><td>certification</td><td>认证规则</td></tr>
+          <tr><td>pricing / marketplace / competitive</td><td>定价、市场、竞争</td></tr>
+        </table>
+      </div>
+
+      <h2 id="gov-permissions">权限策略</h2>
+      <div class="panel">
+        <table>
+          <tr><th>角色</th><th>范围</th><th>读写</th><th>真相源</th></tr>
+          <tr><td>域主</td><td>Realm</td><td>读 + 写</td><td>node_memberships</td></tr>
+          <tr><td>运营者</td><td>平台</td><td>读 + 配置</td><td>node_memberships</td></tr>
+          <tr><td>治理者</td><td>平台</td><td>读 + 审批</td><td>node_memberships</td></tr>
+          <tr><td>客户</td><td>项目</td><td>只读 + 反馈</td><td>RealmDataAuthorization</td></tr>
+        </table>
+      </div>
+
+      <h2 id="gov-approvals">审批中心</h2>
+      <div class="panel">
+        <table>
+          <tr><th>事项</th><th>风险</th><th>处理</th></tr>
+          <tr><td>同步 / 监测 / 工具调用</td><td>低</td><td>预授权自动执行</td></tr>
+          <tr><td>发布内容 / 上架能力包</td><td>中</td><td>每次确认</td></tr>
+          <tr><td>签约 / 支付 / 权限变更</td><td>高</td><td>域主或专业审核人确认</td></tr>
+          <tr><td>自动发布 / 发送客户消息 / 修改财税法结论</td><td>禁止</td><td>永不自动执行</td></tr>
+        </table>
+      </div>
+
+      <h2 id="gov-audit">审计日志</h2>
+      <div class="panel">
+        <table>
+          <tr><th>字段</th><th>说明</th></tr>
+          <tr><td>时间</td><td>事件时间</td></tr>
+          <tr><td>动作</td><td>capability_run、intake_submitted、permission_change</td></tr>
+          <tr><td>对象</td><td>能力、资料、权限、Realm</td></tr>
+          <tr><td>操作者</td><td>用户或匿名提交者</td></tr>
+          <tr><td>结果</td><td>成功 / 失败 / 待审计</td></tr>
+        </table>
+      </div>
+
+      <h2 id="gov-risk">风险控制</h2>
+      <div class="panel">
+        <div class="grid-3">
+          <div class="card"><b>未验证数据</b><span>不得对外展示。</span></div>
+          <div class="card"><b>外部工具</b><span>低/中/高三级授权。</span></div>
+          <div class="card"><b>密钥</b><span>只存后端，不进前端。</span></div>
+        </div>
+      </div>
+
+      <h2 id="gov-collective">共同治理</h2>
+      <div class="panel">
+        <table>
+          <tr><th>模块</th><th>内容</th><th>状态</th></tr>
+          <tr><td>治理提案</td><td>GovernanceProposal</td><td><span class="chip amber">预留</span></td></tr>
+          <tr><td>共同决策</td><td>CollectiveDecision</td><td><span class="chip amber">第四阶段</span></td></tr>
+          <tr><td>行业规则</td><td>规则版本化</td><td><span class="chip amber">试点</span></td></tr>
+        </table>
+      </div>
+    </div>
+  </main>
+</div>
+</body>
+</html>

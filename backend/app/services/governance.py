@@ -143,7 +143,8 @@ class GovernanceService:
 
     async def audit(self, db, actor_id, action: str, target_type: str = None, target_id: str = None,
                     result: str = "ok", reason: str = None, request_id: str = None,
-                    actor_label: str = None, metadata: Dict = None) -> AuditLog:
+                    actor_label: str = None, metadata: Dict = None,
+                    commit: bool = True) -> AuditLog:
         log = AuditLog(
             actor_id=uuid.UUID(str(actor_id)) if actor_id else None,
             actor_label=actor_label,
@@ -152,7 +153,8 @@ class GovernanceService:
             metadata_json=metadata,
         )
         db.add(log)
-        await db.commit()
+        if commit:
+            await db.commit()
         return log
 
 

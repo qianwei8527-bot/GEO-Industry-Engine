@@ -1,0 +1,67 @@
+# V10-P0 Realm governance config.
+# Realm is the product-level name for Entity/Node compatibility layer.
+
+schema_version: "1.0"
+version: "1.1.0"
+
+realm_types:
+  - id: enterprise
+    label: 企业域
+    entity_type: company
+  - id: brand
+    label: 品牌域
+    entity_type: brand
+  - id: product
+    label: 产品域
+    entity_type: product
+
+lifecycle:
+  - seed
+  - registered
+  - claimed
+  - active
+  - released
+  - dormant
+  - superseded
+  - retired
+  - revoked
+
+claim:
+  auto_approve_first_owner: false
+  existing_realm_requires_review: true
+  require_reason: false
+
+data_authorization:
+  default_may_affect_real_metrics: false
+  allowed_use_scopes:
+    - realm_owner
+    - project_evidence
+    - ai_tools
+    - intake_submission
+    - public_metrics
+    - simulation
+  statuses:
+    - active
+    - revoked
+    - expired
+  grantee_types:
+    - user
+    - realm
+    - project
+    - provider
+    - tool
+    - anonymous_intake
+  sensitive_levels:
+    - none
+    - low
+    - medium
+    - high
+  deletion_policies:
+    - delete_on_revoke
+    - retain_audit_only
+    - custom
+
+permissions:
+  owner_roles:
+    - node_owner
+    - node_editor

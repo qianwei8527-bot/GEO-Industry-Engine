@@ -9,6 +9,25 @@ import uuid
 
 router = APIRouter(prefix="/api/v1/providers", tags=["providers"])
 
+
+def _to_response(p: Provider) -> ProviderResponse:
+    return ProviderResponse(
+        id=p.id,
+        entity_id=p.entity_id,
+        provider_type=p.provider_type,
+        trust_score=p.trust_score,
+        geo_score=p.geo_score,
+        verification_status=p.verification_status,
+        is_verified=p.is_verified,
+        is_active=p.is_active,
+        completed_orders=p.completed_orders,
+        avg_rating=p.avg_rating,
+        pricing_model=p.pricing_model,
+        metadata=p.extra_data,
+        created_at=p.created_at,
+    )
+
+
 @router.post("", status_code=201)
 async def create_provider(data: ProviderCreate, db: AsyncSession = Depends(get_db)):
     existing = await db.execute(select(Provider).where(Provider.entity_id == data.entity_id))
@@ -18,7 +37,7 @@ async def create_provider(data: ProviderCreate, db: AsyncSession = Depends(get_d
     db.add(p)
     await db.commit()
     await db.refresh(p)
-    return ProviderResponse.model_validate(p)
+    return _to_response(p)
 
 @router.get("")
 async def list_providers(
@@ -34,7 +53,7 @@ async def list_providers(
     if is_verified is not None:
         stmt = stmt.where(Provider.is_verified == is_verified)
     r = await db.execute(stmt)
-    return [ProviderResponse.model_validate(p) for p in r.scalars().all()]
+    return [_to_response(p) for p in r.scalars().all()]
 
 @router.get("/{provider_id}")
 async def get_provider(provider_id: str, db: AsyncSession = Depends(get_db)):
@@ -42,7 +61,7 @@ async def get_provider(provider_id: str, db: AsyncSession = Depends(get_db)):
     p = r.scalar_one_or_none()
     if not p:
         raise HTTPException(404, "Provider not found")
-    return ProviderResponse.model_validate(p)
+    return _to_response(p)
 
 @router.get("/entity/{entity_id}")
 async def get_provider_by_entity(entity_id: str, db: AsyncSession = Depends(get_db)):
@@ -50,7 +69,7 @@ async def get_provider_by_entity(entity_id: str, db: AsyncSession = Depends(get_
     p = r.scalar_one_or_none()
     if not p:
         raise HTTPException(404, "No provider for this entity")
-    return ProviderResponse.model_validate(p)
+    return _to_response(p)
 
 @router.put("/{provider_id}")
 async def update_provider(provider_id: str, data: ProviderUpdate, db: AsyncSession = Depends(get_db)):
@@ -62,7 +81,7 @@ async def update_provider(provider_id: str, data: ProviderUpdate, db: AsyncSessi
         setattr(p, k, v)
     await db.commit()
     await db.refresh(p)
-    return ProviderResponse.model_validate(p)
+    return _to_response(p)
 
 @router.post("/capabilities", status_code=201)
 async def add_provider_capability(data: ProviderCapabilityCreate, db: AsyncSession = Depends(get_db)):

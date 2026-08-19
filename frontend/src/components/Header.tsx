@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -6,7 +6,7 @@ import { Compass, Crosshair, Map, TrendingUp, Lightbulb, Link2 } from 'lucide-re
 
 const nodeNavItems = [
   { name: '身份', path: '/universe/identity', icon: Crosshair, question: '我是谁？' },
-  { name: '导航', path: '/universe/navigation', icon: Map, question: '我在哪？' },
+  { name: '导航', path: '/navigation', icon: Map, question: '我在哪？' },
   { name: '成长', path: '/universe/growth', icon: TrendingUp, question: '如何变化？' },
   { name: '机会', path: '/universe/opportunities', icon: Lightbulb, question: '去哪里？' },
   { name: '连接', path: '/universe/connections', icon: Link2, question: '连接谁？' },
@@ -18,18 +18,26 @@ export default function Header() {
   // Hide on admin routes — admin has its own layout
   if (pathname.startsWith('/admin')) return null;
 
+  // Routes that render their own AppShell should not duplicate the global header.
+  if (
+    ['/intake', '/realm', '/public', '/client', '/market', '/operations', '/governance', '/midplatform', '/backend', '/system-map', '/panorama']
+      .some((prefix) => pathname.startsWith(prefix))
+  ) {
+    return null;
+  }
+
   // Node-facing header for /universe/* routes
   if (pathname.startsWith('/universe')) {
     return (
-      <header className="border-b border-slate-800 bg-slate-950 sticky top-0 z-30">
+    <header className="h-14 flex items-center border-b border-slate-800 bg-slate-950 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 py-2.5 flex items-center justify-between">
-          <Link href="/universe/navigation" className="flex items-center gap-2 group">
+          <Link href="/navigation" className="flex items-center gap-2 group">
             <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-600 to-indigo-700 flex items-center justify-center shadow-lg shadow-blue-500/20 group-hover:shadow-blue-500/40 transition-shadow">
               <Compass className="w-4.5 h-4.5 text-white" />
             </div>
             <div className="flex flex-col leading-tight">
-              <span className="font-bold text-white text-sm">GEO Universe</span>
-              <span className="text-[10px] text-slate-500">产业认知与连接基础设施</span>
+              <span className="font-bold text-white text-sm">恒域世界</span>
+              <span className="text-[10px] text-slate-500">让每个域主，拥有自己的产业世界</span>
             </div>
           </Link>
 
@@ -65,17 +73,38 @@ export default function Header() {
 
   // Default header for non-universe pages (landing, login, etc.)
   return (
-    <header className="border-b border-slate-200 bg-white sticky top-0 z-30">
+    <header className="h-14 flex items-center border-b border-slate-200 bg-white sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 py-2.5 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-2 group">
           <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-600 to-indigo-700 flex items-center justify-center shadow-lg shadow-blue-500/20">
             <Compass className="w-4.5 h-4.5 text-white" />
           </div>
-          <span className="font-bold text-gray-900 text-sm">GEO Universe</span>
+          <span className="font-bold text-gray-900 text-sm">恒域世界</span>
         </Link>
         <div className="flex items-center gap-2">
-          <Link href="/universe/navigation" className="text-sm text-blue-600 hover:text-blue-700 font-medium px-4 py-1.5 rounded-lg hover:bg-blue-50 transition-all">
-            进入宇宙
+          <Link href="/navigation" className="text-sm text-blue-600 hover:text-blue-700 font-medium px-4 py-1.5 rounded-lg hover:bg-blue-50 transition-all">
+            GEO产业导航
+          </Link>
+          <Link href="/realm" className="text-sm text-slate-600 hover:text-slate-900 font-medium px-4 py-1.5 rounded-lg hover:bg-slate-100 transition-all">
+            域主看板
+          </Link>
+          <Link href="/realm/80860de4-5ded-41a3-8a20-f549aab68f5b/explore" className="text-sm text-slate-600 hover:text-slate-900 font-medium px-4 py-1.5 rounded-lg hover:bg-slate-100 transition-all">
+            域主工作台
+          </Link>
+          <Link href="/public" className="text-sm text-slate-600 hover:text-slate-900 font-medium px-4 py-1.5 rounded-lg hover:bg-slate-100 transition-all">
+            公共世界与客户协作端
+          </Link>
+          <Link href="/operations" className="text-sm text-slate-600 hover:text-slate-900 font-medium px-4 py-1.5 rounded-lg hover:bg-slate-100 transition-all">
+            平台运营后台
+          </Link>
+          <Link href="/governance" className="text-sm text-slate-600 hover:text-slate-900 font-medium px-4 py-1.5 rounded-lg hover:bg-slate-100 transition-all">
+            治理审计台
+          </Link>
+          <Link href="/midplatform" className="text-sm text-slate-600 hover:text-slate-900 font-medium px-4 py-1.5 rounded-lg hover:bg-slate-100 transition-all">
+            中台能力域
+          </Link>
+          <Link href="/backend" className="text-sm text-slate-600 hover:text-slate-900 font-medium px-4 py-1.5 rounded-lg hover:bg-slate-100 transition-all">
+            后端基础设施
           </Link>
         </div>
       </div>

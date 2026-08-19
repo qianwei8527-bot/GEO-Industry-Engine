@@ -6,7 +6,8 @@
         "dev": "next dev",
         "build": "next build",
         "start": "next start",
-        "lint": "next lint"
+        "lint": "next lint",
+    "test": "node --test --experimental-loader ./tests/realm-owner-home/ts-loader.mjs ./tests/realm-owner-home/adapter.test.ts ./tests/realm-owner-home/r3-project-plan.test.ts ./tests/realm-owner-home/r4-issue.test.ts ./tests/public-intake/form.test.ts ./tests/operations/operations-adapter.test.ts"
     },
     "dependencies": {
         "@react-three/drei": "^10.7.7",

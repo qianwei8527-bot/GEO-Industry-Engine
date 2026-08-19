@@ -1,0 +1,28 @@
+# C8.3 World State Transition contract
+# Deterministic diff only; no trends, no causation, no scores.
+
+version: "1.0.0"
+
+calculation_rules:
+  projection_entity_added: entity_in_to_not_in_from
+  projection_entity_removed: entity_in_from_not_in_to
+  role_binding_added: role_pair_in_to_not_in_from
+  role_binding_removed: role_pair_in_from_not_in_to
+  capability_supply_added: supply_pair_in_to_not_in_from
+  capability_supply_removed: supply_pair_in_from_not_in_to
+  demand_added: demand_id_in_to_not_in_from
+  demand_closed: demand_id_in_from_not_in_to
+  demand_updated: verified_demand_count_changed
+  evidence_or_claim_verified: verified_evidence_or_claim_count_increased
+  evidence_or_claim_revoked_or_expired: verified_evidence_or_claim_count_decreased
+  connection_status_changed: connection_status_changed_between_snapshots
+  outcome_claimed: observed_outcome_count_increased
+  outcome_verified: verified_outcome_count_increased
+  outcome_revoked: verified_outcome_count_decreased
+  gap_opened: gap_in_to_not_in_from
+  gap_persisted: gap_in_both
+  gap_resolved: gap_in_from_not_in_to
+  unknown_added: unknown_metric_increased
+  unknown_resolved: unknown_metric_decreased
+  excluded_added: excluded_reason_in_to_not_in_from
+  excluded_resolved: excluded_reason_in_from_not_in_to

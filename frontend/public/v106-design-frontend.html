@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>恒域世界 V10.6 前端应用面设计</title>
+<style>
+  :root {
+    --bg:#f6f8fb; --panel:#fff; --panel2:#f1f4f8; --text:#17233d; --muted:#5b6b84;
+    --border:#d8e0ea; --primary:#0b63e6; --primary-weak:#e8f0fe; --primary-strong:#084aa8;
+    --success:#16824a; --success-weak:#e7f5ec; --warning:#9a6500; --warning-weak:#fdf3df;
+    --danger:#c93442; --danger-weak:#fdebec; --inferred:#6c4cf6; --inferred-weak:#f0ecfe;
+  }
+  * { box-sizing: border-box; }
+  body { margin:0; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; background:var(--bg); color:var(--text); font-size:14px; line-height:1.6; }
+  a { color:var(--primary); text-decoration:none; }
+  .app { display:flex; min-height:100vh; }
+  .side { width:260px; flex:0 0 260px; background:var(--panel); border-right:1px solid var(--border); padding:16px 12px; position:sticky; top:0; height:100vh; overflow-y:auto; }
+  .side b.brand { display:block; font-size:15px; padding:4px 8px 14px; border-bottom:1px solid var(--border); }
+  .side nav a { display:block; padding:8px 10px; border-radius:6px; color:var(--text); font-size:13px; margin-top:2px; }
+  .side nav a:hover { background:var(--panel2); }
+  .side nav a.top { margin-top:16px; color:var(--muted); font-size:11px; text-transform:uppercase; }
+  .main { flex:1; min-width:0; padding:28px 32px; }
+  .wrap { max-width:1120px; margin:0 auto; }
+  h1 { font-size:24px; margin:0 0 4px; }
+  h2 { font-size:18px; margin:34px 0 12px; padding-top:18px; border-top:1px solid var(--border); }
+  h3 { font-size:15px; margin:22px 0 8px; }
+  .sub { color:var(--muted); font-size:13px; margin-bottom:18px; }
+  .panel { border:1px solid var(--border); border-radius:8px; background:var(--panel); padding:18px; margin-bottom:14px; }
+  .panel h4 { margin:0 0 10px; font-size:14px; }
+  table { width:100%; border-collapse:collapse; font-size:12px; }
+  th,td { text-align:left; padding:8px 10px; border-bottom:1px solid var(--border); vertical-align:top; }
+  th { color:var(--muted); font-weight:500; }
+  .chip { display:inline-flex; align-items:center; gap:4px; padding:2px 8px; border-radius:999px; font-size:11px; border:1px solid var(--border); color:var(--muted); background:var(--panel); }
+  .chip.green { background:var(--success-weak); color:var(--success); border-color:transparent; }
+  .chip.amber { background:var(--warning-weak); color:var(--warning); border-color:transparent; }
+  .chip.red { background:var(--danger-weak); color:var(--danger); border-color:transparent; }
+  .chip.purple { background:var(--inferred-weak); color:var(--inferred); border-color:transparent; }
+  .grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; }
+  .grid-3 { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; }
+  .card { border:1px solid var(--border); border-radius:8px; background:var(--panel); padding:14px; }
+  .card b { font-size:13px; }
+  .card span { display:block; color:var(--muted); font-size:12px; margin-top:6px; }
+  .code { background:var(--panel2); border:1px solid var(--border); border-radius:6px; padding:10px 12px; font-family:ui-monospace,SFMono-Regular,Consolas,monospace; font-size:12px; color:var(--text); white-space:pre-wrap; }
+  .route { font-family:ui-monospace,SFMono-Regular,Consolas,monospace; font-size:12px; background:var(--primary-weak); color:var(--primary-strong); padding:2px 6px; border-radius:4px; }
+  @media (max-width:900px) { .app{flex-direction:column} .side{width:auto;flex:0 0 auto;height:auto;position:static;border-right:none;border-bottom:1px solid var(--border)} .main{padding:20px 16px} .grid,.grid-3{grid-template-columns:1fr} }
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="side">
+    <b class="brand">恒域世界 V10.6 前端设计</b>
+    <nav>
+      <a class="top">统一壳层</a>
+      <a href="#shell">壳层与设计令牌</a>
+      <a href="#templates">六种页面模板</a>
+      <a class="top">域主工作台</a>
+      <a href="#owner-today">今日工作</a>
+      <a href="#owner-customers">客户与定位</a>
+      <a href="#owner-projects">项目与计划</a>
+      <a href="#owner-execution">执行与问题</a>
+      <a href="#owner-results">结果与资产</a>
+      <a href="#owner-tools">工具与连接</a>
+      <a class="top">公共世界与客户协作端</a>
+      <a href="#public-home">公开世界</a>
+      <a href="#public-intake">资料提交</a>
+      <a href="#public-client">客户协作</a>
+      <a href="#public-market">能力市场</a>
+      <a class="top">平台运营后台</a>
+      <a href="#ops-overview">平台总览</a>
+      <a href="#ops-realms">域管理</a>
+      <a href="#ops-sources">数据源</a>
+      <a href="#ops-flags">Feature Flag</a>
+      <a href="#ops-monitor">接口监控</a>
+      <a href="#ops-system">系统配置</a>
+      <a class="top">治理审计台</a>
+      <a href="#gov-permissions">权限策略</a>
+      <a href="#gov-approvals">审批中心</a>
+      <a href="#gov-audit">审计日志</a>
+      <a href="#gov-risk">风险控制</a>
+      <a href="#gov-collective">共同治理</a>
+    </nav>
+  </aside>
+  <main class="main">
+    <div class="wrap">
+      <h1>前端应用面设计</h1>
+      <p class="sub">四个应用面共用一套壳层，页面由可配置模块组成。每个页面固定支持 6 种状态和 5 级 truth scope。</p>
+
+      <h2 id="shell">统一壳层与设计令牌</h2>
+      <div class="panel">
+        <h4>壳层结构</h4>
+        <div class="code">左侧导航 240px · 顶部上下文 56px · 主内容区 · 右侧抽屉 360px · 底部状态条</div>
+        <table>
+          <tr><th>区域</th><th>内容</th></tr>
+          <tr><td>左侧导航</td><td>一级入口固定，Feature Flag 控制显示；后续阶段入口隐藏，不建空壳页面。</td></tr>
+          <tr><td>顶部上下文</td><td>面包屑、全局命令、环境状态、用户信息。</td></tr>
+          <tr><td>主内容区</td><td>只放当前页面主线，页面由模块组成。</td></tr>
+          <tr><td>右侧抽屉</td><td>证据、连接、权限、审批按需打开。</td></tr>
+          <tr><td>底部状态条</td><td>数据连接、truth scope、版本。</td></tr>
+        </table>
+      </div>
+      <div class="panel">
+        <h4>设计令牌</h4>
+        <div class="grid-3">
+          <div class="card"><b>主色</b><span>单一蓝色 #0b63e6，不做多色渐变。</span></div>
+          <div class="card"><b>语义色</b><span>绿=已连接/完成，琥珀=待确认/待补充，红=错误/阻塞，紫=AI推断。</span></div>
+          <div class="card"><b>圆角</b><span>控件 6px，容器 8px，不使用大圆角。</span></div>
+        </div>
+      </div>
+
+      <h2 id="templates">六种页面模板</h2>
+      <div class="grid-3">
+        <div class="card"><b>工作页面</b><span>今日工作、单步骤执行、项目经营。</span></div>
+        <div class="card"><b>列表页面</b><span>项目、任务、问题、审批、能力包。</span></div>
+        <div class="card"><b>详情/展示页面</b><span>企业、品牌、产品、域、案例、能力包。</span></div>
+        <div class="card"><b>配置页面</b><span>工作流、Agent、连接、Feature Flag。</span></div>
+        <div class="card"><b>管理页面</b><span>平台后台、治理、审计、交易运营。</span></div>
+        <div class="card"><b>探索画布</b><span>行业地图、关系图谱、政策影响、情景推演。</span></div>
+      </div>
+
+      <h2 id="owner-today">今日工作</h2>
+      <div class="panel">
+        <table>
+          <tr><th>模块</th><th>内容</th><th>状态</th></tr>
+          <tr><td>今日主线</td><td>待办、提醒、AI建议、阻塞、风险</td><td><span class="chip amber">待确认 1</span></td></tr>
+          <tr><td>最近连接</td><td>真实输入、行业认知、资源需求</td><td><span class="chip green">已连接</span></td></tr>
+          <tr><td>快速命令</td><td>上传资料、确认档案、新建项目、导出计划</td><td><span class="chip">命令</span></td></tr>
+        </table>
+      </div>
+
+      <h2 id="owner-customers">客户与定位</h2>
+      <div class="panel">
+        <table>
+          <tr><th>模块</th><th>内容</th><th>规则</th></tr>
+          <tr><td>资料上传</td><td>PDF/DOCX/XLSX/CSV/TXT/MD/图片</td><td>最多 5 个，单个不超过 10MB</td></tr>
+          <tr><td>分析草稿</td><td>字段、来源、置信度、未知项</td><td>unknown 不得补造</td></tr>
+          <tr><td>域主确认</td><td>确认后进入项目计划</td><td><span class="chip green">observed</span></td></tr>
+        </table>
+      </div>
+
+      <h2 id="owner-projects">项目与计划</h2>
+      <div class="panel">
+        <table>
+          <tr><th>模块</th><th>内容</th></tr>
+          <tr><td>项目</td><td>名称、主体、目标、阶段</td></tr>
+          <tr><td>计划</td><td>阶段、步骤、任务、负责人、时间</td></tr>
+          <tr><td>进度</td><td>状态、百分比、提醒、同步</td></tr>
+          <tr><td>导出</td><td>CSV、日程、复盘</td></tr>
+        </table>
+      </div>
+
+      <h2 id="owner-execution">执行与问题</h2>
+      <div class="panel">
+        <table>
+          <tr><th>模块</th><th>内容</th></tr>
+          <tr><td>当前步骤</td><td>正在执行的任务和工具</td></tr>
+          <tr><td>执行记录</td><td>输入、输出、版本、引用、成本</td></tr>
+          <tr><td>问题库</td><td>原文、AI分类、尝试、纠偏、历史</td></tr>
+        </table>
+      </div>
+
+      <h2 id="owner-results">结果与资产</h2>
+      <div class="panel">
+        <table>
+          <tr><th>模块</th><th>内容</th><th>规则</th></tr>
+          <tr><td>Evidence</td><td>真实证据、来源、状态</td><td>observed 不得显示为 verified</td></tr>
+          <tr><td>Outcome</td><td>结果、成本、进度、结论</td><td>completed 不等于已验证</td></tr>
+          <tr><td>复盘 / Skill候选</td><td>项目复盘、方法沉淀</td><td>域主确认后才成为资产</td></tr>
+        </table>
+      </div>
+
+      <h2 id="owner-tools">工具与连接</h2>
+      <div class="panel">
+        <table>
+          <tr><th>模块</th><th>内容</th></tr>
+          <tr><td>工具状态</td><td>MCP、Codex、OpenClaw、本地工具</td></tr>
+          <tr><td>外部服务</td><td>日历、IM、数据库、数据供应商</td></tr>
+          <tr><td>本地源码</td><td>授权仓库、版本、运行记录</td></tr>
+        </table>
+      </div>
+
+      <h2 id="public-home">公开世界</h2>
+      <div class="panel">
+        <table>
+          <tr><th>模块</th><th>内容</th></tr>
+          <tr><td>品牌与主体</td><td>公开真实信息，只展示已验证或已观察结果</td></tr>
+          <tr><td>能力展示</td><td>不展示未验证数据</td></tr>
+          <tr><td>联系与市场</td><td>后续承接能力市场和生态分发</td></tr>
+        </table>
+      </div>
+
+      <h2 id="public-intake">资料提交</h2>
+      <div class="panel">
+        <div class="code">/intake/{secure_token}</div>
+        <table>
+          <tr><th>模块</th><th>内容</th><th>规则</th></tr>
+          <tr><td>资料表单</td><td>企业、品牌、产品、关系、问题、链接、粘贴文字</td><td>只保留必要字段</td></tr>
+          <tr><td>授权确认</td><td>数据分析和项目使用授权</td><td>未同意暂存不保存草稿</td></tr>
+          <tr><td>提交状态</td><td>empty / draft / submitted / partial / blocked / no-permission</td><td>真实状态，不伪造 AI 结论</td></tr>
+        </table>
+      </div>
+
+      <h2 id="public-client">客户协作</h2>
+      <div class="panel">
+        <div class="code">/client/*</div>
+        <table>
+          <tr><th>模块</th><th>内容</th></tr>
+          <tr><td>项目进度</td><td>只显示当前项目相关数据</td></tr>
+          <tr><td>成果确认</td><td>域主确认后才展示交付物</td></tr>
+          <tr><td>问题反馈</td><td>原文进入问题库，AI 只分类</td></tr>
+        </table>
+      </div>
+
+      <h2 id="public-market">能力市场</h2>
+      <div class="panel">
+        <div class="code">/market/*</div>
+        <table>
+          <tr><th>模块</th><th>内容</th><th>状态</th></tr>
+          <tr><td>能力发现</td><td>能力包、适用条件、Evidence</td><td><span class="chip amber">Feature Flag 隐藏</span></td></tr>
+          <tr><td>评估与获得授权</td><td>比较、购买、授权</td><td><span class="chip amber">第三阶段</span></td></tr>
+        </table>
+      </div>
+
+      <h2 id="ops-overview">平台总览</h2>
+      <div class="panel">
+        <table>
+          <tr><th>模块</th><th>内容</th></tr>
+          <tr><td>统计</td><td>数据表、配置、Agent、MCP 工具</td></tr>
+          <tr><td>真实数据源状态</td><td>health / db-stats / configs / agents / mcp / providers / capabilities / runs / snapshots</td></tr>
+          <tr><td>Feature Flag</td><td>四阶段开放矩阵</td></tr>
+        </table>
+      </div>
+
+      <h2 id="ops-realms">域管理</h2>
+      <div class="panel">
+        <table>
+          <tr><th>模块</th><th>内容</th></tr>
+          <tr><td>Realm / Entity</td><td>域、主体、认领状态</td></tr>
+          <tr><td>Membership</td><td>成员、角色、权限真相源</td></tr>
+          <tr><td>审计</td><td>变更记录、回滚</td></tr>
+        </table>
+      </div>
+
+      <h2 id="ops-sources">数据源</h2>
+      <div class="panel">
+        <table>
+          <tr><th>模块</th><th>内容</th></tr>
+          <tr><td>连接状态</td><td>已连接 / 待配置 / 缺失 / 受阻</td></tr>
+          <tr><td>覆盖率</td><td>覆盖率和未知区，不补造</td></tr>
+          <tr><td>密钥</td><td>只存后端，不进前端</td></tr>
+        </table>
+      </div>
+
+      <h2 id="ops-flags">Feature Flag</h2>
+      <div class="panel">
+        <table>
+          <tr><th>Flag</th><th>第一阶段</th><th>后续</th></tr>
+          <tr><td>域主 / 公共 / 运营</td><td>open</td><td>open</td></tr>
+          <tr><td>治理审计台</td><td>reserved</td><td>pilot / open</td></tr>
+          <tr><td>政策 / 市场 / 态势 / 共同治理</td><td>hidden</td><td>按阶段开放</td></tr>
+        </table>
+      </div>
+
+      <h2 id="ops-monitor">接口监控</h2>
+      <div class="panel">
+        <table>
+          <tr><th>模块</th><th>内容</th></tr>
+          <tr><td>运行任务</td><td>能力运行记录：执行码、能力、来源、状态、truth</td></tr>
+          <tr><td>Agent 注册表</td><td>真实 Agent Registry</td></tr>
+          <tr><td>MCP 工具</td><td>真实 MCP Server 工具</td></tr>
+        </table>
+      </div>
+
+      <h2 id="ops-system">系统配置</h2>
+      <div class="panel">
+        <table>
+          <tr><th>模块</th><th>内容</th></tr>
+          <tr><td>健康状态</td><td>后端、数据库、版本</td></tr>
+          <tr><td>配置目录</td><td>scoring / analytics / certification / pricing / marketplace / competitive</td></tr>
+          <tr><td>Feature Flag</td><td>本地配置，后续接后端</td></tr>
+        </table>
+      </div>
+
+      <h2 id="gov-permissions">权限策略</h2>
+      <div class="panel">
+        <table>
+          <tr><th>模块</th><th>内容</th></tr>
+          <tr><td>角色</td><td>域主、运营者、治理者、客户</td></tr>
+          <tr><td>数据边界</td><td>按 Realm 和项目隔离</td></tr>
+          <tr><td>真相源</td><td>node_memberships + ControlGrant</td></tr>
+        </table>
+      </div>
+
+      <h2 id="gov-approvals">审批中心</h2>
+      <div class="panel">
+        <table>
+          <tr><th>模块</th><th>内容</th><th>规则</th></tr>
+          <tr><td>审批队列</td><td>发布、上架、外部动作</td><td>中风险确认，高风险人工审核</td></tr>
+          <tr><td>审批记录</td><td>来源、风险、提出人、状态</td><td>全程留痕</td></tr>
+        </table>
+      </div>
+
+      <h2 id="gov-audit">审计日志</h2>
+      <div class="panel">
+        <table>
+          <tr><th>模块</th><th>内容</th></tr>
+          <tr><td>Event Backbone</td><td>事件、操作、变更、回滚</td></tr>
+          <tr><td>审计查询</td><td>时间、动作、对象、操作者、结果</td></tr>
+        </table>
+      </div>
+
+      <h2 id="gov-risk">风险控制</h2>
+      <div class="panel">
+        <table>
+          <tr><th>模块</th><th>内容</th></tr>
+          <tr><td>禁止动作</td><td>自动发布、发送客户消息、签约、支付、改权限、升级 Evidence</td></tr>
+          <tr><td>外部工具</td><td>低/中/高三级授权</td></tr>
+          <tr><td>密钥与数据</td><td>密钥不进前端，数据出境受控</td></tr>
+        </table>
+      </div>
+
+      <h2 id="gov-collective">共同治理</h2>
+      <div class="panel">
+        <table>
+          <tr><th>模块</th><th>内容</th><th>状态</th></tr>
+          <tr><td>治理提案</td><td>GovernanceProposal</td><td><span class="chip amber">预留</span></td></tr>
+          <tr><td>共同决策</td><td>CollectiveDecision</td><td><span class="chip amber">第四阶段</span></td></tr>
+        </table>
+      </div>
+    </div>
+  </main>
+</div>
+</body>
+</html>

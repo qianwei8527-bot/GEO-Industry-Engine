@@ -1,0 +1,58 @@
+# 试验 World Package（draft/synthetic fixture）
+# 仅用于验证通用 World Model 契约，不构成真实行业事实。
+
+world:
+  code: edu_tech_admission
+  name: 科技特长生升学规划
+  description: 试验包，仅用于验证通用 World Model 契约；不是真实行业事实。
+  schema_version: "1.0"
+
+concepts:
+  - code: parent
+    type: actor
+    name: 家长
+  - code: scenario_planning
+    type: scenario
+    name: 升学规划
+  - code: objective_choose
+    type: objective
+    name: 选择机构
+  - code: pain_opaque
+    type: pain
+    name: 信息不透明
+  - code: capability_guidance
+    type: capability
+    name: 升学指导
+  - code: role_provider
+    type: role
+    name: 机构服务商
+  - code: evidence_cases
+    type: evidence_requirement
+    name: 案例证据
+    constraints:
+      allowed_predicates: [provides_capability, has_case, has_certification]
+      allowed_source_types: [customer_case, award_certification, official_website, system_record]
+      claim_contains: ["案例", "认证", "GEO"]  # discovery only; never auto-verified
+  - code: outcome_choice
+    type: outcome
+    name: 知情决策
+
+relations:
+  - from: parent
+    to: scenario_planning
+    type: belongs_to
+  - from: pain_opaque
+    to: objective_choose
+    type: precedes
+  - from: scenario_planning
+    to: objective_choose
+    type: precedes
+  - from: role_provider
+    to: capability_guidance
+    type: provides
+  - from: evidence_cases
+    to: capability_guidance
+    type: validates
+  - from: role_provider
+    to: outcome_choice
+    type: provides

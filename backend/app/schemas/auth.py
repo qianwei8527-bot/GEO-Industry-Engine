@@ -7,15 +7,18 @@ class UserCreate(BaseModel):
     email: EmailStr
     password: str
     name: str
+    username: Optional[str] = None
     phone: Optional[str] = None
 
 class UserLogin(BaseModel):
-    email: EmailStr
+    account: Optional[str] = None
+    email: Optional[EmailStr] = None
     password: str
 
 class UserResponse(BaseModel):
     id: UUID
     email: str
+    username: Optional[str] = None
     name: str
     role: str
     avatar_url: Optional[str] = None

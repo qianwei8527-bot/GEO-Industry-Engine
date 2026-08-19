@@ -4,8 +4,8 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 
 export const metadata: Metadata = {
-  title: "GEO Universe — 产业认知与连接基础设施",
-  description: "每一个节点，都是自身宇宙的中心。AI时代的产业世界模型。",
+  title: "恒域世界 — 让每个域主，拥有自己的产业世界",
+  description: "域主共创的产业操作系统：让真实经营闭环成为可信的产业世界。",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

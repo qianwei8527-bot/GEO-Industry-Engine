@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>恒域世界 V10.6 后端基础设施设计</title>
+<style>
+  :root {
+    --bg:#f6f8fb; --panel:#fff; --panel2:#f1f4f8; --text:#17233d; --muted:#5b6b84;
+    --border:#d8e0ea; --primary:#0b63e6; --primary-weak:#e8f0fe; --primary-strong:#084aa8;
+    --success:#16824a; --success-weak:#e7f5ec; --warning:#9a6500; --warning-weak:#fdf3df;
+    --danger:#c93442; --danger-weak:#fdebec; --inferred:#6c4cf6; --inferred-weak:#f0ecfe;
+  }
+  * { box-sizing:border-box; }
+  body { margin:0; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; background:var(--bg); color:var(--text); font-size:14px; line-height:1.6; }
+  .wrap { max-width:1120px; margin:0 auto; padding:28px 20px; }
+  h1 { font-size:24px; margin:0 0 4px; }
+  h2 { font-size:18px; margin:34px 0 12px; padding-top:18px; border-top:1px solid var(--border); }
+  h3 { font-size:15px; margin:22px 0 8px; }
+  .sub { color:var(--muted); font-size:13px; margin-bottom:18px; }
+  .panel { border:1px solid var(--border); border-radius:8px; background:var(--panel); padding:18px; margin-bottom:14px; }
+  .panel h3 { margin:0 0 10px; }
+  table { width:100%; border-collapse:collapse; font-size:12px; }
+  th,td { text-align:left; padding:8px 10px; border-bottom:1px solid var(--border); vertical-align:top; }
+  th { color:var(--muted); font-weight:500; }
+  .chip { display:inline-flex; align-items:center; gap:4px; padding:2px 8px; border-radius:999px; font-size:11px; border:1px solid var(--border); color:var(--muted); background:var(--panel); }
+  .chip.green { background:var(--success-weak); color:var(--success); border-color:transparent; }
+  .chip.amber { background:var(--warning-weak); color:var(--warning); border-color:transparent; }
+  .chip.red { background:var(--danger-weak); color:var(--danger); border-color:transparent; }
+  .chip.purple { background:var(--inferred-weak); color:var(--inferred); border-color:transparent; }
+  .grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; }
+  .grid-3 { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; }
+  .card { border:1px solid var(--border); border-radius:8px; background:var(--panel); padding:14px; }
+  .card b { font-size:13px; }
+  .card span { display:block; color:var(--muted); font-size:12px; margin-top:6px; }
+  .code { background:var(--panel2); border:1px solid var(--border); border-radius:6px; padding:10px 12px; font-family:ui-monospace,SFMono-Regular,Consolas,monospace; font-size:12px; white-space:pre-wrap; }
+  @media (max-width:700px) { .grid,.grid-3{grid-template-columns:1fr} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>恒域世界 V10.6 后端基础设施设计</h1>
+  <p class="sub">三个技术底座承载真实数据、运行和安全；四原语只是可配置执行层，不是业务真相源。</p>
+
+  <h2>数据、事件与平台底座</h2>
+  <div class="panel">
+    <table>
+      <tr><th>组件</th><th>职责</th></tr>
+      <tr><td>PostgreSQL</td><td>主数据存储：Realm、Project、Evidence、Capability、World State。</td></tr>
+      <tr><td>对象存储</td><td>文件、附件、原始资料。</td></tr>
+      <tr><td>搜索 / 向量 / 知识图谱</td><td>检索、语义、实体关系。</td></tr>
+      <tr><td>缓存 / Queue / Scheduler</td><td>性能、异步任务、定时任务。</td></tr>
+      <tr><td>Event Backbone / Notification</td><td>事件流、提醒、通知。</td></tr>
+      <tr><td>Snapshot / 备份恢复</td><td>World State 快照、数据回滚。</td></tr>
+    </table>
+  </div>
+
+  <h2>Agent 与工作流运行底座</h2>
+  <div class="panel">
+    <table>
+      <tr><th>组件</th><th>职责</th></tr>
+      <tr><td>Agent Runtime</td><td>执行 Agent，记录输入、输出、版本、引用、成本。</td></tr>
+      <tr><td>Workflow Runtime</td><td>执行 Workflow 步骤、条件和人工确认点。</td></tr>
+      <tr><td>Tool Execution</td><td>工具调用、重试、幂等、降级。</td></tr>
+      <tr><td>Memory / Citation</td><td>上下文、引用和证据链。</td></tr>
+      <tr><td>Sandbox / Budget / Approval</td><td>权限沙箱、成本上限、人工审批。</td></tr>
+      <tr><td>Observability</td><td>日志、指标、可观测性。</td></tr>
+    </table>
+  </div>
+
+  <h2>外部连接与安全底座</h2>
+  <div class="panel">
+    <table>
+      <tr><th>组件</th><th>职责</th></tr>
+      <tr><td>MCP / Adapter / API</td><td>连接外部平台、工具和数据源。</td></tr>
+      <tr><td>Webhook / Callback</td><td>异步回调和事件。</td></tr>
+      <tr><td>Credential / Secret</td><td>密钥只存后端，不进前端。</td></tr>
+      <tr><td>Rate Limit / SSRF 防护</td><td>限流和请求安全。</td></tr>
+      <tr><td>数据出境与权限策略</td><td>数据跨域、跨机构受控。</td></tr>
+      <tr><td>外部连接审计</td><td>每次连接和调用留痕。</td></tr>
+    </table>
+  </div>
+
+  <h2>四原语运行时原则</h2>
+  <div class="grid">
+    <div class="card"><b>Agent</b><span>可配置角色、工具、模型、预算、权限；执行记录完整。</span></div>
+    <div class="card"><b>Skills</b><span>可配置技能包、版本、来源、授权；失败和复盘保留。</span></div>
+    <div class="card"><b>Workflows</b><span>可配置步骤、条件、人工确认点；版本化。</span></div>
+    <div class="card"><b>MCP</b><span>可配置连接、工具、资源、密钥策略；只作连接层。</span></div>
+  </div>
+  <div class="code">目录 → 配置 → 授权 → 运行 → 记录 → 复盘 → 资产</div>
+
+  <h2>统一执行与审计流</h2>
+  <div class="panel">
+    <div class="code">用户操作 → Feature Flag → 权限 → 页面 → 模块 → 中台 API → 四原语运行 → 底座持久化与审计 → 外部 Provider/数据/服务</div>
+    <table>
+      <tr><th>环节</th><th>必须记录</th></tr>
+      <tr><td>输入</td><td>用户、Realm、项目、授权范围</td></tr>
+      <tr><td>执行</td><td>Agent / Workflow / Tool / MCP 调用</td></tr>
+      <tr><td>输出</td><td>结果、版本、引用、成本</td></tr>
+      <tr><td>可信</td><td>truth scope：verified / observed / inferred / unknown / simulation</td></tr>
+      <tr><td>安全</td><td>密钥脱敏、限流、SSRF、数据出境</td></tr>
+      <tr><td>审计</td><td>Event Backbone / AuditLog，可回滚</td></tr>
+    </table>
+  </div>
+</div>
+</body>
+</html>

@@ -13,6 +13,8 @@ from app.models.event import Event
 from app.models.trust import Trust
 from app.models.capability import Capability
 from app.models.relationship import Relationship
+from app.models.governance import AuditLog
+from app.models.realm import RealmClaim
 
 router=APIRouter(prefix="/api/v1/admin",tags=["admin"])
 
@@ -105,3 +107,52 @@ async def update_company(company_id:str,body:EntityUpdate,db:AsyncSession=Depend
 @router.get("/health")
 async def health_check():
     return {"status":"ok","backend":"running","timestamp":datetime.datetime.utcnow().isoformat()}
+
+
+@router.get("/audit-logs")
+async def list_audit_logs(limit: int = 50, db: AsyncSession = Depends(get_db)):
+    rows = (
+        await db.execute(
+            select(AuditLog).order_by(AuditLog.occurred_at.desc()).limit(limit)
+        )
+    ).scalars().all()
+    return {
+        "logs": [
+            {
+                "id": str(log.id),
+                "actor_label": log.actor_label,
+                "action": log.action,
+                "target_type": log.target_type,
+                "target_id": log.target_id,
+                "result": log.result,
+                "reason": log.reason,
+                "occurred_at": log.occurred_at.isoformat() if log.occurred_at else None,
+            }
+            for log in rows
+        ]
+    }
+
+
+@router.get("/approvals")
+async def list_approvals(limit: int = 50, db: AsyncSession = Depends(get_db)):
+    rows = (
+        await db.execute(
+            select(RealmClaim)
+            .where(RealmClaim.status == "pending")
+            .order_by(RealmClaim.created_at.desc())
+            .limit(limit)
+        )
+    ).scalars().all()
+    return {
+        "approvals": [
+            {
+                "id": str(claim.id),
+                "entity_id": str(claim.entity_id),
+                "claim_type": claim.claim_type,
+                "status": claim.status,
+                "reason": claim.reason,
+                "created_at": claim.created_at.isoformat() if claim.created_at else None,
+            }
+            for claim in rows
+        ]
+    }

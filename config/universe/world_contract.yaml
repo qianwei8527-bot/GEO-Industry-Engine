@@ -1,0 +1,34 @@
+# C8.0 World Model Contract
+# Legal concept types and relation type constraints.
+
+version: "1.0.0"
+
+concept_types:
+  - actor
+  - role
+  - scenario
+  - objective
+  - pain
+  - capability
+  - outcome
+  - evidence_requirement
+
+relation_types:
+  requires:
+    from: [actor, scenario, objective, pain]
+    to: [capability, role]
+  provides:
+    from: [role]
+    to: [capability, outcome]
+  solves:
+    from: [capability, role]
+    to: [objective, pain]
+  validates:
+    from: [evidence_requirement]
+    to: [capability, role]
+  precedes:
+    from: [all]
+    to: [all]
+  belongs_to:
+    from: [all]
+    to: [scenario, objective]

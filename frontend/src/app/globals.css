@@ -1,4 +1,4 @@
-﻿@tailwind base;
+@tailwind base;
 @tailwind components;
 @tailwind utilities;
 
@@ -11,4 +11,105 @@ body {
   color: var(--foreground);
   background: var(--background);
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+:root {
+  --realm-page-bg: #f7f9f8;
+  --realm-surface: #ffffff;
+  --realm-text-primary: #101828;
+  --realm-text-secondary: #667085;
+  --realm-border: #dde3e7;
+  --realm-primary: #006c68;
+  --realm-primary-hover: #005a57;
+  --realm-action: #0b63e6;
+  --realm-ai: #6c4cf6;
+  --realm-radius: 12px;
+}
+
+@layer components {
+  .realm-page {
+    background-color: var(--realm-page-bg);
+    color: var(--realm-text-primary);
+  }
+
+  .realm-card {
+    background-color: var(--realm-surface);
+    border: 1px solid var(--realm-border);
+    border-radius: var(--realm-radius);
+    box-shadow: 0 1px 2px rgba(16, 24, 40, 0.04);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* V10.6 unified shell tokens. Scoped so legacy pages are not affected. */
+.v106-app-shell {
+  --v106-primary: #0b63e6;
+  --v106-primary-weak: #e8f0fe;
+  --v106-primary-strong: #084aa8;
+  --v106-bg: #f6f8fb;
+  --v106-surface: #ffffff;
+  --v106-surface-muted: #f1f4f8;
+  --v106-border: #d8e0ea;
+  --v106-text: #17233d;
+  --v106-text-muted: #5b6b84;
+  --v106-success: #16824a;
+  --v106-success-weak: #e7f5ec;
+  --v106-warning: #9a6500;
+  --v106-warning-weak: #fdf3df;
+  --v106-danger: #c93442;
+  --v106-danger-weak: #fdebec;
+  --v106-inferred: #6c4cf6;
+  --v106-inferred-weak: #f0ecfe;
+  --v106-radius-control: 6px;
+  --v106-radius-container: 8px;
+
+  background: var(--v106-bg);
+  color: var(--v106-text);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+    "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  letter-spacing: 0;
+}
+
+.v106-panel {
+  background: var(--v106-surface);
+  border: 1px solid var(--v106-border);
+  border-radius: var(--v106-radius-container);
+}
+
+.v106-control {
+  background: var(--v106-surface);
+  border: 1px solid var(--v106-border);
+  border-radius: var(--v106-radius-control);
+  color: var(--v106-text);
+}
+
+.v106-control:focus {
+  border-color: var(--v106-primary);
+  box-shadow: 0 0 0 2px var(--v106-primary-weak);
+  outline: none;
+}
+
+.v106-page-title {
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.3;
+  letter-spacing: 0;
+  color: var(--v106-text);
+}
+
+/* Keep surface context bars below the global top navigation. */
+.v106-app-shell header.sticky {
+  top: 56px;
 }

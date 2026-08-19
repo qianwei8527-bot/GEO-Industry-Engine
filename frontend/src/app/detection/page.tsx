@@ -18,6 +18,7 @@ type LayerType = typeof LAYERS[number]['id'];
 
 export default function DetectionPage() {
   const [query, setQuery] = useState('');
+  const [activeView, setActiveView] = useState<'detect' | 'result' | 'compare'>('detect');
   const [loading, setLoading] = useState(false);
   const [activeLayer, setActiveLayer] = useState<LayerType>('identity');
   const [demoData, setDemoData] = useState<any>(null);
@@ -107,6 +108,38 @@ export default function DetectionPage() {
         ))}
       </div>
 
+      {/* Detection center views */}
+      <div className='flex gap-2 border-b border-gray-200 mb-8'>
+        {([
+          ['detect', '检测'],
+          ['result', '检测结果'],
+          ['compare', '竞争对手对比'],
+        ] as const).map(([key, label]) => (
+          <button
+            key={key}
+            onClick={() => setActiveView(key)}
+            className={`px-4 py-2.5 text-sm font-medium border-b-2 transition-colors ${
+              activeView === key ? 'border-blue-600 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700'
+            }`}
+          >
+            {label}
+          </button>
+        ))}
+      </div>
+
+      {activeView === 'result' && (
+        <div className='mb-12'>
+          <iframe src='/detection/result' className='w-full min-h-[80vh] border border-gray-200 rounded-2xl bg-white' title='检测结果' />
+        </div>
+      )}
+      {activeView === 'compare' && (
+        <div className='mb-12'>
+          <iframe src='/detection/compare' className='w-full min-h-[80vh] border border-gray-200 rounded-2xl bg-white' title='竞争对手对比' />
+        </div>
+      )}
+
+      {activeView === 'detect' && (
+        <>
       {/* C6.4-R AI Visibility Observation */}
       <div className="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden mb-12">
         <div className="px-6 py-4 border-b border-gray-100 flex items-center gap-3">
@@ -211,6 +244,8 @@ export default function DetectionPage() {
           )}
         </div>
       </div>
+        </>
+      )}
     </div>
   );
 }

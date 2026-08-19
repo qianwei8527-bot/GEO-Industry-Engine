@@ -1,6 +1,6 @@
 """C6.10 Universe Home: service aggregation + Relationship value_creation fix."""
 
-import sys
+import sys, uuid
 sys.path.insert(0, "D:/GEO-Industry-Engine/backend")
 
 from sqlalchemy import select
@@ -8,6 +8,7 @@ from sqlalchemy import select
 from app.database import _get_session_factory
 from app.models.company import Company
 from app.services.universe_home import UniverseHomeService
+from app.services.trust_foundation import TrustFoundationService
 from app.universe.relationship_engine import get_relationship_engine, RelationshipEngine
 
 
@@ -35,6 +36,19 @@ class TestUniverseHomeService:
             result = await UniverseHomeService().build(db, "company", "unknown-node-id")
             assert result["identity"]["node_id"] == "unknown-node-id"
             assert result["story"]["causality"]["available"] is False
+
+
+    async def test_home_causality_after_verified_mutation(self):
+        factory = _get_session_factory()
+        async with factory() as db:
+            company = (await db.execute(select(Company).limit(1))).scalars().first()
+            if not company:
+                return
+            nid = str(company.id)
+            await TrustFoundationService().trigger_law_mutation(db, nid, str(uuid.uuid4()))
+            result = await UniverseHomeService().build(db, "company", nid)
+            assert result["story"]["causality"]["available"] is True
+            assert any("certification" in c["event_type"] for c in result["story"]["causality"]["chain"])
 
 
 class TestRelationshipValueCreation:

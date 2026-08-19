@@ -1,0 +1,103 @@
+# V10.1 Sixth Business Module capability catalog.
+# source_mode: platform_standard | realm_owner | external_connected
+
+schema_version: "1.0"
+version: "1.0.0"
+
+capability_types:
+  - geo_observation
+  - geo_intelligence
+  - growth_skill_workflow
+  - geo_agent
+  - tool_connector
+
+source_modes:
+  - platform_standard
+  - realm_owner
+  - external_connected
+
+platform_standard:
+  - capability_id: geo_visibility
+    name: GEO 可见性观察
+    capability_type: geo_observation
+    provider: universe
+    tool_name: geo_visibility
+    model_name: local-rule
+    model_version: "1.0.0"
+    status: active
+    required_authorization_scope: ai_tools
+    description: 基于已授权 Realm 事实执行本地真实 GEO 观察。
+  - capability_id: geo_diagnosis
+    name: GEO 智能诊断
+    capability_type: geo_intelligence
+    provider: universe
+    tool_name: geo_diagnosis
+    model_name: local-rule
+    model_version: "1.0.0"
+    status: active
+    required_authorization_scope: project_evidence
+    description: 生成事实、内容、引用、证据与能力缺口诊断。
+  - capability_id: geo_report
+    name: GEO 报告生成
+    capability_type: growth_skill_workflow
+    provider: universe
+    tool_name: geo_report
+    model_name: local-rule
+    model_version: "1.0.0"
+    status: active
+    required_authorization_scope: project_evidence
+    description: 将项目观察与产物汇总为可审核报告。
+
+external_connected:
+  - capability_id: external_chatgpt
+    name: ChatGPT 人工观察
+    capability_type: geo_observation
+    provider: openai
+    tool_name: chatgpt
+    model_name: gpt-4o
+    model_version: external
+    status: configured_false
+    configured: false
+    required_authorization_scope: ai_tools
+    allow_external_processing: true
+    data_destination: external_provider
+    description: 人工使用 ChatGPT 查询真实问题并导入 observed 回答。
+  - capability_id: external_doubao
+    name: 豆包人工观察
+    capability_type: geo_observation
+    provider: doubao
+    tool_name: doubao
+    model_name: doubao-pro
+    model_version: external
+    status: configured_false
+    configured: false
+    required_authorization_scope: ai_tools
+    allow_external_processing: true
+    data_destination: external_provider
+    description: 人工使用豆包查询真实问题并导入 observed 回答。
+  - capability_id: external_codex
+    name: Codex 能力执行
+    capability_type: geo_agent
+    provider: codex
+    tool_name: codex
+    model_name: gpt-5
+    model_version: external
+    status: configured_false
+    configured: false
+    required_authorization_scope: ai_tools
+    allow_external_processing: true
+    data_destination: external_provider
+    description: 外部 Codex/Agent 执行授权任务，结果以 declared/observed 导入。
+  - capability_id: external_seo_saas
+    name: GEO/SEO SaaS 连接器
+    capability_type: tool_connector
+    provider: external_saas
+    tool_name: seo_saas
+    model_name: external
+    model_version: external
+    status: configured_false
+    configured: false
+    required_authorization_scope: ai_tools
+    allow_external_processing: true
+    data_destination: external_provider
+    description: 未来 Connector 网关接入 GEO/SEO SaaS。

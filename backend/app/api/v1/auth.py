@@ -46,9 +46,15 @@ async def register(data: UserCreate, db: AsyncSession = Depends(get_db)):
     result = await db.execute(select(User).where(User.email == data.email))
     if result.scalar_one_or_none():
         raise HTTPException(status_code=400, detail="Email already registered")
+    username = (data.username or "").strip()
+    if username:
+        existing_username = await db.execute(select(User).where(User.username == username))
+        if existing_username.scalar_one_or_none():
+            raise HTTPException(status_code=400, detail="Username already registered")
     
     user = User(
         email=data.email,
+        username=username or None,
         password_hash=hash_password(data.password),
         name=data.name,
         phone=data.phone,
@@ -66,7 +72,17 @@ async def register(data: UserCreate, db: AsyncSession = Depends(get_db)):
 
 @router.post("/login", response_model=TokenResponse)
 async def login(data: UserLogin, db: AsyncSession = Depends(get_db)):
-    result = await db.execute(select(User).where(User.email == data.email))
+    account = (data.account or "").strip()
+    email = (data.email or "").strip()
+    if not account and not email:
+        raise HTTPException(status_code=400, detail="account or email is required")
+    if account:
+        if "@" in account:
+            result = await db.execute(select(User).where(User.email == account))
+        else:
+            result = await db.execute(select(User).where(User.username == account))
+    else:
+        result = await db.execute(select(User).where(User.email == email))
     user = result.scalar_one_or_none()
     if not user or not verify_password(data.password, user.password_hash):
         raise HTTPException(status_code=401, detail="Invalid email or password")

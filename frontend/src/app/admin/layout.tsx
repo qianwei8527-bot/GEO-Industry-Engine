@@ -1,11 +1,12 @@
 ﻿'use client';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { LayoutDashboard, Sliders, Building2, Factory, ShieldCheck, Activity, ChevronRight, Globe, Database, FileText, Bot, Radio, Server } from 'lucide-react';
+import { LayoutDashboard, Sliders, Building2, Factory, ShieldCheck, Activity, ChevronRight, Globe, Database, FileText, Bot, Radio, Server, Settings } from 'lucide-react';
 import { useState } from 'react';
 
 const sidebarItems = [
   { href: '/admin', label: '仪表盘', icon: LayoutDashboard },
+  { href: '/operations', label: '运营后台', icon: Settings },
   { href: '/admin/universe', label: '宇宙监控', icon: Globe },
   { href: '/admin/nodes', label: '节点管理', icon: Database },
   { href: '/admin/rules', label: '规则引擎', icon: FileText },
@@ -16,6 +17,8 @@ const sidebarItems = [
   { href: '/admin/companies', label: '企业管理', icon: Building2 },
   { href: '/admin/industries', label: '行业管理', icon: Factory },
   { href: '/admin/certifications', label: '认证审核', icon: ShieldCheck },
+  { href: '/admin/realm-claims', label: '域认领审核', icon: Building2 },
+  { href: '/admin/evidence-claims', label: 'Claim审核', icon: ShieldCheck },
   { href: '/admin/health', label: '系统监控', icon: Activity },
 ];
 

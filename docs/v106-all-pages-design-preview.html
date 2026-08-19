@@ -1,0 +1,1323 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>恒域世界 V10.6 全系统主页面设计预览（脱机 Mock）</title>
+<style>
+  :root {
+    --bg: #f6f8fb;
+    --panel: #ffffff;
+    --panel2: #f1f4f8;
+    --text: #17233d;
+    --muted: #5b6b84;
+    --border: #d8e0ea;
+    --primary: #0b63e6;
+    --primary-weak: #e8f0fe;
+    --primary-strong: #084aa8;
+    --success: #16824a;
+    --success-weak: #e7f5ec;
+    --warning: #9a6500;
+    --warning-weak: #fdf3df;
+    --danger: #c93442;
+    --danger-weak: #fdebec;
+    --inferred: #6c4cf6;
+    --inferred-weak: #f0ecfe;
+    --radius: 8px;
+    --radius-sm: 6px;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 14px;
+    line-height: 1.5;
+  }
+  button { font: inherit; }
+  .app {
+    display: flex;
+    min-height: 100vh;
+  }
+  .sidebar {
+    width: 264px;
+    flex: 0 0 264px;
+    border-right: 1px solid var(--border);
+    background: var(--panel);
+    display: flex;
+    flex-direction: column;
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 16px 18px;
+    border-bottom: 1px solid var(--border);
+  }
+  .brand-mark {
+    width: 34px;
+    height: 34px;
+    border-radius: var(--radius-sm);
+    background: var(--primary);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+  }
+  .brand b { font-size: 15px; }
+  .brand span { display: block; color: var(--muted); font-size: 11px; }
+  .nav-wrap { flex: 1; overflow-y: auto; padding: 10px 12px; }
+  .nav-group { margin-top: 14px; }
+  .nav-group:first-child { margin-top: 0; }
+  .nav-title {
+    padding: 4px 8px;
+    color: var(--text);
+    font-size: 14px;
+    font-weight: 800;
+    letter-spacing: 0;
+  }
+  .nav-subtitle {
+    padding: 6px 8px 4px 20px;
+    color: #d97706;
+    font-size: 12px;
+    font-weight: 600;
+  }
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    padding: 8px 10px;
+    margin-bottom: 2px;
+    border: none;
+    border-radius: var(--radius-sm);
+    background: transparent;
+    color: var(--text);
+    text-align: left;
+    cursor: pointer;
+    font-size: 11px;
+  }
+  .nav-item:hover { background: var(--panel2); }
+  .nav-item.active { background: var(--primary-weak); color: var(--primary-strong); font-weight: 500; }
+  .sidebar-foot {
+    padding: 14px 18px;
+    border-top: 1px solid var(--border);
+    color: var(--muted);
+    font-size: 11px;
+  }
+  .main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+  .topbar {
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 0 24px;
+    border-bottom: 1px solid var(--border);
+    background: var(--panel);
+  }
+  .crumb { color: var(--muted); font-size: 13px; }
+  .crumb b { color: var(--text); font-weight: 500; }
+  .top-actions { display: flex; align-items: center; gap: 10px; }
+  .preview-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    color: var(--warning);
+    background: var(--warning-weak);
+  }
+  .search {
+    min-width: 200px;
+    padding: 7px 12px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--panel2);
+    color: var(--muted);
+    font-size: 12px;
+  }
+  .avatar {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: var(--primary-weak);
+    color: var(--primary-strong);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 600;
+  }
+  .content { flex: 1; overflow-y: auto; padding: 24px; }
+  .page { max-width: 1120px; margin: 0 auto; }
+  .page-head { margin-bottom: 18px; }
+  .page-head h1 { margin: 0; font-size: 22px; font-weight: 700; }
+  .page-head p { margin: 4px 0 0; color: var(--muted); font-size: 13px; }
+  .tags { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 9px;
+    border-radius: 999px;
+    font-size: 11px;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    background: var(--panel);
+  }
+  .chip.green { background: var(--success-weak); color: var(--success); border-color: transparent; }
+  .chip.amber { background: var(--warning-weak); color: var(--warning); border-color: transparent; }
+  .chip.red { background: var(--danger-weak); color: var(--danger); border-color: transparent; }
+  .chip.purple { background: var(--inferred-weak); color: var(--inferred); border-color: transparent; }
+  .stats { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 12px; margin-bottom: 16px; }
+  .stat { border: 1px solid var(--border); border-radius: var(--radius); background: var(--panel); padding: 14px 16px; }
+  .stat span { color: var(--muted); font-size: 12px; }
+  .stat b { display: block; font-size: 24px; font-weight: 700; margin-top: 4px; }
+  .panel { border: 1px solid var(--border); border-radius: var(--radius); background: var(--panel); padding: 18px; margin-bottom: 16px; }
+  .panel-title { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 12px; }
+  .panel-title h2 { margin: 0; font-size: 15px; font-weight: 600; }
+  .panel-title span { color: var(--muted); font-size: 12px; }
+  .cols { display: grid; grid-template-columns: minmax(0,1.5fr) minmax(0,1fr); gap: 16px; }
+  .row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--panel);
+    margin-bottom: 8px;
+  }
+  .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--muted); flex: 0 0 auto; }
+  .dot.green { background: var(--success); }
+  .dot.amber { background: var(--warning); }
+  .dot.red { background: var(--danger); }
+  .dot.purple { background: var(--inferred); }
+  .row b { font-size: 13px; font-weight: 500; }
+  .row span { color: var(--muted); font-size: 12px; }
+  .row .grow { flex: 1; min-width: 0; }
+  .grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 12px; }
+  .grid-3 { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 12px; }
+  .tile { border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--panel); padding: 14px; }
+  .tile b { font-size: 13px; font-weight: 500; }
+  .tile span { display: block; color: var(--muted); font-size: 12px; margin-top: 4px; }
+  .tile .badge { margin-top: 8px; }
+  table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  th, td { text-align: left; padding: 9px 10px; border-bottom: 1px solid var(--border); }
+  th { color: var(--muted); font-weight: 500; }
+  tr:last-child td { border-bottom: none; }
+  .canvas {
+    min-height: 300px;
+    border: 1px dashed var(--border);
+    border-radius: var(--radius);
+    background: var(--panel2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--muted);
+    font-size: 13px;
+  }
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-size: 11px;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    background: var(--panel);
+    white-space: nowrap;
+  }
+  .badge.green { background: var(--success-weak); color: var(--success); border-color: transparent; }
+  .badge.amber { background: var(--warning-weak); color: var(--warning); border-color: transparent; }
+  .badge.red { background: var(--danger-weak); color: var(--danger); border-color: transparent; }
+  .badge.purple { background: var(--inferred-weak); color: var(--inferred); border-color: transparent; }
+  .statusbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 18px;
+    padding: 12px 24px;
+    border-top: 1px solid var(--border);
+    background: var(--panel);
+    color: var(--muted);
+    font-size: 12px;
+  }
+  .statusbar b { color: var(--text); font-weight: 500; }
+  @media (max-width: 900px) {
+    .sidebar { width: 220px; flex-basis: 220px; }
+    .stats { grid-template-columns: repeat(2, minmax(0,1fr)); }
+    .cols, .grid, .grid-3 { grid-template-columns: 1fr; }
+    .content { padding: 16px; }
+    .topbar { padding: 0 16px; }
+  }
+  @media (max-width: 640px) {
+    .app { flex-direction: column; }
+    .sidebar { width: auto; flex: 0 0 auto; border-right: none; border-bottom: 1px solid var(--border); max-height: 260px; }
+    .nav-wrap { display: flex; flex-wrap: wrap; }
+    .nav-group { width: 100%; }
+    .stats { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-mark">恒</div>
+      <div><b>恒域世界</b><span>V10.6 全系统设计预览</span></div>
+    </div>
+    <nav class="nav-wrap" id="navWrap" aria-label="应用面与主页面"></nav>
+    <div class="sidebar-foot">设计预览 · 非生产数据 · 36 个主页面</div>
+  </aside>
+  <main class="main">
+    <header class="topbar">
+      <div class="crumb" id="crumb">恒域世界 / 设计预览</div>
+      <div class="top-actions">
+        <div class="search">搜索或输入命令</div>
+        <span class="preview-badge">脱机设计预览 / 非生产数据 / Mock</span>
+        <div class="avatar">恒</div>
+      </div>
+    </header>
+    <div class="content" id="content"></div>
+    <footer class="statusbar" id="statusbar"></footer>
+  </main>
+</div>
+
+<script>
+const SURFACES = [
+  {
+    id: "panorama",
+    section: "全景",
+    label: "恒域世界全景",
+    pages: [
+      { id: "panorama", label: "全景入口", title: "恒域世界全景", sub: "4 个应用面 · 全部页面 · 10 中台 · 3 底座 · Fixture 模拟交互", tags: ["全景", "Mock 示例数据"] },
+    ],
+  },
+  {
+    id: "owner",
+    section: "应用面",
+    label: "域主工作台",
+    pages: [
+      { id: "owner-today", label: "今日工作", title: "今日工作", sub: "待办、提醒、AI建议、阻塞和风险", tags: ["待确认 1", "执行中 2"] },
+      { id: "owner-customers", label: "客户与定位", title: "客户与定位", sub: "待审核 → 档案确认 → 定位确认 → 项目触发", tags: ["状态机", "版本化", "本地定位"] },
+      { id: "owner-projects", label: "项目与计划", title: "项目与计划", sub: "项目、阶段、步骤、任务、进度", tags: ["8 个任务", "30%"] },
+      { id: "owner-execution", label: "执行与问题", title: "执行与问题", sub: "单步骤执行、问题库、尝试和纠偏", tags: ["问题库 1", "原文保留"] },
+      { id: "owner-results", label: "结果与资产", title: "结果与资产", sub: "Evidence、Outcome、复盘、Skill候选", tags: ["observed", "AI推断"] },
+      { id: "owner-tools", label: "工具与连接", title: "工具与连接", sub: "MCP、Codex、OpenClaw、本地工具和外部服务", tags: ["已连接", "待配置"] },
+      { id: "owner-policy", label: "政策与综合经营", title: "政策与综合经营", sub: "政策、财务、税务、法务、合同、现金流", tags: ["Feature Flag", "隐藏"] },
+      { id: "owner-market", label: "能力市场", title: "能力市场", sub: "能力发现、评估和获得授权", tags: ["Feature Flag", "隐藏"] },
+      { id: "owner-intel", label: "行业态势", title: "行业态势", sub: "World State、行业事件、信号和缺口", tags: ["Feature Flag", "隐藏"] },
+      { id: "owner-collective", label: "共同治理", title: "共同治理", sub: "域主共同治理，后续阶段试点", tags: ["Feature Flag", "隐藏"] },
+    ],
+  },
+  {
+    id: "public",
+    section: "应用面",
+    label: "公共世界与客户协作端",
+    pages: [
+      { id: "public-home", label: "公开世界", title: "公开世界", sub: "公开行业、域、主体、案例和能力展示", tags: ["已验证", "已观察"] },
+      { id: "public-intake", label: "资料提交", title: "资料提交", sub: "客户资料提交、授权和补充", tags: ["安全令牌", "observed"] },
+      { id: "public-client", label: "客户协作", title: "客户协作", sub: "项目进度、成果确认、问题反馈和交付", tags: ["项目隔离", "待确认"] },
+      { id: "public-market", label: "能力市场", title: "能力市场", sub: "能力发现、评估和获得授权", tags: ["Feature Flag", "隐藏"] },
+    ],
+  },
+  {
+    id: "operations",
+    section: "应用面",
+    label: "平台运营后台",
+    pages: [
+      { id: "ops-overview", label: "平台总览", title: "平台总览", sub: "只读聚合，不承载编辑", tags: ["Fixture", "Mock 示例数据"] },
+      { id: "ops-realms", label: "Realm 与用户", title: "Realm 与用户", sub: "Realm、Entity、Membership", tags: ["node_memberships"] },
+      { id: "ops-runtime", label: "运行任务", title: "运行任务", sub: "API、Agent、工具执行状态", tags: ["Fixture 运行记录"] },
+      { id: "ops-agents", label: "Agent 运行", title: "Agent 运行", sub: "Agent 注册、输入、输出、运行记录", tags: ["四原语"] },
+      { id: "ops-workflows", label: "工作流", title: "工作流", sub: "Workflow 结构、阶段、步骤、审批点", tags: ["owner_defined"] },
+      { id: "ops-connectors", label: "MCP 与工具连接", title: "MCP 与工具连接", sub: "Provider 与 MCP 连接状态", tags: ["密钥不进前端"] },
+      { id: "ops-capabilities", label: "能力与 Skill", title: "能力与 Skill", sub: "能力目录、Skill 草稿与版本", tags: ["域主确认"] },
+      { id: "ops-reports", label: "报告与结果", title: "报告与结果", sub: "报告、World Snapshot、结果聚合", tags: ["Fixture"] },
+      { id: "ops-system", label: "系统配置", title: "系统配置", sub: "模型、额度、安全、备份", tags: ["健康", "配置目录"] },
+      { id: "ops-alerts", label: "运行告警", title: "运行告警", sub: "接口、Agent、工具运行告警", tags: ["可观测"] },
+    ],
+  },
+  {
+    id: "governance",
+    section: "应用面",
+    label: "治理审计台",
+    pages: [
+      { id: "gov-permissions", label: "权限策略", title: "权限策略", sub: "角色、成员、数据边界", tags: ["node_memberships"] },
+      { id: "gov-approvals", label: "审批中心", title: "审批中心", sub: "项目、计划、发布、外部动作", tags: ["中风险", "高风险"] },
+      { id: "gov-realm-claims", label: "域认领审核", title: "域认领审核", sub: "Realm 认领与主体归属审核", tags: ["identity"] },
+      { id: "gov-evidence", label: "Evidence 审核", title: "Evidence 审核", sub: "证据、声明、truth scope 审核", tags: ["verified"] },
+      { id: "gov-external-actions", label: "外部动作审核", title: "外部动作审核", sub: "外部工具、MCP、API 动作审核", tags: ["低/中/高授权"] },
+      { id: "gov-audit", label: "审计日志", title: "审计日志", sub: "事件、操作、变更、回滚", tags: ["Event Backbone"] },
+      { id: "gov-risk", label: "风险控制", title: "风险控制", sub: "权限、成本、外部工具、未验证数据", tags: ["禁止动作"] },
+      { id: "gov-retention", label: "数据保留与删除", title: "数据保留与删除", sub: "保留策略、删除请求、审计", tags: ["数据生命周期"] },
+      { id: "gov-collective", label: "共同治理", title: "共同治理", sub: "域主共同治理，后续阶段试点", tags: ["预留"] },
+    ],
+  },
+  {
+    id: "midplatform",
+    section: "中台能力域",
+    label: "中台能力域",
+    pages: [
+      { id: "mid-identity", label: "身份与域权", title: "身份与域权中台", sub: "Realm、Entity、成员和权限的唯一真相源", tags: ["node_memberships"] },
+      { id: "mid-customer-positioning", label: "客户资料与定位", title: "客户资料与定位中台", sub: "客户资料、结构化提取、档案与定位", tags: ["R1/R2"] },
+      { id: "mid-project", label: "项目与执行", title: "项目与执行中台", sub: "项目、计划、任务、进度、提醒", tags: ["GeoProject", "WorkItem"] },
+      { id: "mid-workflow", label: "Agent 与工作流", title: "Agent 与工作流中台", sub: "Workflow、Agent 配置、工具执行", tags: ["可配置", "可审计"] },
+      { id: "mid-evidence", label: "证据与可信", title: "证据与可信中台", sub: "Evidence、Claim、Outcome、信誉", tags: ["truth scope"] },
+      { id: "mid-demand", label: "需求与连接", title: "需求与连接中台", sub: "Mock 示例需求、连接候选、合作记录", tags: ["带证据匹配"] },
+      { id: "mid-assets", label: "资产与能力包", title: "资产与能力包中台", sub: "SOP、Skill、Method、能力包和授权", tags: ["域主确认"] },
+      { id: "mid-policy", label: "政策与综合经营", title: "政策与综合经营中台", sub: "政策、财务、税务、法务、合同、现金流", tags: ["专业审核"] },
+      { id: "mid-world", label: "行业态势", title: "行业态势中台", sub: "World State、行业事件、信号和缺口", tags: ["未知区"] },
+      { id: "mid-governance", label: "治理审计与工具连接", title: "治理审计与工具连接中台", sub: "事件、审计、审批、工具连接、共同治理", tags: ["AuditLog", "MCP"] },
+    ],
+  },
+  {
+    id: "backend",
+    section: "后端基础设施",
+    label: "后端基础设施",
+    pages: [
+      { id: "backend-data", label: "数据事件底座", title: "数据、事件与平台底座", sub: "存储、搜索、向量、事件、队列、快照", tags: ["PostgreSQL"] },
+      { id: "backend-runtime", label: "运行底座", title: "Agent 与工作流运行底座", sub: "Runtime、Memory、Citation、Sandbox、Approval", tags: ["可观测"] },
+      { id: "backend-security", label: "连接安全底座", title: "外部连接与安全底座", sub: "MCP、Adapter、Webhook、Secret、SSRF", tags: ["安全审计"] },
+      { id: "backend-primitives", label: "四原语原则", title: "四原语运行原则", sub: "Agent、Skills、Workflows、MCP 可配置闭环", tags: ["配置→运行→复盘"] },
+      { id: "backend-flow", label: "统一执行审计流", title: "统一执行与审计流", sub: "用户操作到外部服务，全程记录与安全控制", tags: ["Event Backbone"] },
+      { id: "mid-tools", label: "外部连接与安全", title: "外部连接与安全中台（设计视图）", sub: "MCP、Adapter、外部平台连接与安全边界", tags: ["密钥不进前端"] },
+    ],
+  },
+];
+
+const PAGES = {
+  "owner-today": {
+    sections: [
+      { kind: "stats", items: [{ label: "待确认", value: "1" }, { label: "执行中", value: "2" }, { label: "待连接", value: "0" }, { label: "今日主线", value: "3" }] },
+      { kind: "cols", left: [
+        { kind: "panel", title: "今日主线", note: "可配置模块", rows: [
+          { tone: "amber", title: "客户档案待确认", desc: "AI 已整理，域主确认后进入计划", badge: "去确认", badgeTone: "amber" },
+          { tone: "green", title: "执行计划运行中", desc: "8 个任务 · 当前 30%", badge: "查看" },
+          { tone: "green", title: "问题库收到新建议", desc: "AI 分类 · 原文保留", badge: "查看" },
+        ] },
+      ], right: [
+        { kind: "panel", title: "最近连接", note: "3 源", rows: [
+          { tone: "green", title: "Mock 示例输入", desc: "客户资料 · 已连接" },
+          { tone: "amber", title: "行业认知", desc: "待补齐Mock 示例证据" },
+          { tone: "red", title: "资源需求", desc: "尚未发布" },
+        ] },
+      ] },
+    ],
+  },
+  "owner-customers": {
+    sections: [
+      { kind: "stats", items: [
+        { label: "客户提交", value: "7" },
+        { label: "待补充", value: "2" },
+        { label: "档案版本", value: "v3" },
+        { label: "定位项目", value: "1" },
+      ] },
+      { kind: "cols", left: [
+        { kind: "panel", title: "客户列表", note: "状态来自后端", rows: [
+          { tone: "amber", title: "恒域R2截图品牌", desc: "待审核 · 版本 v1", badge: "待审核", badgeTone: "amber" },
+          { tone: "amber", title: "恒域R2截图品牌", desc: "审核中 · 已修改 1 个字段", badge: "审核中", badgeTone: "amber" },
+          { tone: "green", title: "恒域R2截图品牌", desc: "档案已确认 · 版本 v2", badge: "已确认", badgeTone: "green" },
+          { tone: "purple", title: "恒域R2截图品牌", desc: "定位草稿 · 规则 v1.0.0", badge: "定位草稿", badgeTone: "purple" },
+          { tone: "green", title: "恒域R2截图品牌", desc: "定位已确认 · 项目已创建", badge: "项目已创建", badgeTone: "green" },
+        ] },
+      ], right: [
+        { kind: "panel", title: "当前客户档案", note: "字段 / truth / 来源 / 置信度", rows: [
+          { tone: "green", title: "品牌名称：恒域R2截图品牌", desc: "observed · 来源：粘贴文字 · 置信度 100%", badge: "observed" },
+          { tone: "amber", title: "行业赛道：待补充", desc: "unknown · 不自动补造", badge: "unknown", badgeTone: "amber" },
+          { tone: "green", title: "目标客户：AI行业客户", desc: "域主修改 · observed · 来源：域主输入", badge: "observed" },
+        ] },
+      ] },
+      { kind: "panel", title: "行业与经营位置草稿", note: "本地可解释 · config_hash", rows: [
+        { tone: "purple", title: "行业位置", desc: "行业赛道待补充 · 产业链角色待补充 · 不输出排名或百分位", badge: "inferred", badgeTone: "purple" },
+        { tone: "green", title: "经营位置", desc: "初步验证期 · 客户与产品清晰 · 渠道待补充", badge: "draft", badgeTone: "green" },
+      ] },
+      { kind: "panel", title: "定位结论与项目触发", note: "域主显式确认", rows: [
+        { tone: "green", title: "定位结论", desc: "恒域R2截图品牌 · 服务 AI行业客户 · 提供 GEO截图服务 · 主要缺口行业赛道", badge: "已确认", badgeTone: "green" },
+        { tone: "amber", title: "基于此定位创建项目", desc: "二次确认后创建最小项目草稿，不自动生成任务", badge: "确认创建", badgeTone: "amber" },
+      ] },
+    ],
+  },
+  "owner-projects": {
+    sections: [
+      { kind: "stats", items: [{ label: "项目", value: "1" }, { label: "阶段", value: "4" }, { label: "任务", value: "8" }, { label: "完成", value: "30%" }] },
+      { kind: "cols", left: [
+        { kind: "panel", title: "项目列表", note: "Mock 示例项目", rows: [
+          { tone: "green", title: "恒域世界GEO 首轮试点", desc: "来自已确认定位 · 未自动生成任务", badge: "已定位", badgeTone: "green" },
+        ] },
+        { kind: "panel", title: "工作流来源", note: "域主选择", rows: [
+          { tone: "amber", title: "空白工作流结构", desc: "平台只提供结构、字段规范和校验，不内置行业流程", badge: "platform_seed", badgeTone: "amber" },
+          { tone: "muted", title: "域主自定义模板", desc: "通过真实 UI 提交 JSON，记录 submitted_by 与 provenance", badge: "owner_defined" },
+        ] },
+      ], right: [
+        { kind: "panel", title: "计划状态", note: "真实状态机", rows: [
+          { tone: "amber", title: "计划草稿 v1", desc: "unknown_items：负责人、日期、优先级方向", badge: "plan_draft", badgeTone: "amber" },
+          { tone: "green", title: "版本历史", desc: "草稿版本不被覆盖 · 确认后生成正式任务 · 任务版本 task_version", badge: "snapshot", badgeTone: "green" },
+          { tone: "muted", title: "权限", desc: "can_edit / can_confirm / can_update_task 由后端返回", badge: "后端权限", badgeTone: "amber" },
+        ] },
+        { kind: "panel", title: "导出", note: "CSV / 日程", rows: [
+          { tone: "muted", title: "导出执行计划", desc: "UTF-8 CSV · 只导出当前 Realm 和项目数据", badge: "导出" },
+        ] },
+      ] },
+      { kind: "panel", title: "计划与任务编辑", note: "Mock 示例草稿", rows: [
+        { tone: "amber", title: "任务逾期提醒", desc: "首轮可见度实验已逾期 · 仅本地记录，不发送外部消息", badge: "overdue", badgeTone: "red" },
+        { tone: "green", title: "任务进行中", desc: "整理已确认事实 · 进度 50% · completed 必须 100% · task_version v2", badge: "in_progress", badgeTone: "green" },
+        { tone: "muted", title: "版本冲突", desc: "expected_version / expected_task_version 不匹配时拒绝写入并提示刷新", badge: "conflict", badgeTone: "amber" },
+        { tone: "muted", title: "负责人校验", desc: "任务负责人必须是当前 Realm 有效成员", badge: "member", badgeTone: "amber" },
+      ] },
+      { kind: "table", title: "阶段任务", headers: ["任务", "阶段", "状态", "负责人", "进度"], rows: [
+        ["整理已确认事实", "阶段一", "in_progress", "恒域域主", "50%"],
+        ["建立内容资产", "阶段二", "planned", "待指定", "0%"],
+        ["首轮可见度实验", "阶段三", "overdue", "待指定", "0%"],
+        ["域主复盘", "阶段四", "planned", "恒域域主", "0%"],
+      ] },
+    ],
+  },
+  "owner-execution": {
+    sections: [
+      { kind: "cols", left: [
+        { kind: "panel", title: "当前步骤", note: "Mock 示例执行", rows: [
+          { tone: "green", title: "整理品牌事实与证据", desc: "每条事实有来源、状态与待核验项", badge: "进行中", badgeTone: "green" },
+          { tone: "amber", title: "外部 AI 未配置", desc: "只做设计目标：本地提取，不伪造分析", badge: "partial", badgeTone: "amber" },
+        ] },
+      ], right: [
+        { kind: "panel", title: "执行记录", note: "可观测", rows: [
+          { tone: "green", title: "输入 / 输出 / 版本 / 引用 / 成本", desc: "每次 Agent 和工具运行都保留" },
+        ] },
+      ] },
+      { kind: "panel", title: "问题收集整理库", note: "原文追加保存", rows: [
+        { tone: "green", title: "权限/流程问题", desc: "AI 分类建议 · 原文保留 · 历史不覆盖", badge: "已分类", badgeTone: "purple" },
+        { tone: "amber", title: "外部工具失败", desc: "重试与降级状态Mock 示例保留", badge: "受阻", badgeTone: "red" },
+      ] },
+    ],
+  },
+  "owner-results": {
+    sections: [
+      { kind: "cols", left: [
+        { kind: "panel", title: "Evidence", note: "5 级 truth scope", rows: [
+          { tone: "green", title: "已观察证据", desc: "有Mock 示例记录但未完成验证", badge: "observed" },
+          { tone: "purple", title: "AI推断", desc: "AI 根据已知事实提出", badge: "inferred", badgeTone: "purple" },
+        ] },
+      ], right: [
+        { kind: "panel", title: "Outcome", note: "不自动制造 Evidence", rows: [
+          { tone: "muted", title: "Mock 示例结果", desc: "completed 不等于已验证" },
+        ] },
+      ] },
+      { kind: "panel", title: "Skill 候选", note: "域主确认后成为资产", rows: [
+        { tone: "purple", title: "GEO 启动 SOP 草稿", desc: "来自Mock 示例项目复盘，未经确认不进入资产", badge: "候选", badgeTone: "purple" },
+      ] },
+    ],
+  },
+  "owner-tools": {
+    sections: [
+      { kind: "grid-3", items: [
+        { title: "MCP", desc: "工具与资源连接", badge: "已连接", tone: "green" },
+        { title: "Codex", desc: "源码生成与开发", badge: "可配置", tone: "amber" },
+        { title: "OpenClaw", desc: "本地 Agent 与 Skill", badge: "沙箱", tone: "amber" },
+      ] },
+      { kind: "table", title: "工具与连接状态", headers: ["连接", "类型", "状态", "工具", "审计"], rows: [
+        ["MCP Server", "标准协议", "已连接", "get_company_context", "可审计"],
+        ["本地工具", "Adapter", "待配置", "geo_visibility", "可审计"],
+        ["外部服务", "API", "未连接", "日历 / IM", "待接入"],
+      ] },
+    ],
+  },
+  "public-home": {
+    sections: [
+      { kind: "stats", items: [{ label: "公开域", value: "GEO" }, { label: "公开主体", value: "恒域世界" }, { label: "Mock 示例案例", value: "已验证" }, { label: "能力展示", value: "仅 Mock" }] },
+      { kind: "grid-3", items: [
+        { title: "行业域", desc: "GEO 首个行业世界", badge: "public" },
+        { title: "品牌与主体", desc: "公开 Mock 信息", badge: "verified", tone: "green" },
+        { title: "能力展示", desc: "已观察 / 已验证结果", badge: "observed" },
+      ] },
+    ],
+  },
+  "public-intake": {
+    sections: [
+      { kind: "panel", title: "向目标域提交客户资料", note: "安全令牌绑定 Realm", rows: [
+        { tone: "green", title: "企业 / 品牌 / 产品", desc: "仅填写必要字段，其余由 AI 提取", badge: "待填写" },
+        { tone: "amber", title: "授权与补充", desc: "未同意暂存前不保存草稿", badge: "需授权", badgeTone: "amber" },
+      ] },
+      { kind: "cols", left: [
+        { kind: "panel", title: "资料字段", note: "本地结构化提取", rows: [
+          { tone: "muted", title: "企业名称 / 品牌 / 产品 / 关系 / 问题", desc: "上传或粘贴后提交" },
+        ] },
+      ], right: [
+        { kind: "panel", title: "提交状态", note: "Mock 示例状态", rows: [
+          { tone: "green", title: "提交成功", desc: "等待域主确认，truth scope = observed", badge: "observed" },
+        ] },
+      ] },
+    ],
+  },
+  "public-client": {
+    sections: [
+      { kind: "cols", left: [
+        { kind: "panel", title: "项目进度", note: "仅当前项目", rows: [
+          { tone: "green", title: "GEO 首轮试点", desc: "当前 30% · 下一里程碑待确认", badge: "进行中", badgeTone: "green" },
+        ] },
+      ], right: [
+        { kind: "panel", title: "成果确认", note: "域主确认后展示", rows: [
+          { tone: "amber", title: "待确认交付物", desc: "不会展示未验证结果", badge: "待确认", badgeTone: "amber" },
+        ] },
+      ] },
+      { kind: "panel", title: "问题反馈", note: "进入问题库", rows: [
+        { tone: "muted", title: "提交问题与反馈", desc: "问题原文保留，AI 只给分类建议" },
+      ] },
+    ],
+  },
+  "public-market": {
+    sections: [
+      { kind: "panel", title: "能力市场", note: "Feature Flag 隐藏", rows: [
+        { tone: "amber", title: "尚未开放", desc: "能力市场在第三阶段开放，当前不建空壳页面", badge: "hidden", badgeTone: "amber" },
+      ] },
+      { kind: "grid-3", items: [
+        { title: "能力包", desc: "版本与授权", badge: "预留" },
+        { title: "评估", desc: "适用条件与 Evidence", badge: "预留" },
+        { title: "购买", desc: "收益分配规则", badge: "预留" },
+      ] },
+    ],
+  },
+  "ops-overview": {
+    sections: [
+      { kind: "stats", items: [{ label: "数据表总数", value: "1839" }, { label: "配置文件", value: "6" }, { label: "Agent", value: "7" }, { label: "MCP 工具", value: "5" }] },
+      { kind: "panel", title: "Mock 数据源状态", note: "只读聚合", rows: [
+        { tone: "green", title: "后端 / 数据表 / 配置 / Agent / MCP / 能力 / 运行 / World", desc: "待真实接口接入", badge: "已连接", badgeTone: "green" },
+        { tone: "red", title: "缺失接口", desc: "保留 Mock 空状态，不生成模拟数据", badge: "待接入", badgeTone: "red" },
+      ] },
+      { kind: "panel", title: "Feature Flag", note: "四阶段控制", rows: [
+        { tone: "green", title: "域主 / 公共 / 运营", desc: "已开放" },
+        { tone: "amber", title: "治理 / 政策 / 市场 / 态势", desc: "预留或隐藏" },
+      ] },
+    ],
+  },
+  "ops-realms": {
+    sections: [
+      { kind: "table", title: "Realm 与成员", headers: ["Realm", "类型", "成员", "权限真相源"], rows: [
+        ["恒域试点域", "GEO 服务域", "恒域域主", "node_memberships"],
+        ["公共域", "行业世界", "运营者", "node_memberships"],
+      ] },
+      { kind: "panel", title: "权限边界", note: "前端不自判身份", rows: [
+        { tone: "green", title: "Membership / ControlGrant", desc: "后端唯一权限真相源" },
+      ] },
+    ],
+  },
+  "ops-sources": {
+    sections: [
+      { kind: "grid-3", items: [
+        { title: "PostgreSQL", desc: "主数据存储", badge: "已连接", tone: "green" },
+        { title: "Event Backbone", desc: "事件与审计", badge: "已连接", tone: "green" },
+        { title: "外部 AI Provider", desc: "模型服务", badge: "待配置", tone: "amber" },
+      ] },
+      { kind: "panel", title: "覆盖率与未知区", note: "不补造", rows: [
+        { tone: "amber", title: "行业认知", desc: "待补齐Mock 示例证据", badge: "unknown", badgeTone: "amber" },
+      ] },
+    ],
+  },
+  "ops-flags": {
+    sections: [
+      { kind: "table", title: "Feature Flag 状态", headers: ["入口", "第一阶段", "第二阶段", "第三阶段", "第四阶段"], rows: [
+        ["域主工作台", "open", "open", "open", "open"],
+        ["公共世界", "open", "open", "open", "open"],
+        ["平台运营后台", "open", "open", "open", "open"],
+        ["治理审计台", "reserved", "reserved", "pilot", "open"],
+        ["能力市场", "hidden", "internal", "open", "open"],
+        ["行业态势", "hidden", "local", "network", "open"],
+      ] },
+    ],
+  },
+  "ops-monitor": {
+    sections: [
+      { kind: "stats", items: [{ label: "Agent", value: "7" }, { label: "MCP 工具", value: "5" }, { label: "能力运行", value: "Mock 示例记录" }, { label: "错误", value: "0" }] },
+      { kind: "table", title: "运行任务", headers: ["执行码", "能力", "来源", "状态", "truth"], rows: [
+        ["EXEC-62EC2E6C337A", "geo_visibility", "platform_standard", "declared", "observed"],
+        ["EXEC-74473DA7CF25", "geo_visibility", "platform_standard", "declared", "observed"],
+      ] },
+      { kind: "panel", title: "MCP 工具", note: "Mock 注册表示例", rows: [
+        { tone: "green", title: "get_company_context / get_industry_context / analyze_company", desc: "来自 Mock MCP Server" },
+      ] },
+    ],
+  },
+  "ops-system": {
+    sections: [
+      { kind: "stats", items: [{ label: "后端状态", value: "ok" }, { label: "数据表", value: "1839" }, { label: "配置分类", value: "6" }, { label: "Feature Flag", value: "8" }] },
+      { kind: "cols", left: [
+        { kind: "panel", title: "配置目录", note: "scoring / analytics / certification", rows: [
+          { tone: "muted", title: "Mock YAML 配置示例", desc: "只读展示，编辑接口待接通" },
+        ] },
+      ], right: [
+        { kind: "panel", title: "健康状态", note: "系统", rows: [
+          { tone: "green", title: "后端 / 数据库", desc: "运行正常", badge: "healthy", badgeTone: "green" },
+        ] },
+      ] },
+    ],
+  },
+  "gov-permissions": {
+    sections: [
+      { kind: "table", title: "权限策略", headers: ["角色", "范围", "读写", "真相源"], rows: [
+        ["域主", "Realm", "读 + 写", "node_memberships"],
+        ["运营者", "平台", "读 + 配置", "node_memberships"],
+        ["治理者", "平台", "读 + 审批", "node_memberships"],
+      ] },
+    ],
+  },
+  "gov-approvals": {
+    sections: [
+      { kind: "panel", title: "审批中心", note: "中风险 / 高风险", rows: [
+        { tone: "amber", title: "发布内容", desc: "中风险 · 执行前确认", badge: "待审批", badgeTone: "amber" },
+        { tone: "red", title: "对外签约", desc: "高风险 · 域主或专业审核人确认", badge: "高风险", badgeTone: "red" },
+      ] },
+      { kind: "table", title: "审批队列", headers: ["事项", "风险", "提出人", "状态"], rows: [
+        ["发布首篇内容", "中", "AI 助手", "待确认"],
+        ["能力包上架", "高", "域主", "待审核"],
+      ] },
+    ],
+  },
+  "gov-audit": {
+    sections: [
+      { kind: "table", title: "审计日志", headers: ["时间", "动作", "对象", "操作者", "结果"], rows: [
+        ["2026-08-15 16:20", "capability_run", "geo_visibility", "owner@heng-yu.com", "成功"],
+        ["2026-08-15 15:10", "intake_submitted", "客户资料", "匿名提交者", "成功"],
+        ["2026-08-15 14:02", "permission_change", "Membership", "治理者", "待审计"],
+      ] },
+    ],
+  },
+  "gov-risk": {
+    sections: [
+      { kind: "grid-3", items: [
+        { title: "未验证数据", desc: "不得对外展示", badge: "禁止", tone: "red" },
+        { title: "外部工具", desc: "三级授权", badge: "分级", tone: "amber" },
+        { title: "密钥", desc: "不进前端", badge: "安全", tone: "green" },
+      ] },
+      { kind: "panel", title: "风险清单", note: "Mock 示例保留", rows: [
+        { tone: "red", title: "禁止自动发布 / 发送客户消息 / 签约 / 支付", desc: "任何情况下不得自动执行" },
+      ] },
+    ],
+  },
+  "gov-collective": {
+    sections: [
+      { kind: "panel", title: "共同治理", note: "第四阶段试点", rows: [
+        { tone: "amber", title: "治理提案", desc: "域主共同治理，当前仅预留", badge: "预留", badgeTone: "amber" },
+      ] },
+      { kind: "grid-3", items: [
+        { title: "提案", desc: "GovernanceProposal" },
+        { title: "表决", desc: "CollectiveDecision" },
+        { title: "行业规则", desc: "规则版本化" },
+      ] },
+    ],
+  },
+  "mid-identity": {
+    sections: [
+      { kind: "table", title: "中台规格", headers: ["项", "内容"], rows: [
+        ["定位", "Realm、Entity、成员和权限的唯一真相源"],
+        ["核心实体", "Realm、Entity、Membership、ControlGrant、Role"],
+        ["主要 API", "/realm、/entities、/membership、/permission"],
+        ["可配置", "角色、权限策略、认领状态机"],
+        ["边界", "前端不自行判断身份，所有权限走后端"],
+      ] },
+    ],
+  },
+  "mid-project": {
+    sections: [
+      { kind: "table", title: "中台规格", headers: ["项", "内容"], rows: [
+        ["定位", "项目、计划、任务、进度、提醒"],
+        ["核心实体", "GeoProject、WorkItem、Reminder、Progress"],
+        ["主要 API", "/geo-projects、/execution/projects/{id}/plan"],
+        ["可配置", "项目模板、阶段、任务模板、提醒规则"],
+        ["边界", "不建立第二套 Task 体系"],
+      ] },
+    ],
+  },
+  "mid-workflow": {
+    sections: [
+      { kind: "table", title: "中台规格", headers: ["项", "内容"], rows: [
+        ["定位", "域主工作流、Agent 配置、工具执行"],
+        ["核心实体", "Workflow、AgentConfig、ToolExecutionRecord"],
+        ["主要 API", "/agent/list、/capabilities/runs、tool-executions"],
+        ["可配置", "Agent 角色、工具、模型、预算、权限"],
+        ["边界", "工作流归域主，平台负责运行、版本和审计"],
+      ] },
+    ],
+  },
+  "mid-evidence": {
+    sections: [
+      { kind: "table", title: "中台规格", headers: ["项", "内容"], rows: [
+        ["定位", "Evidence、Claim、Outcome、信誉"],
+        ["核心实体", "Evidence、EvidenceClaim、Outcome、Reputation"],
+        ["主要 API", "/evidence、/claims、/trust"],
+        ["可配置", "验证规则、信誉规则、truth scope 映射"],
+        ["边界", "observed 不得显示为 verified，completed 不自动提高信誉"],
+      ] },
+    ],
+  },
+  "mid-demand": {
+    sections: [
+      { kind: "table", title: "中台规格", headers: ["项", "内容"], rows: [
+        ["定位", "Mock 示例需求、连接候选、合作记录"],
+        ["核心实体", "DemandEvent、ConnectionCandidate、Engagement"],
+        ["主要 API", "/demand、/connection、/engagement"],
+        ["可配置", "匹配策略、候选展示规则"],
+        ["边界", "候选必须带理由、证据、风险和未知项"],
+      ] },
+    ],
+  },
+  "mid-assets": {
+    sections: [
+      { kind: "table", title: "中台规格", headers: ["项", "内容"], rows: [
+        ["定位", "SOP、Skill、Method、能力包和授权"],
+        ["核心实体", "CapabilityDefinition、CapabilityPackage、LicenseTerm"],
+        ["主要 API", "/capabilities、/capabilities/runs"],
+        ["可配置", "版本、来源、适用条件、授权、收益规则"],
+        ["边界", "设计目标：模板只能来自真实有效方法，需域主确认"],
+      ] },
+    ],
+  },
+  "mid-policy": {
+    sections: [
+      { kind: "table", title: "中台规格", headers: ["项", "内容"], rows: [
+        ["定位", "政策、地区、财务、税务、法务、合同、现金流"],
+        ["核心实体", "PolicySource、PolicyEvent、Jurisdiction、FinancialSnapshot"],
+        ["预留实体", "TaxProfile、ContractRecord、CashflowSnapshot、Budget、ProfessionalReview"],
+        ["可配置", "适用地区、政策版本、风险边界"],
+        ["边界", "高风险财税法决策必须专业审核人确认"],
+      ] },
+    ],
+  },
+  "mid-world": {
+    sections: [
+      { kind: "table", title: "中台规格", headers: ["项", "内容"], rows: [
+        ["定位", "World State、行业事件、信号和缺口"],
+        ["核心实体", "WorldContract、WorldStateSnapshot、IndustryEvent"],
+        ["主要 API", "/universe/world-state/snapshots、/worlds"],
+        ["可配置规则", "覆盖范围、快照范围、信号规则"],
+        ["边界", "推断必须标记，未知区必须显示缺口"],
+      ] },
+    ],
+  },
+  "mid-governance": {
+    sections: [
+      { kind: "table", title: "中台规格", headers: ["项", "内容"], rows: [
+        ["定位", "事件、审计、审批、共同治理"],
+        ["核心实体", "EventBackbone、AuditLog、Approval、GovernanceProposal"],
+        ["主要 API", "/event、/audit、/approval、/governance"],
+        ["可配置", "审批流、风险分级、审计保留期"],
+        ["边界", "所有外部动作和权限变更留痕"],
+      ] },
+    ],
+  },
+  "mid-tools": {
+    sections: [
+      { kind: "table", title: "中台规格", headers: ["项", "内容"], rows: [
+        ["定位", "MCP、Adapter、外部平台连接"],
+        ["核心实体", "Connector、MCP Server、Adapter、CredentialPolicy"],
+        ["主要 API", "/mcp/tools、/providers、/connector"],
+        ["可配置", "连接、工具、资源、密钥策略、限流"],
+        ["边界", "外部平台不得成为不可替换核心，密钥不进前端"],
+      ] },
+    ],
+  },
+  "backend-data": {
+    sections: [
+      { kind: "grid-3", items: [
+        { title: "PostgreSQL", desc: "主数据存储", badge: "已连接", tone: "green" },
+        { title: "对象存储 / 搜索 / 向量", desc: "文件、检索、语义", badge: "已设计" },
+        { title: "Event / Queue / Snapshot", desc: "事件流、异步、快照", badge: "已设计" },
+      ] },
+      { kind: "panel", title: "职责", note: "数据底座", rows: [
+        { tone: "green", title: "设计目标：Mock 示例数据持久化", desc: "Realm、Project、Evidence、Capability、World State", badge: "核心" },
+        { tone: "amber", title: "未知区与覆盖率", desc: "数据缺口必须真实展示", badge: "不补造", badgeTone: "amber" },
+      ] },
+    ],
+  },
+  "backend-runtime": {
+    sections: [
+      { kind: "grid-3", items: [
+        { title: "Agent Runtime", desc: "输入、输出、版本、引用、成本", badge: "可配置" },
+        { title: "Workflow Runtime", desc: "步骤、条件、人工确认点", badge: "可配置" },
+        { title: "Sandbox / Budget / Approval", desc: "权限、成本、审批", badge: "安全" },
+      ] },
+      { kind: "panel", title: "职责", note: "运行底座", rows: [
+        { tone: "green", title: "工具执行与重试", desc: "幂等、降级、可观测", badge: "Mock 示例记录" },
+      ] },
+    ],
+  },
+  "backend-security": {
+    sections: [
+      { kind: "grid-3", items: [
+        { title: "MCP / Adapter / API", desc: "外部平台连接", badge: "连接层" },
+        { title: "Secret / Rate Limit", desc: "密钥、限流、SSRF", badge: "安全" },
+        { title: "数据出境与审计", desc: "跨域受控、连接留痕", badge: "合规" },
+      ] },
+    ],
+  },
+  "backend-primitives": {
+    sections: [
+      { kind: "grid-3", items: [
+        { title: "Agent", desc: "角色 / 目标 / 工具 / 预算 / 权限", badge: "可配置" },
+        { title: "Skills", desc: "技能包 / 版本 / 来源 / 授权", badge: "可配置" },
+        { title: "Workflows", desc: "步骤 / 条件 / 人工确认点", badge: "可配置" },
+      ] },
+      { kind: "panel", title: "统一闭环", note: "四原语", rows: [
+        { tone: "purple", title: "目录 → 配置 → 授权 → 运行 → 记录 → 复盘 → 资产", desc: "四原语不是业务真相源", badge: "闭环", badgeTone: "purple" },
+      ] },
+    ],
+  },
+  "backend-flow": {
+    sections: [
+      { kind: "panel", title: "统一数据流", note: "全程审计", rows: [
+        { tone: "green", title: "用户操作 → Feature Flag → 权限 → 页面 → 模块 → 中台 API → 四原语运行 → 底座 → 外部服务", desc: "所有写操作进入审计，高风险进入人工确认", badge: "Event Backbone" },
+      ] },
+      { kind: "table", title: "必须记录", headers: ["环节", "内容"], rows: [
+        ["输入", "用户、Realm、项目、授权范围"],
+        ["执行", "Agent / Workflow / Tool / MCP 调用"],
+        ["输出", "结果、版本、引用、成本"],
+        ["可信", "verified / observed / inferred / unknown / simulation"],
+        ["安全", "密钥脱敏、限流、SSRF、数据出境"],
+      ] },
+    ],
+  },
+};
+
+let currentId = "owner-today";
+
+const REAL_ROUTES = {};
+
+function esc(value) {
+  return String(value).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+}
+
+function chip(text, tone) {
+  return `<span class="chip ${tone || ""}">${esc(text)}</span>`;
+}
+
+function renderSection(section) {
+  if (section.kind === "stats") {
+    return `<div class="stats">${section.items.map((item) => `<div class="stat"><span>${esc(item.label)}</span><b>${esc(item.value)}</b></div>`).join("")}</div>`;
+  }
+  if (section.kind === "panel") {
+    const rows = (section.rows || []).map((row) => `
+      <div class="row">
+        <span class="dot ${row.tone || ""}"></span>
+        <div class="grow"><b>${esc(row.title)}</b><br><span>${esc(row.desc || "")}</span></div>
+        ${row.badge ? `<span class="badge ${row.badgeTone || ""}">${esc(row.badge)}</span>` : ""}
+      </div>`).join("");
+    return `<section class="panel"><div class="panel-title"><h2>${esc(section.title)}</h2><span>${esc(section.note || "")}</span></div>${rows}</section>`;
+  }
+  if (section.kind === "cols") {
+    return `<div class="cols">${section.left.map(renderSection).join("")}${section.right.map(renderSection).join("")}</div>`;
+  }
+  if (section.kind === "grid" || section.kind === "grid-3") {
+    const cls = section.kind === "grid-3" ? "grid-3" : "grid";
+    return `<div class="${cls}">${section.items.map((item) => `<div class="tile"><b>${esc(item.title)}</b><span>${esc(item.desc || "")}</span>${item.badge ? `<div class="badge ${item.tone || ""}">${esc(item.badge)}</div>` : ""}</div>`).join("")}</div>`;
+  }
+  if (section.kind === "table") {
+    return `<section class="panel"><div class="panel-title"><h2>${esc(section.title)}</h2><span>${esc(section.note || "")}</span></div><div style="overflow-x:auto"><table><thead><tr>${section.headers.map((h) => `<th>${esc(h)}</th>`).join("")}</tr></thead><tbody>${section.rows.map((row) => `<tr>${row.map((cell) => `<td>${esc(cell)}</td>`).join("")}</tr>`).join("")}</tbody></table></div></section>`;
+  }
+  return "";
+}
+
+function genericSections(page) {
+  const templateLabels = {
+    workbench: "工作页面",
+    list: "列表页面",
+    detail: "详情/展示页面",
+    config: "配置页面",
+    management: "管理页面",
+    canvas: "探索画布",
+  };
+  return [
+    {
+      kind: "stats",
+      items: [
+        { label: "模板", value: templateLabels[page.template] || page.template },
+        { label: "数据模式", value: "fixture" },
+        { label: "状态", value: "skeleton" },
+        { label: "操作", value: "本地模拟" },
+      ],
+    },
+    {
+      kind: "panel",
+      title: "Fixture 页面骨架",
+      note: "脱机设计预览 / Mock 示例数据 / 待真实接口接入",
+      rows: [
+        { tone: "amber", title: page.title, desc: page.sub || "全景骨架页面，仅展示结构和交互位置", badge: "fixture", badgeTone: "amber" },
+        { tone: "green", title: "统一 Shell", desc: "复用 AppShell 与六类模板，不建立第二套设计系统", badge: "复用" },
+        { tone: "muted", title: "接口位置", desc: "数据接口位置已预留，后续通过 Adapter 替换 Fixture", badge: "Adapter" },
+      ],
+    },
+    {
+      kind: "panel",
+      title: "核心操作入口",
+      note: "模拟按钮只改变本地状态",
+      rows: [
+        { tone: "green", title: "主要操作", desc: "确认 / 保存 / 提交 / 审批 / 查看", badge: "模拟操作" },
+        { tone: "amber", title: "Feature Flag", desc: "未开放模块显示 hidden / reserved，不创建假页面", badge: "flags", badgeTone: "amber" },
+      ],
+    },
+  ];
+}
+
+function renderPanorama() {
+  currentId = "panorama";
+  const appSurfaces = SURFACES.filter((surface) => ["owner", "public", "operations", "governance"].includes(surface.id));
+  const midplatforms = SURFACES.find((surface) => surface.id === "midplatform");
+  const bases = SURFACES.find((surface) => surface.id === "backend");
+  const appPages = appSurfaces.flatMap((surface) => surface.pages);
+  document.getElementById("crumb").innerHTML = `恒域世界 <b>/ 全景</b> / 全景入口`;
+  document.getElementById("content").innerHTML = `
+    <div class="page">
+      <header class="page-head">
+        <h1>恒域世界全景</h1>
+        <p>4 个应用面 · 全部一级页面 · 10 个中台能力域 · 3 个技术底座 · Fixture 模拟交互</p>
+        <div class="tags">${["全景", "Mock 示例数据", "骨架完整性", "待真实接口接入"].map((tag) => chip(tag, tag === "Mock 示例数据" ? "amber" : "green")).join("")}</div>
+      </header>
+      <div class="stats">
+        <div class="stat"><span>应用面</span><b>4</b></div>
+        <div class="stat"><span>页面</span><b>${appPages.length}</b></div>
+        <div class="stat"><span>中台</span><b>${midplatforms ? midplatforms.pages.length : 0}</b></div>
+        <div class="stat"><span>底座</span><b>3</b></div>
+      </div>
+      <div class="grid-3">
+        ${appSurfaces.map((surface) => `
+          <div class="tile">
+            <b>${esc(surface.label)}</b>
+            <span>${surface.pages.length} 个页面 · ${surface.pages.map((page) => page.label).join(" / ")}</span>
+          </div>
+        `).join("")}
+      </div>
+      <div class="panel">
+        <div class="panel-title"><h2>10 个中台能力域</h2><span>内部架构设计视图</span></div>
+        <div class="grid">
+          ${(midplatforms ? midplatforms.pages : []).map((page) => `
+            <div class="row">
+              <span class="dot purple"></span>
+              <div class="grow"><b>${esc(page.title)}</b><br><span>${esc(page.sub)}</span></div>
+              <button class="nav-item" data-page="${page.id}" style="width:auto;padding:6px 10px">查看</button>
+            </div>
+          `).join("")}
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-title"><h2>3 个技术底座</h2><span>内部架构设计视图</span></div>
+        <div class="grid-3">
+          ${(bases ? bases.pages.filter((page) => ["backend-data", "backend-runtime", "backend-security"].includes(page.id)) : []).map((page) => `
+            <div class="tile"><b>${esc(page.title)}</b><span>${esc(page.sub)}</span><div class="badge purple">底座</div></div>
+          `).join("")}
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-title"><h2>页面—中台—底座映射</h2><span>每个页面标注依赖能力</span></div>
+        <div style="overflow-x:auto"><table>
+          <thead><tr><th>页面</th><th>应用面</th><th>模板</th><th>标签</th><th>操作</th></tr></thead>
+          <tbody>
+            ${appPages.map((page) => `<tr><td>${esc(page.title)}</td><td>${esc(surfaceFor(page.id).label || "")}</td><td>${esc(page.template || "-")}</td><td>${esc((page.tags || []).join(" / "))}</td><td><button class="nav-item" data-page="${page.id}" style="width:auto;padding:4px 8px">查看</button></td></tr>`).join("")}
+          </tbody>
+        </table></div>
+      </div>
+    </div>`;
+  document.getElementById("statusbar").innerHTML = `
+    <span>模式：<b>全景骨架</b></span>
+    <span>页面：<b>恒域世界全景</b></span>
+    <span>数据：<b>fixture</b></span>
+    <span>状态：<b>normal / loading / empty / partial / blocked / error / no_permission</b></span>`;
+  document.querySelectorAll(".nav-item").forEach((btn) => {
+    btn.classList.toggle("active", btn.dataset.page === "panorama");
+  });
+}
+
+function renderPage(id) {
+  if (id === "panorama") {
+    renderPanorama();
+    return;
+  }
+  currentId = id;
+  const page = SURFACES.flatMap((s) => s.pages).find((p) => p.id === id);
+  const surface = SURFACES.find((s) => s.pages.some((p) => p.id === id));
+  const spec = PAGES[id] || genericSections(page);
+  document.getElementById("crumb").innerHTML = `恒域世界 <b>/ ${esc(surface.label)}</b> / ${esc(page.title)}`;
+  document.getElementById("content").innerHTML = `
+    <div class="page">
+      <header class="page-head">
+        <h1>${esc(page.title)}</h1>
+        <p>${esc(page.sub)}</p>
+        <div class="tags">${(page.tags || []).map((tag) => chip(tag, tag === "已验证" || tag === "已连接" ? "green" : tag === "待补充" || tag === "待确认" || tag === "隐藏" ? "amber" : tag === "AI推断" ? "purple" : tag === "禁止" || tag === "受阻" ? "red" : "")).join("")}</div>
+      </header>
+      ${spec.sections.map(renderSection).join("")}
+    </div>`;
+  document.getElementById("statusbar").innerHTML = `
+    <span>应用面：<b>${esc(surface.label)}</b></span>
+    <span>页面：<b>${esc(page.title)}</b></span>
+    <span>truth scope：<b>verified / observed / inferred / unknown / simulation</b></span>
+    <span>状态：<b>loading / empty / partial / blocked / error / no-permission</b></span>`;
+  document.querySelectorAll(".nav-item").forEach((btn) => {
+    btn.classList.toggle("active", btn.dataset.page === id);
+  });
+}
+
+function buildNav() {
+  const nav = document.getElementById("navWrap");
+  const sections = [];
+  SURFACES.forEach((surface) => {
+    let section = sections.find((item) => item.name === surface.section);
+    if (!section) {
+      section = { name: surface.section, surfaces: [] };
+      sections.push(section);
+    }
+    section.surfaces.push(surface);
+  });
+  nav.innerHTML = sections
+    .map(
+      (section) => `
+      <div class="nav-group">
+        <div class="nav-title">${esc(section.name)}</div>
+        ${section.surfaces
+          .map(
+            (surface) => `
+          <div class="nav-subtitle">${esc(surface.label)}</div>
+          ${surface.pages
+            .map(
+              (page) =>
+                `<button class="nav-item" data-page="${page.id}" data-surface="${surface.id}">${esc(page.label)}</button>`,
+            )
+            .join("")}
+        `,
+          )
+          .join("")}
+      </div>`,
+    )
+    .join("");
+  nav.addEventListener("click", (event) => {
+    const btn = event.target.closest(".nav-item");
+    if (!btn) return;
+    const route = REAL_ROUTES[btn.dataset.page];
+    if (route) {
+      window.location.href = route;
+      return;
+    }
+    renderPage(btn.dataset.page);
+  });
+}
+
+buildNav();
+renderPage(currentId);
+</script>
+<script>
+const PAGE_META = {
+  default: {
+    taskId: "V10.6-PANORAMA-SKELETON-01",
+    release: "V10.6-PANORAMA-SKELETON-01",
+    designStatus: "designed",
+    implementationStatus: "skeleton",
+    dataMode: "fixture",
+    realRoute: null,
+    featureFlag: "hidden/reserved",
+    lastUpdated: "2026-08-18",
+  },
+  "panorama": { designStatus: "frozen", implementationStatus: "skeleton", dataMode: "fixture", realRoute: "/panorama", featureFlag: "open" },
+  "owner-today": { designStatus: "designed", implementationStatus: "skeleton", dataMode: "fixture", realRoute: "/panorama?page=owner-today", featureFlag: "open" },
+  "owner-customers": { taskId: "V10.6-R2.1-FIX2-FINAL-FREEZE", release: "V10.6-R2.1-FIX2", lastUpdated: "2026-08-16", designStatus: "frozen", implementationStatus: "implemented", dataMode: "fixture", realRoute: "/realm/{realm_id}/customers", featureFlag: "open" },
+  "owner-projects": { taskId: "V10.6-R3-FIX2.1-FINAL-FREEZE", release: "V10.6-R3-FIX2.1", lastUpdated: "2026-08-17", designStatus: "frozen", implementationStatus: "implemented", dataMode: "fixture", realRoute: "/realm/{realm_id}/projects", featureFlag: "open" },
+  "owner-execution": { taskId: "V10.6-R4-FIX2-FINAL-CLOSEOUT", release: "V10.6-R4-FIX2", lastUpdated: "2026-08-17", designStatus: "frozen", implementationStatus: "acceptance_blocked", dataMode: "fixture", realRoute: "/realm/{realm_id}/execution", featureFlag: "open" },
+  "owner-results": { designStatus: "designed", implementationStatus: "skeleton", dataMode: "fixture", realRoute: "/panorama?page=owner-results", featureFlag: "open" },
+  "owner-tools": { designStatus: "designed", implementationStatus: "skeleton", dataMode: "fixture", realRoute: "/panorama?page=owner-tools", featureFlag: "open" },
+  "owner-policy": { designStatus: "planned", implementationStatus: "skeleton", dataMode: "fixture", realRoute: "/panorama?page=owner-policy", featureFlag: "hidden" },
+  "owner-market": { designStatus: "planned", implementationStatus: "skeleton", dataMode: "fixture", realRoute: "/panorama?page=owner-market", featureFlag: "hidden" },
+  "owner-intel": { designStatus: "planned", implementationStatus: "skeleton", dataMode: "fixture", realRoute: "/panorama?page=owner-intel", featureFlag: "hidden" },
+  "owner-collective": { designStatus: "planned", implementationStatus: "skeleton", dataMode: "fixture", realRoute: "/panorama?page=owner-collective", featureFlag: "hidden" },
+  "public-home": { designStatus: "designed", implementationStatus: "skeleton", dataMode: "fixture", realRoute: "/public", featureFlag: "open" },
+  "public-intake": { designStatus: "frozen", implementationStatus: "implemented", dataMode: "fixture", realRoute: "/intake/{secure_token}", featureFlag: "open" },
+  "public-client": { designStatus: "designed", implementationStatus: "skeleton", dataMode: "fixture", realRoute: "/client", featureFlag: "open" },
+  "public-market": { designStatus: "planned", implementationStatus: "skeleton", dataMode: "fixture", realRoute: "/market", featureFlag: "hidden" },
+  "ops-overview": { designStatus: "designed", implementationStatus: "skeleton", dataMode: "fixture", realRoute: "/operations", featureFlag: "open" },
+  "ops-realms": { designStatus: "designed", implementationStatus: "skeleton", dataMode: "fixture", realRoute: "/panorama?page=ops-realms", featureFlag: "open" },
+  "ops-runtime": { designStatus: "designed", implementationStatus: "skeleton", dataMode: "fixture", realRoute: "/panorama?page=ops-runtime", featureFlag: "open" },
+  "ops-agents": { designStatus: "designed", implementationStatus: "skeleton", dataMode: "fixture", realRoute: "/panorama?page=ops-agents", featureFlag: "open" },
+  "ops-workflows": { designStatus: "designed", implementationStatus: "skeleton", dataMode: "fixture", realRoute: "/panorama?page=ops-workflows", featureFlag: "open" },
+  "ops-connectors": { designStatus: "designed", implementationStatus: "skeleton", dataMode: "fixture", realRoute: "/panorama?page=ops-connectors", featureFlag: "open" },
+  "ops-capabilities": { designStatus: "designed", implementationStatus: "skeleton", dataMode: "fixture", realRoute: "/panorama?page=ops-capabilities", featureFlag: "open" },
+  "ops-reports": { designStatus: "designed", implementationStatus: "skeleton", dataMode: "fixture", realRoute: "/panorama?page=ops-reports", featureFlag: "open" },
+  "ops-system": { designStatus: "designed", implementationStatus: "skeleton", dataMode: "fixture", realRoute: "/panorama?page=ops-system", featureFlag: "open" },
+  "ops-alerts": { designStatus: "designed", implementationStatus: "skeleton", dataMode: "fixture", realRoute: "/panorama?page=ops-alerts", featureFlag: "open" },
+  "gov-permissions": { designStatus: "designed", implementationStatus: "skeleton", dataMode: "fixture", realRoute: "/governance", featureFlag: "open" },
+  "gov-approvals": { designStatus: "designed", implementationStatus: "skeleton", dataMode: "fixture", realRoute: "/panorama?page=gov-approvals", featureFlag: "open" },
+  "gov-realm-claims": { designStatus: "designed", implementationStatus: "skeleton", dataMode: "fixture", realRoute: "/panorama?page=gov-realm-claims", featureFlag: "open" },
+  "gov-evidence": { designStatus: "designed", implementationStatus: "skeleton", dataMode: "fixture", realRoute: "/panorama?page=gov-evidence", featureFlag: "open" },
+  "gov-external-actions": { designStatus: "designed", implementationStatus: "skeleton", dataMode: "fixture", realRoute: "/panorama?page=gov-external-actions", featureFlag: "open" },
+  "gov-audit": { designStatus: "designed", implementationStatus: "skeleton", dataMode: "fixture", realRoute: "/panorama?page=gov-audit", featureFlag: "open" },
+  "gov-risk": { designStatus: "designed", implementationStatus: "skeleton", dataMode: "fixture", realRoute: "/panorama?page=gov-risk", featureFlag: "open" },
+  "gov-retention": { designStatus: "designed", implementationStatus: "skeleton", dataMode: "fixture", realRoute: "/panorama?page=gov-retention", featureFlag: "open" },
+  "gov-collective": { designStatus: "planned", implementationStatus: "skeleton", dataMode: "fixture", realRoute: "/panorama?page=gov-collective", featureFlag: "hidden" },
+  "mid-identity": { designStatus: "designed", implementationStatus: "skeleton", dataMode: "fixture", featureFlag: "hidden/reserved", internalArchitecture: true },
+  "mid-customer-positioning": { designStatus: "designed", implementationStatus: "skeleton", dataMode: "fixture", featureFlag: "hidden/reserved", internalArchitecture: true },
+  "mid-project": { designStatus: "designed", implementationStatus: "skeleton", dataMode: "fixture", featureFlag: "hidden/reserved", internalArchitecture: true },
+  "mid-workflow": { designStatus: "designed", implementationStatus: "skeleton", dataMode: "fixture", featureFlag: "hidden/reserved", internalArchitecture: true },
+  "mid-evidence": { designStatus: "designed", implementationStatus: "skeleton", dataMode: "fixture", featureFlag: "hidden/reserved", internalArchitecture: true },
+  "mid-demand": { designStatus: "designed", implementationStatus: "skeleton", dataMode: "fixture", featureFlag: "hidden/reserved", internalArchitecture: true },
+  "mid-assets": { designStatus: "designed", implementationStatus: "skeleton", dataMode: "fixture", featureFlag: "hidden/reserved", internalArchitecture: true },
+  "mid-policy": { designStatus: "planned", implementationStatus: "skeleton", dataMode: "fixture", featureFlag: "hidden", internalArchitecture: true },
+  "mid-world": { designStatus: "designed", implementationStatus: "skeleton", dataMode: "fixture", featureFlag: "hidden/reserved", internalArchitecture: true },
+  "mid-governance": { designStatus: "designed", implementationStatus: "skeleton", dataMode: "fixture", featureFlag: "hidden/reserved", internalArchitecture: true },
+  "backend-data": { designStatus: "designed", implementationStatus: "skeleton", dataMode: "fixture", featureFlag: "hidden/reserved", internalArchitecture: true },
+  "backend-runtime": { designStatus: "designed", implementationStatus: "skeleton", dataMode: "fixture", featureFlag: "hidden/reserved", internalArchitecture: true },
+  "backend-security": { designStatus: "designed", implementationStatus: "skeleton", dataMode: "fixture", featureFlag: "hidden/reserved", internalArchitecture: true },
+  "backend-primitives": { designStatus: "designed", implementationStatus: "skeleton", dataMode: "fixture", featureFlag: "hidden/reserved", internalArchitecture: true },
+  "backend-flow": { designStatus: "designed", implementationStatus: "skeleton", dataMode: "fixture", featureFlag: "hidden/reserved", internalArchitecture: true },
+  "mid-tools": { designStatus: "designed", implementationStatus: "skeleton", dataMode: "fixture", featureFlag: "hidden/reserved", internalArchitecture: true },
+};
+
+const CUSTOMER_STATES = {
+  loading: `<div class="panel"><div class="panel-title"><h2>Mock 状态：loading</h2><span>脱机设计预览</span></div><div style="height:180px;background:var(--panel2);border-radius:6px;display:flex;align-items:center;justify-content:center;color:var(--muted)">真实加载骨架，不闪烁完整假数据</div></div>`,
+  empty: `<div class="panel"><div class="panel-title"><h2>Mock 状态：empty</h2><span>脱机设计预览</span></div><div class="row"><span class="dot"></span><div class="grow"><b>尚无客户提交</b><br><span>客户通过公共资料提交入口提交后，会出现在这里</span></div></div></div>`,
+  partial: `<div class="panel"><div class="panel-title"><h2>Mock 状态：partial</h2><span>脱机设计预览</span></div><div class="row"><span class="dot amber"></span><div class="grow"><b>档案不完整：2 项待补充</b><br><span>行业赛道 / 现有渠道 保持 unknown，不自动补造</span></div><span class="badge amber">unknown</span></div></div>`,
+  blocked: `<div class="panel"><div class="panel-title"><h2>Mock 状态：blocked</h2><span>脱机设计预览</span></div><div class="row"><span class="dot red"></span><div class="grow"><b>流程阻塞</b><br><span>定位确认前无法创建项目；需补齐档案或重新确认定位</span></div><span class="badge red">阻塞</span></div></div>`,
+  error: `<div class="panel"><div class="panel-title"><h2>Mock 状态：error</h2><span>脱机设计预览</span></div><div class="row"><span class="dot red"></span><div class="grow"><b>客户与定位加载失败</b><br><span>仅展示本地 Mock 错误态，不调用真实接口</span></div><span class="badge red">重试</span></div></div>`,
+  "no-permission": `<div class="panel"><div class="panel-title"><h2>Mock 状态：no-permission</h2><span>脱机设计预览</span></div><div class="row"><span class="dot red"></span><div class="grow"><b>无权限访问该 Realm</b><br><span>不展示客户内容，不泄露对象是否存在</span></div><span class="badge red">403</span></div></div>`,
+  normal: ``,
+};
+
+const PROJECT_STATES = {
+  loading: `<div class="panel"><div class="panel-title"><h2>Mock 状态：loading</h2><span>脱机设计预览</span></div><div style="height:180px;background:var(--panel2);border-radius:6px;display:flex;align-items:center;justify-content:center;color:var(--muted)">真实加载骨架，不闪烁完整假数据</div></div>`,
+  empty: `<div class="panel"><div class="panel-title"><h2>Mock 状态：empty</h2><span>脱机设计预览</span></div><div class="row"><span class="dot"></span><div class="grow"><b>尚无项目</b><br><span>R2 定位确认并显式创建项目后，才会出现在这里</span></div></div></div>`,
+  partial: `<div class="panel"><div class="panel-title"><h2>Mock 状态：partial</h2><span>脱机设计预览</span></div><div class="row"><span class="dot amber"></span><div class="grow"><b>计划不完整：负责人与日期待指定</b><br><span>unknown_items 不自动补造</span></div><span class="badge amber">unknown</span></div></div>`,
+  blocked: `<div class="panel"><div class="panel-title"><h2>Mock 状态：blocked</h2><span>脱机设计预览</span></div><div class="row"><span class="dot red"></span><div class="grow"><b>计划变更受阻</b><br><span>已开始执行的计划结构性变更进入变更受阻，R3 不覆盖</span></div><span class="badge red">阻塞</span></div></div>`,
+  error: `<div class="panel"><div class="panel-title"><h2>Mock 状态：error</h2><span>脱机设计预览</span></div><div class="row"><span class="dot red"></span><div class="grow"><b>项目与计划加载失败</b><br><span>仅展示本地 Mock 错误态，不调用真实接口</span></div><span class="badge red">重试</span></div></div>`,
+  "no-permission": `<div class="panel"><div class="panel-title"><h2>Mock 状态：no-permission</h2><span>脱机设计预览</span></div><div class="row"><span class="dot red"></span><div class="grow"><b>无权限访问该 Realm</b><br><span>不展示项目内容，不泄露对象是否存在</span></div><span class="badge red">403</span></div></div>`,
+  normal: ``,
+};
+
+const ISSUE_STATES = {
+  loading: `<div class="panel"><div class="panel-title"><h2>Mock 状态：loading</h2><span>脱机设计预览</span></div><div style="height:180px;background:var(--panel2);border-radius:6px;display:flex;align-items:center;justify-content:center;color:var(--muted)">真实加载骨架，不闪烁完整假数据</div></div>`,
+  empty: `<div class="panel"><div class="panel-title"><h2>Mock 状态：empty</h2><span>脱机设计预览</span></div><div class="row"><span class="dot"></span><div class="grow"><b>尚无执行问题</b><br><span>从计划任务记录或手动录入后出现</span></div></div></div>`,
+  partial: `<div class="panel"><div class="panel-title"><h2>Mock 状态：partial</h2><span>脱机设计预览</span></div><div class="row"><span class="dot amber"></span><div class="grow"><b>分类建议待域主审核</b><br><span>rule_based 仅作为 inferred 建议，不自动成为结论</span></div><span class="badge amber">inferred</span></div></div>`,
+  blocked: `<div class="panel"><div class="panel-title"><h2>Mock 状态：blocked</h2><span>脱机设计预览</span></div><div class="row"><span class="dot red"></span><div class="grow"><b>处理受阻</b><br><span>依赖缺失或权限不足，需域主补充后继续</span></div><span class="badge red">阻塞</span></div></div>`,
+  error: `<div class="panel"><div class="panel-title"><h2>Mock 状态：error</h2><span>脱机设计预览</span></div><div class="row"><span class="dot red"></span><div class="grow"><b>问题加载失败</b><br><span>仅展示本地 Mock 错误态，不调用真实接口</span></div><span class="badge red">重试</span></div></div>`,
+  "no-permission": `<div class="panel"><div class="panel-title"><h2>Mock 状态：no-permission</h2><span>脱机设计预览</span></div><div class="row"><span class="dot red"></span><div class="grow"><b>无权限访问该 Realm</b><br><span>不展示问题内容，不泄露对象是否存在</span></div><span class="badge red">403</span></div></div>`,
+  normal: ``,
+};
+
+let currentMockState = "normal";
+
+function metaFor(id) {
+  return { ...PAGE_META.default, ...(PAGE_META[id] || {}) };
+}
+
+function surfaceFor(id) {
+  return SURFACES.find((s) => s.pages.some((p) => p.id === id)) || {};
+}
+
+function renderMockState(state, states = CUSTOMER_STATES) {
+  currentMockState = state;
+  const container = document.getElementById("mockStateContent");
+  if (!container) return;
+  const others = Array.from(document.querySelectorAll("#content .page > *")).filter(
+    (el) => !el.classList.contains("page-head") && !el.classList.contains("state-switcher"),
+  );
+  if (state === "normal") {
+    others.forEach((el) => { el.style.display = ""; });
+    container.innerHTML = "";
+  } else {
+    others.forEach((el) => { el.style.display = "none"; });
+    container.innerHTML = states[state] || "";
+  }
+}
+
+function decorate() {
+  const head = document.querySelector(".page-head");
+  if (!head) return;
+  document.querySelectorAll(".r2-meta, .state-switcher").forEach((el) => el.remove());
+  const id = currentId;
+  const meta = metaFor(id);
+  const surface = surfaceFor(id);
+  const chips = [
+    `设计状态：${meta.designStatus}`,
+    `实现状态：${meta.implementationStatus}`,
+    `数据模式：${meta.dataMode}`,
+    `Feature Flag：${meta.featureFlag}`,
+    `taskId：${meta.taskId}`,
+    `release：${meta.release}`,
+    `lastUpdated：${meta.lastUpdated}`,
+  ];
+  if (meta.realRoute) chips.push(`真实路由：${meta.realRoute}`);
+  if (surface.id === "midplatform" || surface.id === "backend") {
+    chips.push("内部架构设计视图");
+  }
+  if (meta.implementationStatus === "skeleton") {
+    chips.push("骨架模式", "Mock 示例数据", "待真实接口接入");
+  }
+  if (meta.implementationStatus === "acceptance_blocked") {
+    chips.push("验收暂缓", "不能冻结、部署或使用真实客户数据");
+  }
+  if (meta.implementationStatus === "not-started") {
+    chips.push("规划中", "未实现", "Feature Flag：hidden/reserved");
+  }
+  const metaDiv = document.createElement("div");
+  metaDiv.className = "r2-meta tags";
+  metaDiv.innerHTML = chips.map((text) => `<span class="chip amber">${esc(text)}</span>`).join("");
+  head.appendChild(metaDiv);
+
+  if (id === "owner-customers") {
+    const bar = document.createElement("div");
+    bar.className = "state-switcher";
+    bar.innerHTML = `
+      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:14px">
+        <span style="font-size:12px;color:var(--muted)">Mock 状态切换（仅本地数据）：</span>
+        ${Object.keys(CUSTOMER_STATES).map((state) => `<button type="button" data-state="${state}" class="nav-item" style="width:auto;padding:6px 10px">${state}</button>`).join("")}
+      </div>
+      <div id="mockStateContent"></div>
+    `;
+    head.after(bar);
+    bar.addEventListener("click", (event) => {
+      const btn = event.target.closest("button[data-state]");
+      if (btn) renderMockState(btn.dataset.state);
+    });
+    renderMockState("normal");
+  }
+  if (id === "owner-projects") {
+    const bar = document.createElement("div");
+    bar.className = "state-switcher";
+    bar.innerHTML = `
+      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:14px">
+        <span style="font-size:12px;color:var(--muted)">Mock 状态切换（仅本地数据）：</span>
+        ${Object.keys(PROJECT_STATES).map((state) => `<button type="button" data-state="${state}" class="nav-item" style="width:auto;padding:6px 10px">${state}</button>`).join("")}
+      </div>
+      <div id="mockStateContent"></div>
+    `;
+    head.after(bar);
+    bar.addEventListener("click", (event) => {
+      const btn = event.target.closest("button[data-state]");
+      if (btn) renderMockState(btn.dataset.state, PROJECT_STATES);
+    });
+    renderMockState("normal", PROJECT_STATES);
+  }
+  if (id === "owner-execution") {
+    const bar = document.createElement("div");
+    bar.className = "state-switcher";
+    bar.innerHTML = `
+      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:14px">
+        <span style="font-size:12px;color:var(--muted)">Mock 状态切换（仅本地数据）：</span>
+        ${Object.keys(ISSUE_STATES).map((state) => `<button type="button" data-state="${state}" class="nav-item" style="width:auto;padding:6px 10px">${state}</button>`).join("")}
+      </div>
+      <div id="mockStateContent"></div>
+    `;
+    head.after(bar);
+    bar.addEventListener("click", (event) => {
+      const btn = event.target.closest("button[data-state]");
+      if (btn) renderMockState(btn.dataset.state, ISSUE_STATES);
+    });
+    renderMockState("normal", ISSUE_STATES);
+  }
+}
+
+document.addEventListener("click", (event) => {
+  if (event.target.closest(".nav-item")) {
+    window.setTimeout(decorate, 0);
+  }
+});
+decorate();
+</script>
+</body>
+</html>

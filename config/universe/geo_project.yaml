@@ -1,0 +1,98 @@
+# V10-P0 GEO Project protocol config.
+# Generic project types and execution states; no industry-specific schema.
+
+schema_version: "1.0"
+version: "1.1.0"
+
+project_types:
+  - geo
+
+project_status:
+  - draft
+  - running
+  - completed
+  - archived
+
+lifecycle:
+  - registered
+  - active
+  - released
+  - archived
+
+work_item_types:
+  - diagnosis
+  - content
+  - report
+  - execution
+  - measurement
+
+work_item_status:
+  - planned
+  - running
+  - completed
+  - failed
+
+artifact_types:
+  - diagnosis
+  - report
+  - content
+  - execution_log
+  - measurement
+
+artifact_status:
+  - draft
+  - published
+  - archived
+
+tool_execution:
+  execution_status:
+    - running
+    - declared
+    - success
+    - failed
+  execution_sources:
+    - declared
+    - system
+    - callback
+  truth_status: observed
+
+outcome:
+  status:
+    - pending
+    - claimed
+    - observed
+    - verified
+    - rejected
+    - revoked
+  outcome_types:
+    - visibility_observation
+    - content_published
+    - connection_formed
+    - evidence_claim
+    - monitoring_result
+  predicates:
+    visibility_observation:
+      allowed_predicates:
+        - appears_in_ai_answer
+        - visibility_observed
+      allowed_objects:
+        - ai_answer_mention
+        - visibility_metric
+    content_published:
+      allowed_predicates:
+        - content_published
+      allowed_objects:
+        - published_url
+        - publication
+    connection_formed:
+      allowed_predicates:
+        - connection_formed
+      allowed_objects:
+        - connection
+    evidence_claim:
+      allowed_predicates:
+        - supports_outcome
+        - proves_capability
+      allowed_objects:
+        - evidence_claim
+        - capability

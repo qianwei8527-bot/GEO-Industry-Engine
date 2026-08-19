@@ -37,9 +37,10 @@ class UniverseHomeService:
     async def build(self, db, node_type: str, node_id: str) -> Dict[str, Any]:
         extra = await self._load_base(db, node_type, node_id)
 
+        # Restore reputation before projecting graph so causality has event data.
+        rep_snap = await self._reputation(db, node_id)
         ctx = get_context_engine().understand(node_id, node_type, extra)
         graph = get_ecosystem_graph_engine().explain(node_id, node_type, extra)
-        rep_snap = await self._reputation(db, node_id)
         possibility = self._possibility(node_id, node_type, extra)
         velocity = self._velocity(node_id)
 
@@ -71,7 +72,13 @@ class UniverseHomeService:
             "position": {
                 "current": ctx.current_position,
                 "industry": ctx.industry_context,
-                "reputation": rep_snap.get("overview", {}) if rep_snap else {},
+                "reputation": {
+                    "status": rep_snap.get("status", "UNKNOWN") if rep_snap else "UNKNOWN",
+                    "level": rep_snap.get("overall_level", "N/A") if rep_snap else "N/A",
+                    "overall_score": rep_snap.get("overall_score", 0) if rep_snap else 0,
+                    "trend": rep_snap.get("trend", "stable") if rep_snap else "stable",
+                    "total_events": rep_snap.get("total_events", 0) if rep_snap else 0,
+                },
                 "capabilities": ctx.capability_state,
                 "risks": ctx.risk_assessment,
             },

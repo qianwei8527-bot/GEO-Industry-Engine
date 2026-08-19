@@ -6,7 +6,12 @@ class Settings(BaseSettings):
     PROJECT_NAME: str = "GEO-Industry-Engine"
     VERSION: str = "0.1.0"
     API_V1_PREFIX: str = "/api/v1"
-    BACKEND_CORS_ORIGINS: List[str] = ["http://localhost:3000"]
+    BACKEND_CORS_ORIGINS: List[str] = [
+        "http://localhost:3000",
+        "http://127.0.0.1:3000",
+        "http://localhost:3106",
+        "http://127.0.0.1:3106",
+    ]
     DATABASE_URL: str = "postgresql+asyncpg://geo:geo@localhost:5432/geo_engine"
     DATABASE_URL_SYNC: str = "postgresql://geo:geo@localhost:5432/geo_engine"
     SECRET_KEY: str = "your-secret-key-change-in-production"

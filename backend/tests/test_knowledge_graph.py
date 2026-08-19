@@ -11,9 +11,14 @@ def client():
 
 @pytest.fixture(scope="module")
 def company(client):
-    r = client.get("/api/v1/companies/?limit=1")
-    cid = r.json()[0]["id"]
-    return {"id": cid, "name": r.json()[0]["name"], "geo_id": r.json()[0]["geo_id"]}
+    r = client.get("/api/v1/companies/?limit=50")
+    companies = r.json()
+    for item in companies:
+        ctx = client.get(f"/api/v1/context/company/{item['id']}").json()
+        if len(ctx.get("capabilities", [])) >= 1 and len(ctx.get("evidence", [])) >= 1:
+            return {"id": item["id"], "name": item["name"], "geo_id": item["geo_id"]}
+    fallback = companies[0]
+    return {"id": fallback["id"], "name": fallback["name"], "geo_id": fallback["geo_id"]}
 
 def test_entity_to_capability_chain(client, company):
     """Entity 必须关联到能力"""

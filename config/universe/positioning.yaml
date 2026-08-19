@@ -1,0 +1,39 @@
+# V10.6-R2 local, deterministic positioning template.
+# This is a generic structure template, not industry truth. Final industry
+# standards and conclusions belong to the realm owner.
+
+schema_version: "1.0"
+version: "1.0.0"
+
+business_stages:
+  - id: entry_preparation
+    label: 入场准备期
+  - id: initial_validation
+    label: 初步验证期
+  - id: stable_growth
+    label: 稳定增长期
+  - id: scale_replication
+    label: 规模复制期
+  - id: ecosystem_operation
+    label: 生态经营期
+
+industry_position_fields:
+  - industry_track
+  - target_customer
+  - service_region
+  - existing_channels
+  - product_service
+
+business_position_fields:
+  - business_stage
+  - target_customer
+  - conversion_goals
+  - existing_channels
+  - client_problem
+
+unknown_outputs:
+  - industry_chain_role
+  - product_capability_position
+  - channel_position
+  - geo_baseline
+  - conversion_funnel_status

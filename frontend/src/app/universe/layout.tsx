@@ -2,8 +2,8 @@
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "GEO Universe - 产业认知与连接基础设施",
-  description: "每一个节点，都是自身宇宙的中心。",
+  title: "恒域世界 - 让每个域主，拥有自己的产业世界",
+  description: "域主共创的产业操作系统。",
 };
 
 const NAV_ITEMS = [

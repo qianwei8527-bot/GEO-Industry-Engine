@@ -1,0 +1,24 @@
+# C7.4 Demand Driven Connection weights
+# All candidate scoring is config-driven; never hardcode in the service.
+
+version: "1.1.0"
+
+weights:
+  capability: 0.35
+  evidence: 0.25
+  reputation: 0.20
+  trust: 0.20
+
+# C7.4-R: only verified Evidence may contribute to trust scores.
+evidence:
+  verified_weight: 1.0
+  observed_weight: 0.0
+  min_verified_for_full: 3
+  max_evidence_for_full: 10
+
+reputation:
+  max_score: 100.0
+
+trust:
+  evidence_weight: 0.6
+  reputation_weight: 0.4
